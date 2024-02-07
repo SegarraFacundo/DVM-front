@@ -1,9 +1,0 @@
-version: '2'
-services:
-  client:
-    build:
-      context: .
-    command: npm run build
-    volumes:
-      - .:/usr/src/app
-      - /usr/src/app/node_modules
