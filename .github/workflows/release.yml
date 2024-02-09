@@ -27,7 +27,7 @@ jobs:
       - name: build
         run: npm run build
         env:
-          GH_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           
       - name: release
         uses: softprops/action-gh-release@v1
