@@ -26,9 +26,9 @@ function createWindow () {
     minHeight: 800,
     frame: false,
     resizable: false,
-    alwaysOnTop: true,
+    alwaysOnTop: false,
     useContentSize: false,
-    fullscreen: false,
+    fullscreen: true,
     autoHideMenuBar: true,
     icon: path.join(process.env.VITE_PUBLIC, 'electron-vite.svg'),
     webPreferences: {
