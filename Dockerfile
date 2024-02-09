@@ -1,8 +1,6 @@
-FROM amd64/debian:11
+FROM --platform=linux/amd64 debian:11
 
 WORKDIR /usr/src/app
-
-RUN apt-get remove ca-certificates
 
 RUN apt-get update && \
     apt-get install -yq --no-install-recommends \
@@ -21,11 +19,11 @@ RUN apt policy nodejs
 
 RUN apt install -y nodejs 
 RUN node -v
-
+  
 RUN npm -v
 
-COPY . .
-
 RUN npm install
+
+COPY . .
 
 EXPOSE 5173

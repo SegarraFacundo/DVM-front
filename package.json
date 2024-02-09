@@ -6,7 +6,7 @@
   "description": "DVM-App",
   "scripts": {
     "dev": "vite --host 0.0.0.0",
-    "build": "tsc && vite build && electron-builder build",
+    "build": "tsc && vite build && electron-builder build --linux AppImage --arm64",
     "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview --host 0.0.0.0"
   },
@@ -27,6 +27,7 @@
   },
   "devDependencies": {
     "@types/google-map-react": "^2.1.10",
+    "@types/node": "^20.11.17",
     "@types/react": "^18.2.21",
     "@types/react-dom": "^18.2.7",
     "@typescript-eslint/eslint-plugin": "^6.6.0",
