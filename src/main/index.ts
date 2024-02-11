@@ -82,7 +82,7 @@ app.on('window-all-closed', () => {
 // In this file you can include the rest of your app"s specific main process
 // code. You can also put them in separate files and require them here.
 
-const operariosStore = OperariosStore({ urlDataJson: path.join(__dirname, '../data/operarios.json') })
+const operariosStore = OperariosStore({ urlDataJson: path.join(__dirname, 'data/operarios.json') })
 
 ipcMain.handle('getOperariosAsync', async () => {
   return await operariosStore.all()
@@ -96,19 +96,19 @@ ipcMain.handle('removeOperarioAsync', async (_: IpcMainInvokeEvent, id: number) 
   return await operariosStore.remove(id)
 })
 
-const tiposAplicacionesStore = TiposAplicacionesStore({ urlDataJson: path.join(__dirname, '../data/tipos-aplicaciones.json') })
+const tiposAplicacionesStore = TiposAplicacionesStore({ urlDataJson: path.join(__dirname, 'data/tipos-aplicaciones.json') })
 
 ipcMain.handle('getTiposAplicacionesAsync', async () => {
   return await tiposAplicacionesStore.all()
 })
 
-const itemsMenuStore = ItemsMenuStore({ urlDataJson: path.join(__dirname, '../data/items-menu.json') })
+const itemsMenuStore = ItemsMenuStore({ urlDataJson: path.join(__dirname, 'data/items-menu.json') })
 
 ipcMain.handle('getItemsMenuAsync', async () => {
   return await itemsMenuStore.all()
 })
 
-const itemsInfoStore = ItemsInfoStore({ urlDataJson: path.join(__dirname, '../data/items-info.json') })
+const itemsInfoStore = ItemsInfoStore({ urlDataJson: path.join(__dirname, 'data/items-info.json') })
 
 ipcMain.handle('getItemsInfoAsync', async () => {
   return await itemsInfoStore.all()
