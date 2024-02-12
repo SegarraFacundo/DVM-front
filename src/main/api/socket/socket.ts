@@ -1,7 +1,7 @@
 import * as net from 'net'
 
 const client = new net.Socket()
-client.connect({ port: 8080, host: 'localhost' })
+client.connect({ port: 8080, host: '127.0.0.1' })
 
 export interface DatosMeteorologicos {
   command: 'datosMeteorologicos'
