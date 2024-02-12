@@ -42,7 +42,7 @@ export function InfoLogin () {
         </div>
         <div>
           <small className='text-[10px] text-dark'>Ident. Lote</small>
-          <p className='font-medium text-dark'>{lote}</p>
+          <p className='font-medium text-dark'>{lote.name}</p>
         </div>
         <div>
           <small className='text-[10px] text-dark'>Tipo de Aplicación</small>

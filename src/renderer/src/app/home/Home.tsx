@@ -2,11 +2,11 @@ import { useEffect, useState } from 'react'
 import { useTitle } from '../../lib/hooks/UseTitle'
 import { ItemInfo } from './components/ItemInfo'
 import { ItemInfoData } from './interfaces/item-info.interface'
-import { Modal } from '../../ui/components/modal/Modal'
+import { Modal, ModalProps } from '../../ui/components/modal/Modal'
 import { FormInitial } from './components/FormInitial/FormInitial'
 import clsx from 'clsx'
 import { useModal } from '../../ui/components/modal/hooks/UseModal'
-import { Dialog } from '../../ui/components/dialog/Dialog'
+import { Dialog, DialogProps } from '../../ui/components/dialog/Dialog'
 import { useNavigate } from 'react-router-dom'
 import { useFormInitial } from './components/FormInitial/hooks/UseFormInitial'
 
@@ -77,9 +77,9 @@ function Home () {
           idModal='init-testing'
           ModalContent={Dialog}
           modalContentProps={{
-            title: 'Iniciar Testeo',
-            message: '¿Confirma iniciar el testeo de los aspersores?',
-            type: 'warning'
+              title: 'Iniciar Testeo',
+              message: '¿Confirma iniciar el testeo de los aspersores?',
+              type: 'warning'
           }}
           closed={modalClosed}
           crossClose

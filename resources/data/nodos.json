@@ -1,0 +1,191 @@
+[
+  {
+    "nodo": "A",
+    "aspersores": [
+      {
+        "id": "1",
+        "estado": "normal"
+      },
+      {
+        "id": "2",
+        "estado": "warning"
+      },
+      {
+        "id": "3",
+        "estado": "error"
+      },
+      {
+        "id": "4",
+        "estado": ""
+      }
+    ]
+  },
+  {
+    "nodo": "B",
+    "aspersores": [
+      {
+        "id": "1",
+        "estado": "normal"
+      },
+      {
+        "id": "2",
+        "estado": "warning"
+      },
+      {
+        "id": "3",
+        "estado": "error"
+      },
+      {
+        "id": "4",
+        "estado": ""
+      }
+    ]
+  },
+  {
+    "nodo": "C",
+    "aspersores": [
+      {
+        "id": "1",
+        "estado": "normal"
+      },
+      {
+        "id": "2",
+        "estado": "warning"
+      },
+      {
+        "id": "3",
+        "estado": "error"
+      },
+      {
+        "id": "4",
+        "estado": ""
+      }
+    ]
+  },
+  {
+    "nodo": "D",
+    "aspersores": [
+      {
+        "id": "1",
+        "estado": "normal"
+      },
+      {
+        "id": "2",
+        "estado": "warning"
+      },
+      {
+        "id": "3",
+        "estado": "error"
+      },
+      {
+        "id": "4",
+        "estado": ""
+      }
+    ]
+  },
+  {
+    "nodo": "E",
+    "aspersores": [
+      {
+        "id": "1",
+        "estado": "normal"
+      },
+      {
+        "id": "2",
+        "estado": "warning"
+      },
+      {
+        "id": "3",
+        "estado": "error"
+      },
+      {
+        "id": "4",
+        "estado": ""
+      }
+    ]
+  },
+  {
+    "nodo": "F",
+    "aspersores": [
+      {
+        "id": "1",
+        "estado": "normal"
+      },
+      {
+        "id": "2",
+        "estado": "warning"
+      },
+      {
+        "id": "3",
+        "estado": "error"
+      },
+      {
+        "id": "4",
+        "estado": ""
+      }
+    ]
+  },
+  {
+    "nodo": "G",
+    "aspersores": [
+      {
+        "id": "1",
+        "estado": "normal"
+      },
+      {
+        "id": "2",
+        "estado": "warning"
+      },
+      {
+        "id": "3",
+        "estado": "error"
+      },
+      {
+        "id": "4",
+        "estado": ""
+      }
+    ]
+  },
+  {
+    "nodo": "H",
+    "aspersores": [
+      {
+        "id": "1",
+        "estado": "normal"
+      },
+      {
+        "id": "2",
+        "estado": "warning"
+      },
+      {
+        "id": "3",
+        "estado": "error"
+      },
+      {
+        "id": "4",
+        "estado": ""
+      }
+    ]
+  },
+  {
+    "nodo": "I",
+    "aspersores": [
+      {
+        "id": "1",
+        "estado": "normal"
+      },
+      {
+        "id": "2",
+        "estado": "warning"
+      },
+      {
+        "id": "3",
+        "estado": "error"
+      },
+      {
+        "id": "4",
+        "estado": ""
+      }
+    ]
+  }
+]

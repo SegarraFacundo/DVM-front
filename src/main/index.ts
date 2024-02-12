@@ -1,8 +1,6 @@
 import { app, shell, BrowserWindow, ipcMain, IpcMainInvokeEvent } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
-import path from 'node:path'
-
 import icon from '../../resources/icon.png?asset'
 
 import { OperariosStore } from './api/operarios/operarios.store'
@@ -10,6 +8,8 @@ import { TiposAplicacionesStore } from './api/tipos-aplicaciones/tipos-aplicacio
 import { asyncEmit } from './api/socket/socket'
 import { ItemsMenuStore } from './api/menu/items-menu.store'
 import { ItemsInfoStore } from './api/info/items-info.store'
+import { LotesStore } from './api/lotes/lotes.store'
+import { NodosStore } from './api/nodos/nodos.store'
 
 function createWindow(): void {
   // Create the browser window.
@@ -18,7 +18,7 @@ function createWindow(): void {
     height: 800,
     show: false,
     frame: false,
-    fullscreen: true,
+    fullscreen: false,
     autoHideMenuBar: true,
     ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
@@ -83,7 +83,9 @@ app.on('window-all-closed', () => {
 // In this file you can include the rest of your app"s specific main process
 // code. You can also put them in separate files and require them here.
 
-const operariosStore = OperariosStore({ urlDataJson: path.join(__dirname, 'data/operarios.json') })
+const operariosStore = OperariosStore({
+  urlDataJson: 'operarios.json'
+})
 
 ipcMain.handle('getOperariosAsync', async () => {
   return await operariosStore.all()
@@ -97,23 +99,54 @@ ipcMain.handle('removeOperarioAsync', async (_: IpcMainInvokeEvent, id: number) 
   return await operariosStore.remove(id)
 })
 
-const tiposAplicacionesStore = TiposAplicacionesStore({ urlDataJson: path.join(__dirname, 'data/tipos-aplicaciones.json') })
+const lotesStore = LotesStore({
+  urlDataJson: 'lotes.json'
+})
+
+ipcMain.handle('getLotesAsync', async () => {
+  return await lotesStore.all()
+})
+
+ipcMain.handle('addLoteAsync', async (_: IpcMainInvokeEvent, name: string) => {
+  return await lotesStore.add({ name })
+})
+
+ipcMain.handle('removeLoteAsync', async (_: IpcMainInvokeEvent, id: number) => {
+  return await lotesStore.remove(id)
+})
+
+const tiposAplicacionesStore = TiposAplicacionesStore({
+  urlDataJson: 'tipos-aplicaciones.json'
+})
 
 ipcMain.handle('getTiposAplicacionesAsync', async () => {
   return await tiposAplicacionesStore.all()
 })
 
-const itemsMenuStore = ItemsMenuStore({ urlDataJson: path.join(__dirname, 'data/items-menu.json') })
+const itemsMenuStore = ItemsMenuStore({
+  urlDataJson: 'items-menu.json'
+})
 
 ipcMain.handle('getItemsMenuAsync', async () => {
   return await itemsMenuStore.all()
 })
 
-const itemsInfoStore = ItemsInfoStore({ urlDataJson: path.join(__dirname, 'data/items-info.json') })
+const itemsInfoStore = ItemsInfoStore({
+  urlDataJson: 'items-info.json'
+})
 
 ipcMain.handle('getItemsInfoAsync', async () => {
   return await itemsInfoStore.all()
 })
+
+const nodosStore = NodosStore({
+  urlDataJson: 'nodos.json'
+})
+
+ipcMain.handle('getNodosAsync', async () => {
+  return await nodosStore.all()
+})
+
 
 ipcMain.handle('getDatosMeteorologicosAsync', async () => {
   return await asyncEmit('datosMeteorologicos')

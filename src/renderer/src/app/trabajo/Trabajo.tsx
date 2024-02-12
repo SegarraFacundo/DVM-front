@@ -33,13 +33,7 @@ export function Trabajo () {
   const { tipoGotaseleccionada } = useTipoGota()
 
   const fetchData = async () => {
-    const response = await fetch('/data/nodos.json', {
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json'
-      }
-    })
-    const result = await response.json()
+    const result = (await window.api.invoke.getNodosAsync())
     setData(result)
   }
 

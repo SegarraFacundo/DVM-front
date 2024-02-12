@@ -1,12 +1,15 @@
 import { Button } from '../Button'
-import { ModalProps } from '../modal/Modal'
 import clsx from 'clsx'
 
-export function Dialog ({ close, acept, props }: ModalProps<{
+export interface DialogProps {
   title: string
   message: string
   type: 'success' | 'warning' | 'error' | 'default'
-}>) {
+  close?
+  acept?
+}
+
+export function Dialog ({ close, acept, title, message, type }: DialogProps) {
   return (
     <div className='flex flex-col justify-between  w-[591px] h-auto gap-10 bg-[#1C2E3D] boder border-white p-[28px]'>
 
@@ -19,15 +22,15 @@ export function Dialog ({ close, acept, props }: ModalProps<{
           </svg>
         </div>
         <h3 className={clsx('text-3xl not-italic font-bold', {
-          'text-success': props?.type === 'success',
-          'text-warning': props?.type === 'warning',
-          'text-error': props?.type === 'error'
+          'text-success': type === 'success',
+          'text-warning': type === 'warning',
+          'text-error': type === 'error'
         })}
-        >{props?.title}
+        >{title}
         </h3>
       </div>
       <div>
-        <p className='text-2xl not-italic font-normal text-white'>{props?.message}</p>
+        <p className='text-2xl not-italic font-normal text-white'>{message}</p>
       </div>
       <div className='w-full flex flex-row gap-4 justify-end'>
         <Button type='error' onClick={close}>

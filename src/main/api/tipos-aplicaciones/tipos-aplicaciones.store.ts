@@ -1,4 +1,5 @@
 import { readFileSync, writeFileSync } from 'fs'
+import path from 'path'
 
 interface Props {
   urlDataJson: string
@@ -10,6 +11,7 @@ export interface TipoAplicacion {
 }
 
 export const TiposAplicacionesStore = ({ urlDataJson }: Props) => {
+  urlDataJson = path.join(__dirname, '../../resources/data/', `${urlDataJson}`)
   return {
     all: async () => JSON.parse(await readFileSync(urlDataJson).toString()) as TipoAplicacion[],
     get: async (id: number) =>

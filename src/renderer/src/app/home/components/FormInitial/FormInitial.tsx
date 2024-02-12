@@ -1,6 +1,5 @@
 import { useEffect, useState, ChangeEvent } from 'react'
 import { InputSelect } from '../../../../ui/components/input-select/InputSelect'
-import { InputText } from '../../../../ui/components/input-text/InputText'
 import { DataSelect } from '../../interfaces/data-select.interface'
 import { useFormInitial } from './hooks/UseFormInitial'
 import { useModal } from '../../../../ui/components/modal/hooks/UseModal'
@@ -22,11 +21,17 @@ export function FormInitial ({ close, acept, props }: Props) {
   })
 
   const [operarios, setOperarios] = useState<DataSelect[]>([])
+  const [lotes, setLotes] = useState<DataSelect[]>([])
   const [tiposAplicaciones, setTiposAplicaciones] = useState<DataSelect[]>([])
 
   const fetchOperarios = async () => {
     const result = (await window.api.invoke.getOperariosAsync())
     setOperarios(result)
+  }
+
+  const fetchLotes = async () => {
+    const result = (await window.api.invoke.getLotesAsync())
+    setLotes(result)
   }
 
   const fetchTiposAplicaciones = async () => {
@@ -36,10 +41,11 @@ export function FormInitial ({ close, acept, props }: Props) {
 
   useEffect(() => {
     fetchOperarios()
+    fetchLotes()
     fetchTiposAplicaciones()
   }, [])
 
-  const { setFormInitial, lote } = useFormInitial()
+  const { setFormInitial } = useFormInitial()
 
   useEffect(() => {
     addModal('agregar-operario')
@@ -55,7 +61,10 @@ export function FormInitial ({ close, acept, props }: Props) {
         id: dataForm.operario,
         name: operarios.find(i => i.id === dataForm.operario)?.name ?? ''
       },
-      lote: dataForm.lote,
+      lote: {
+        id: dataForm.lote,
+        name: lotes.find(i => i.id === dataForm.lote)?.name ?? ''
+      },
       tipoAplicacion: {
         id: dataForm.tipoAplicacion,
         name: tiposAplicaciones.find(i => i.id === dataForm.tipoAplicacion)?.name ?? ''
@@ -83,7 +92,15 @@ export function FormInitial ({ close, acept, props }: Props) {
           errors={errors}
           options={{ required: true }}
         />
-        <InputText initialValue={lote} label='Identificación Lote' name='lote' register={register} errors={errors} options={{ required: true }} />
+        <InputSelect
+          label='Identificación Lote'
+          data={lotes}
+          name='lote'
+          register={register}
+          withAdd
+          errors={errors}
+          options={{ required: true }}
+        />
         <InputSelect label='Tipo de Aplicación' data={tiposAplicaciones} name='tipoAplicacion' register={register} errors={errors} options={{ required: true }} />
       </div>
       {props?.openedModal && <div className='w-full flex flex-row mt-8 gap-4 justify-end'>
