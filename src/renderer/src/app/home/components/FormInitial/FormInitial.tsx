@@ -1,5 +1,4 @@
 import { useEffect, useState, ChangeEvent } from 'react'
-import { InputSelect } from '../../../../ui/components/input-select/InputSelect'
 import { DataSelect } from '../../interfaces/data-select.interface'
 import { useFormInitial } from './hooks/UseFormInitial'
 import { useModal } from '../../../../ui/components/modal/hooks/UseModal'
@@ -7,6 +6,7 @@ import { ModalProps } from '../../../../ui/components/modal/Modal'
 import { useForm } from 'react-hook-form'
 import { Button } from '../../../../ui/components/Button'
 import clsx from 'clsx'
+import InputDropdown from '@renderer/ui/components/input-dropdown/InputDropdown'
 
 interface Props extends ModalProps<{ openedModal: boolean }> {
 }
@@ -82,17 +82,15 @@ export function FormInitial ({ close, acept, props }: Props) {
       {props?.openedModal && <div className='flex items-center'>
         <h3 className=' text-3xl not-italic font-bold text-white'>Agregar Operario</h3>
       </div>}
-      <div>
-        <InputSelect
-          label='Identificación Operario'
+      <div className='flex flex-col gap-4'>
+        <InputDropdown  label='Identificación Operario'
           data={operarios}
           name='operario'
           register={register}
           withAdd
           errors={errors}
-          options={{ required: true }}
-        />
-        <InputSelect
+          options={{ required: true }} />
+        <InputDropdown
           label='Identificación Lote'
           data={lotes}
           name='lote'
@@ -101,7 +99,7 @@ export function FormInitial ({ close, acept, props }: Props) {
           errors={errors}
           options={{ required: true }}
         />
-        <InputSelect label='Tipo de Aplicación' data={tiposAplicaciones} name='tipoAplicacion' register={register} errors={errors} options={{ required: true }} />
+        <InputDropdown label='Tipo de Aplicación' data={tiposAplicaciones} name='tipoAplicacion' register={register} errors={errors} options={{ required: true }} />
       </div>
       {props?.openedModal && <div className='w-full flex flex-row mt-8 gap-4 justify-end'>
         <Button type='error' onClick={close}>
