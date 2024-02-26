@@ -28,6 +28,7 @@ export type Api = GetApiType<
     getItemsInfoAsync: () => Promise<ItemInfoData[]>;
     getNodosAsync: () => Promise<Nodo[]>;
     getDatosMeteorologicosAsync: () => Promise<DatosMeteorologicos>;
+    initTestingAsync: () => void;
   },
   {
   }
@@ -67,6 +68,9 @@ const api: Api = {
     },
     getDatosMeteorologicosAsync: async () => {
       return await ipcRenderer.invoke('getDatosMeteorologicosAsync')
+    },
+    initTestingAsync: async () => {
+      await ipcRenderer.invoke('initTestingAsync');
     }
   },
   on: {

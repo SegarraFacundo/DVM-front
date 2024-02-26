@@ -5,7 +5,8 @@ import icon from '../../resources/icon.png?asset'
 
 import { OperariosStore } from './api/operarios/operarios.store'
 import { TiposAplicacionesStore } from './api/tipos-aplicaciones/tipos-aplicaciones.store'
-import { asyncEmit } from './api/socket/socket'
+import { datosMeteorologicosEmitAsync } from './api/socket/socket'
+import { datosTestingAsync } from './api/socket/socket'
 import { ItemsMenuStore } from './api/menu/items-menu.store'
 import { ItemsInfoStore } from './api/info/items-info.store'
 import { LotesStore } from './api/lotes/lotes.store'
@@ -149,5 +150,9 @@ ipcMain.handle('getNodosAsync', async () => {
 
 
 ipcMain.handle('getDatosMeteorologicosAsync', async () => {
-  return await asyncEmit('datosMeteorologicos')
+  return await datosMeteorologicosEmitAsync()
+})
+
+ipcMain.handle('initTestingAsync', async () => {
+  return await datosTestingAsync()
 })
