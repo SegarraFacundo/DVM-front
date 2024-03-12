@@ -1,38 +1,34 @@
 import { electronAPI } from '@electron-toolkit/preload'
-import {
-  contextBridge,
-  createIpcRenderer,
-  GetApiType
-} from 'electron-typescript-ipc'
-import { Operario } from '../main/api/operarios/operarios.store';
-import { TipoAplicacion } from '../main/api/tipos-aplicaciones/tipos-aplicaciones.store';
-import { DatosMeteorologicos } from '../main/api/socket/socket';
-import { ItemMenu } from '../main/api/menu/items-menu.store';
-import { ItemInfoData } from '../main/api/info/items-info.store';
-import { Lote } from '../main/api/lotes/lotes.store';
-import { Nodo } from '../main/api/nodos/nodos.store';
-
+import { contextBridge, createIpcRenderer, GetApiType } from 'electron-typescript-ipc'
+import { Operario } from '../main/api/operarios/operarios.store'
+import { TipoAplicacion } from '../main/api/tipos-aplicaciones/tipos-aplicaciones.store'
+import { Datos, DatosMeteorologicos, EstadoNodo } from '../main/api/socket/socket'
+import { ItemMenu } from '../main/api/menu/items-menu.store'
+import { ItemInfoData } from '../main/api/info/items-info.store'
+import { Lote } from '../main/api/lotes/lotes.store'
+import { Nodo } from '../main/api/nodos/nodos.store'
 
 const ipcRenderer = createIpcRenderer<Api>()
 
 export type Api = GetApiType<
   {
-    getOperariosAsync: () => Promise<Operario[]>;
-    addOperarioAsync: (name: string) => Promise<Operario>;
-    removeOperarioAsync: (id: number) => Promise<Operario>;
-    getLotesAsync: () => Promise<Lote[]>;
-    addLoteAsync: (name: string) => Promise<Lote>;
-    removeLoteAsync: (id: number) => Promise<Lote>;
-    getTiposAplicacionesAsync: () => Promise<TipoAplicacion[]>;
-    getItemsMenuAsync: () => Promise<ItemMenu[]>;
-    getItemsInfoAsync: () => Promise<ItemInfoData[]>;
-    getNodosAsync: () => Promise<Nodo[]>;
-    getDatosMeteorologicosAsync: () => Promise<DatosMeteorologicos>;
-    initTestingAsync: () => void;
+    getOperariosAsync: () => Promise<Operario[]>
+    addOperarioAsync: (name: string) => Promise<Operario>
+    removeOperarioAsync: (id: number) => Promise<Operario>
+    getLotesAsync: () => Promise<Lote[]>
+    addLoteAsync: (name: string) => Promise<Lote>
+    removeLoteAsync: (id: number) => Promise<Lote>
+    getTiposAplicacionesAsync: () => Promise<TipoAplicacion[]>
+    getItemsMenuAsync: () => Promise<ItemMenu[]>
+    getItemsInfoAsync: () => Promise<ItemInfoData[]>
+    getNodosAsync: () => Promise<Nodo[]>
+    getDatosMeteorologicosAsync: () => Promise<Datos<DatosMeteorologicos>>
+    initTestingAsync: () => void
+    getStateNodoAsync: () => Promise<Datos<{ nodos: EstadoNodo[] }>>
+    isThemeModeDark: () => Promise<boolean>
   },
-  {
-  }
->;
+  {}
+>
 
 const api: Api = {
   invoke: {
@@ -70,20 +66,23 @@ const api: Api = {
       return await ipcRenderer.invoke('getDatosMeteorologicosAsync')
     },
     initTestingAsync: async () => {
-      await ipcRenderer.invoke('initTestingAsync');
+      await ipcRenderer.invoke('initTestingAsync')
+    },
+    getStateNodoAsync: async () => {
+      return await ipcRenderer.invoke('getStateNodoAsync')
+    },
+    isThemeModeDark: async () => {
+      return await ipcRenderer.invoke('isThemeModeDark')
     }
   },
-  on: {
-
-  }
+  on: {}
 }
 
 declare global {
   interface Window {
-    api: Api;
+    api: Api
   }
 }
-
 
 // Use `contextBridge` APIs to expose Electron APIs to
 // renderer only if context isolation is enabled, otherwise

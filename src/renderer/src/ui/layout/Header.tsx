@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useTitle } from '../../lib/hooks/UseTitle'
 import { ButtonMenu } from './ButtonMenu'
-import { useFormInitial } from '../../app/home/components/FormInitial/hooks/UseFormInitial'
+import { useFormInitial } from '../../app/home/components/form-initial/hooks/UseFormInitial'
 import { useCarga } from './hooks/useCarga'
 import { useToggle } from '../hooks/useToggle'
 

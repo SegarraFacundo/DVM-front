@@ -3,7 +3,9 @@ import { useEffect, useState } from 'react'
 import { FieldErrors, RegisterOptions, UseFormRegister } from 'react-hook-form'
 import clsx from 'clsx'
 import { useModal } from '../modal/hooks/UseModal'
-import { useFormInitial } from '@renderer/app/home/components/FormInitial/hooks/UseFormInitial'
+import { useFormInitial } from '@renderer/app/home/components/form-initial/hooks/UseFormInitial'
+import { Modal } from '../modal/Modal'
+import AgregarOperario from '@renderer/app/home/components/agregar-operario/AgregarOperario'
 
 interface Props {
   label: string
@@ -42,14 +44,17 @@ const InputDropdown = ({ label, name, data, errors, withAdd = false }: Props) =>
           break
       }
 
-      nuevoEstado.isValid = nuevoEstado.operario.id != -1 && nuevoEstado.tipoAplicacion.id != -1 && nuevoEstado.lote.id != -1,
-      setFormInitial(nuevoEstado)
+      ;(nuevoEstado.isValid =
+        nuevoEstado.operario.id != -1 &&
+        nuevoEstado.tipoAplicacion.id != -1 &&
+        nuevoEstado.lote.id != -1),
+        setFormInitial(nuevoEstado)
     }
   }, [selected])
 
   return (
     <div
-      className={clsx('relative flex flex-col mt-[46px]  h-[64px] w-[366px]', {
+      className={clsx('relative flex flex-col min-w-[300px]', {
         'border-error': errors && errors[name],
         'focus:border-error': errors && errors[name],
         'focus-visible:border-error': errors && errors[name]
@@ -85,7 +90,7 @@ const InputDropdown = ({ label, name, data, errors, withAdd = false }: Props) =>
         {/* <BiChevronDown size={20} className={`${open && "rotate-180"}`} /> */}
       </div>
       <ul
-        className={` absolute z-30 top-[5.5rem] bg-dark rounded-[5px] text-white mt-2 overflow-y-auto w-full ${open ? 'max-h-60' : 'max-h-0'} `}
+        className={` absolute z-30 top-[5.5rem] bg-dark rounded-[5px] text-white mt-2 overflow-y-auto w-full ${open ? 'max-h-[140px]' : 'max-h-0'} `}
       >
         {data?.map((value) => (
           <li
@@ -111,8 +116,20 @@ const InputDropdown = ({ label, name, data, errors, withAdd = false }: Props) =>
 }
 
 function OpcionNuevoOperario(): JSX.Element {
-  const { toggleOpenedState } = useModal()
-  const handleClick = (): void => toggleOpenedState('agregar-operario')
+  const { addModal, toggleOpenedState } = useModal()
+  useEffect(() => {
+    addModal('agregar-operario')
+  }, [])
+
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>): void => {
+    toggleOpenedState('agregar-operario')
+    event.preventDefault()
+  }
+
+  const modalClosed = (acept: boolean) => {
+    console.log(acept)
+  }
+
   return (
     <li className="flex justify-between items-center text-sm border-b-[1px] border-b-success px-[30px] h-[60px] hover:bg-sky-600 text-success font-bold">
       Agregar Operario
@@ -124,6 +141,14 @@ function OpcionNuevoOperario(): JSX.Element {
           +
         </button>
       </div>
+      <Modal<undefined>
+        idModal="agregar-operario"
+        ModalContent={AgregarOperario}
+        modalContentProps={undefined}
+        closed={modalClosed}
+        crossClose
+        outsideClose
+      />
     </li>
   )
 }

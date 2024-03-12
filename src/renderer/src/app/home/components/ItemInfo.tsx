@@ -1,15 +1,16 @@
 import { useEffect, useState } from 'react'
 import { ItemInfoData } from '../interfaces/item-info.interface'
 import { DatosMeteorologicos } from '../interfaces/datos-meteorologicos.interface'
+import { DatosSocket } from '../interfaces/datos-socket.interface'
 
 interface Props {
   data: ItemInfoData
 }
 
-export function ItemInfo({ data }: Props) {
-  const [datosMeteorologicos, setDatosMeteorologicos] = useState<DatosMeteorologicos>()
+export function ItemInfo({ data }: Props): JSX.Element {
+  const [datosMeteorologicos, setDatosMeteorologicos] = useState<DatosSocket<DatosMeteorologicos>>()
 
-  const fetchDatosMeteorologicos = async () => {
+  const fetchDatosMeteorologicos = async (): Promise<void> => {
     const result = await window.api.invoke.getDatosMeteorologicosAsync()
     setDatosMeteorologicos(result)
   }
@@ -18,16 +19,28 @@ export function ItemInfo({ data }: Props) {
     let resp = ''
     switch (data.title) {
       case 'Humedad':
-        resp = datosMeteorologicos?.humedad !== undefined ? datosMeteorologicos?.humedad + '%' : '-'
+        resp =
+          datosMeteorologicos?.data.humedad !== undefined
+            ? datosMeteorologicos?.data.humedad + '%'
+            : '-'
         break
       case 'Viento':
-        resp = datosMeteorologicos?.velViento !== undefined ? datosMeteorologicos?.velViento + 'k/h' : '-'
+        resp =
+          datosMeteorologicos?.data.velViento !== undefined
+            ? datosMeteorologicos?.data.velViento + 'k/h'
+            : '-'
         break
       case 'Temperatura':
-        resp = datosMeteorologicos?.temperatura !== undefined ? datosMeteorologicos?.temperatura + '°' : '-'
+        resp =
+          datosMeteorologicos?.data.temperatura !== undefined
+            ? datosMeteorologicos?.data.temperatura + '°'
+            : '-'
         break
       case 'Rocío':
-        resp = datosMeteorologicos?.puntoDeRocio !== undefined ? datosMeteorologicos?.puntoDeRocio + '°' : '-'
+        resp =
+          datosMeteorologicos?.data.puntoDeRocio !== undefined
+            ? datosMeteorologicos?.data.puntoDeRocio + '°'
+            : '-'
         break
     }
     return resp
@@ -47,7 +60,7 @@ export function ItemInfo({ data }: Props) {
         <h3 className="text-white text-[32px] font-roboto font-bold">{data.title}</h3>
         <span className="text-success font-roboto text-[13px]">{data.info}</span>
       </div>
-      <h1 className="text-white text-[58px] font-bold">{showData()}</h1>
+      <h1 className="text-white text-[48px] font-bold">{showData()}</h1>
     </div>
   )
 }

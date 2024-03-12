@@ -1,11 +1,11 @@
-import { app, shell, BrowserWindow, ipcMain, IpcMainInvokeEvent } from 'electron'
+import { app, shell, BrowserWindow, ipcMain, IpcMainInvokeEvent, nativeTheme } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 
 import { OperariosStore } from './api/operarios/operarios.store'
 import { TiposAplicacionesStore } from './api/tipos-aplicaciones/tipos-aplicaciones.store'
-import { datosMeteorologicosEmitAsync } from './api/socket/socket'
+import { datosMeteorologicosEmitAsync, getStateNodoAsync } from './api/socket/socket'
 import { datosTestingAsync } from './api/socket/socket'
 import { ItemsMenuStore } from './api/menu/items-menu.store'
 import { ItemsInfoStore } from './api/info/items-info.store'
@@ -148,11 +148,18 @@ ipcMain.handle('getNodosAsync', async () => {
   return await nodosStore.all()
 })
 
-
 ipcMain.handle('getDatosMeteorologicosAsync', async () => {
   return await datosMeteorologicosEmitAsync()
 })
 
 ipcMain.handle('initTestingAsync', async () => {
   return await datosTestingAsync()
+})
+
+ipcMain.handle('getStateNodoAsync', async () => {
+  return await getStateNodoAsync()
+})
+
+ipcMain.handle('isThemeModeDark', () => {
+  return nativeTheme.shouldUseDarkColors
 })

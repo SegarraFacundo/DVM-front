@@ -1,13 +1,13 @@
 import clsx from 'clsx'
 import { useToggle } from '../hooks/useToggle'
-import { useFormInitial } from '../../app/home/components/FormInitial/hooks/UseFormInitial'
+import { useFormInitial } from '../../app/home/components/form-initial/hooks/UseFormInitial'
 import { Button } from '../components/Button'
 import { Modal } from '../components/modal/Modal'
-import { FormInitial } from '../../app/home/components/FormInitial/FormInitial'
 import { useEffect } from 'react'
 import { useModal } from '../components/modal/hooks/UseModal'
+import { FormEditar } from '@renderer/app/home/components/form-initial/FormEditar'
 
-export function InfoLogin () {
+export function InfoLogin(): JSX.Element {
   const { getStateToggle } = useToggle()
   const { getStateModal, addModal, toggleOpenedState } = useModal()
   const { isValid, operario, lote, tipoAplicacion } = useFormInitial()
@@ -16,11 +16,11 @@ export function InfoLogin () {
     addModal('edit-login')
   }, [])
 
-  const modalClosed = (acept: boolean) => {
+  const modalClosed = (acept: boolean): void => {
     console.log(acept)
   }
 
-  const handleEditClick = () => {
+  const handleEditClick = (): void => {
     if (getStateModal('edit-login')) return
     if (isValid) {
       toggleOpenedState('edit-login')
@@ -36,31 +36,27 @@ export function InfoLogin () {
           }
         )}
       >
-        <div className=''>
-          <small className='text-[10px] text-dark'>Usuario</small>
-          <p className='font-medium text-dark'>{operario.name}</p>
+        <div className="">
+          <small className="text-[10px] text-dark">Usuario</small>
+          <p className="font-medium text-dark">{operario.name}</p>
         </div>
         <div>
-          <small className='text-[10px] text-dark'>Ident. Lote</small>
-          <p className='font-medium text-dark'>{lote.name}</p>
+          <small className="text-[10px] text-dark">Ident. Lote</small>
+          <p className="font-medium text-dark">{lote.name}</p>
         </div>
         <div>
-          <small className='text-[10px] text-dark'>Tipo de Aplicación</small>
-          <p className='font-medium text-dark'>{tipoAplicacion.name}</p>
+          <small className="text-[10px] text-dark">Tipo de Aplicación</small>
+          <p className="font-medium text-dark">{tipoAplicacion.name}</p>
         </div>
-        <div className='w-full mt-4'>
-          <Button type='success-dark' size='sm' onClick={handleEditClick}>
+        <div className="w-full mt-4">
+          <Button type="success-dark" size="sm" onClick={handleEditClick}>
             Editar
           </Button>
-
         </div>
       </aside>
-      <Modal<{openedModal: boolean}>
-        idModal='edit-login'
-        ModalContent={FormInitial}
-        modalContentProps={{
-          openedModal: true
-        }}
+      <Modal<undefined>
+        idModal="edit-login"
+        ModalContent={FormEditar}
         closed={modalClosed}
         crossClose
         outsideClose
