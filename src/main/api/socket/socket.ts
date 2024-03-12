@@ -1,7 +1,7 @@
 import * as net from 'net'
 
 const client = new net.Socket()
-client.connect({ port: 8080, host: 'localhost' })
+client.connect({ port: 8080, host: '127.0.0.1' })
 
 export interface Datos<T> {
   command: string
@@ -97,7 +97,7 @@ export const getStateNodoAsync = (): Promise<Datos<{ nodos: EstadoNodo[] }> | un
         const infoDataJson = JSON.parse(infoData)
         if (infoDataJson && infoDataJson.command === 'estadoGeneralNodos') {
           const datos: Datos<{ nodos: EstadoNodo[] }> = {
-            command: 'infoDataJson.command',
+            command: infoDataJson.command,
             data: { nodos: infoDataJson.nodos }
           }
           resolve(datos)
