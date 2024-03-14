@@ -1,45 +1,44 @@
 import { useEffect, useState } from 'react'
 import { ItemInfoData } from '../interfaces/item-info.interface'
 import { DatosMeteorologicos } from '../interfaces/datos-meteorologicos.interface'
-import { DatosSocket } from '../interfaces/datos-socket.interface'
+import { io, Socket } from 'socket.io-client'
+
+import {
+  ClientToServerEvents,
+  ServerToClientEvents
+} from '@renderer/lib/socket/interfaces/socket-client.interface'
 
 interface Props {
   data: ItemInfoData
 }
 
-export function ItemInfo({ data }: Props): JSX.Element {
-  const [datosMeteorologicos, setDatosMeteorologicos] = useState<DatosSocket<DatosMeteorologicos>>()
+const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io('/')
 
-  const fetchDatosMeteorologicos = async (): Promise<void> => {
-    const result = await window.api.invoke.getDatosMeteorologicosAsync()
-    setDatosMeteorologicos(result)
-  }
+export function ItemInfo({ data }: Props): JSX.Element {
+  const [datosMeteorologicos, setDatosMeteorologicos] = useState<DatosMeteorologicos>()
 
   const showData = (): string => {
     let resp = ''
     switch (data.title) {
       case 'Humedad':
-        resp =
-          datosMeteorologicos?.data.humedad !== undefined
-            ? datosMeteorologicos?.data.humedad + '%'
-            : '-'
+        resp = datosMeteorologicos?.humedad !== undefined ? datosMeteorologicos?.humedad + '%' : '-'
         break
       case 'Viento':
         resp =
-          datosMeteorologicos?.data.velViento !== undefined
-            ? datosMeteorologicos?.data.velViento + 'k/h'
+          datosMeteorologicos?.velViento !== undefined
+            ? datosMeteorologicos?.velViento + 'k/h'
             : '-'
         break
       case 'Temperatura':
         resp =
-          datosMeteorologicos?.data.temperatura !== undefined
-            ? datosMeteorologicos?.data.temperatura + '°'
+          datosMeteorologicos?.temperatura !== undefined
+            ? datosMeteorologicos?.temperatura + '°'
             : '-'
         break
       case 'Rocío':
         resp =
-          datosMeteorologicos?.data.puntoDeRocio !== undefined
-            ? datosMeteorologicos?.data.puntoDeRocio + '°'
+          datosMeteorologicos?.puntoDeRocio !== undefined
+            ? datosMeteorologicos?.puntoDeRocio + '°'
             : '-'
         break
     }
@@ -47,7 +46,7 @@ export function ItemInfo({ data }: Props): JSX.Element {
   }
 
   useEffect(() => {
-    fetchDatosMeteorologicos()
+    socket.on('getDatosMeteorologicos', (res) => setDatosMeteorologicos(res))
   }, [])
 
   return (

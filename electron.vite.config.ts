@@ -15,6 +15,14 @@ export default defineConfig({
         '@renderer': resolve('src/renderer/src')
       }
     },
-    plugins: [react()]
+    plugins: [react()],
+    server: {
+      proxy: {
+        '/socket.io': {
+          target: 'http://[::1]:3000',
+          ws: true
+        }
+      }
+    }
   }
 })

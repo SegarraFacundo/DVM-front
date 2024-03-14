@@ -2,7 +2,6 @@ import { electronAPI } from '@electron-toolkit/preload'
 import { contextBridge, createIpcRenderer, GetApiType } from 'electron-typescript-ipc'
 import { Operario } from '../main/api/operarios/operarios.store'
 import { TipoAplicacion } from '../main/api/tipos-aplicaciones/tipos-aplicaciones.store'
-import { Datos, DatosMeteorologicos, EstadoNodo } from '../main/api/socket/socket'
 import { ItemMenu } from '../main/api/menu/items-menu.store'
 import { ItemInfoData } from '../main/api/info/items-info.store'
 import { Lote } from '../main/api/lotes/lotes.store'
@@ -22,9 +21,6 @@ export type Api = GetApiType<
     getItemsMenuAsync: () => Promise<ItemMenu[]>
     getItemsInfoAsync: () => Promise<ItemInfoData[]>
     getNodosAsync: () => Promise<Nodo[]>
-    getDatosMeteorologicosAsync: () => Promise<Datos<DatosMeteorologicos>>
-    initTestingAsync: () => void
-    getStateNodoAsync: () => Promise<Datos<{ nodos: EstadoNodo[] }>>
     isThemeModeDark: () => Promise<boolean>
   },
   {}
@@ -61,15 +57,6 @@ const api: Api = {
     },
     getNodosAsync: async () => {
       return await ipcRenderer.invoke('getNodosAsync')
-    },
-    getDatosMeteorologicosAsync: async () => {
-      return await ipcRenderer.invoke('getDatosMeteorologicosAsync')
-    },
-    initTestingAsync: async () => {
-      await ipcRenderer.invoke('initTestingAsync')
-    },
-    getStateNodoAsync: async () => {
-      return await ipcRenderer.invoke('getStateNodoAsync')
     },
     isThemeModeDark: async () => {
       return await ipcRenderer.invoke('isThemeModeDark')

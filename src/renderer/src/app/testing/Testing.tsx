@@ -5,59 +5,52 @@ import { Dialog } from '../../ui/components/dialog/Dialog'
 import { useNavigate } from 'react-router-dom'
 import { useModal } from '../../ui/components/modal/hooks/UseModal'
 import { Nodo } from '../../ui/components/nodo/Nodo'
-import { NodoData } from '../../ui/components/nodo/interfaces/nodo-data'
 import { Button } from '../../ui/components/Button'
-import { EstadoNodoTest } from './interfaces/estado-nodo-test.interface'
-import { DatosSocket } from './interfaces/datos-socket.interface'
+import { Socket, io } from 'socket.io-client'
+import {
+  ClientToServerEvents,
+  ServerToClientEvents
+} from '@renderer/lib/socket/interfaces/socket-client.interface'
+import { NodoData } from '@renderer/ui/components/nodo/interfaces/nodo-data'
+
+const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io('/')
 
 export function Testing(): JSX.Element {
   const { setTitle } = useTitle()
   const [data, setData] = useState<NodoData[]>()
   const [percentageLoading, setPercentageLoading] = useState<number>(0)
-  const [stateNodoTest, setNodoTest] = useState<DatosSocket<{ nodos: EstadoNodoTest[] }>>()
   const navigate = useNavigate()
   const { getStateModal, addModal, toggleOpenedState } = useModal()
-
-  const fetchData = async (): Promise<void> => {
-    const result = await window.api.invoke.getNodosAsync()
-    const result2 = await window.api.invoke.getStateNodoAsync()
-    setNodoTest(result2)
-    setData(result)
-  }
+  const [nodos, setNodos] = useState<JSX.Element[]>([])
 
   useEffect(() => {
     addModal('repetir-testing')
-    fetchData()
-  }, [])
 
-  const nodos = data?.map((nodoData, i) => {
-    if (!stateNodoTest?.data.nodos[i]) {
-      return <></>
-    }
-    const data: NodoData = {
-      nodo: nodoData.nodo,
-      aspersores: nodoData.aspersores.map((a, indexAspersores) => ({
-        id: a.id,
-        estado:
-          stateNodoTest?.data.nodos[i][`state${indexAspersores + 1}`] === 0 ? 'normal' : 'error'
-      }))
-    }
-    return <Nodo key={i} data={data} />
-  })
+    socket.emit('testing')
+    setPercentageLoading(0)
 
-  useEffect(() => {
-    for (let index = 0; index < 100; index++) {
-      console.log(index)
+    for (let index = 1; index < 101; index++) {
       setTimeout(() => setPercentageLoading(index), index * 60)
     }
 
-    fetchData()
+    socket.on('getStateNodo', (nodos) => {
+      if (nodos) {
+        console.log('nodos: %j', nodos)
+        setData(nodos)
+        setNodos(
+          nodos.map((nodoData, i) => {
+            return <Nodo key={i} data={nodoData} />
+          })
+        )
+      }
+    })
     setTitle('Testeo de Aspersores')
   }, [])
 
   const modalClosed = (acept: boolean): void => {
     if (acept) {
-      navigate('/testing')
+      console.log('entro')
+      socket.emit('testing')
     }
   }
 

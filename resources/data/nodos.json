@@ -1,190 +1,204 @@
 [
   {
-    "nodo": "A",
+    "nombre": "A",
+    "id": 1025,
     "aspersores": [
       {
-        "id": "1",
-        "estado": "normal"
+        "id": 1,
+        "deshabilitado": true,
+        "estado": -1
       },
       {
-        "id": "2",
-        "estado": "warning"
+        "id": 2,
+        "estado": -1
       },
       {
-        "id": "3",
-        "estado": "error"
+        "id": 3,
+        "estado": -1
       },
       {
-        "id": "4",
-        "estado": ""
+        "id": 4,
+        "estado": -1
       }
     ]
   },
   {
-    "nodo": "B",
+    "nombre": "B",
+    "id": 1026,
+    "deshabilitado": true,
     "aspersores": [
       {
-        "id": "1",
-        "estado": "normal"
+        "id": 1,
+        "estado": -1
       },
       {
-        "id": "2",
-        "estado": "warning"
+        "id": 2,
+        "estado": -1
       },
       {
-        "id": "3",
-        "estado": "error"
+        "id": 3,
+        "estado": -1
       },
       {
-        "id": "4",
-        "estado": ""
+        "id": 4,
+        "estado": -1
       }
     ]
   },
   {
-    "nodo": "C",
+    "nombre": "C",
+    "id": 1027,
     "aspersores": [
       {
-        "id": "1",
-        "estado": "normal"
+        "id": 1,
+        "estado": -1
       },
       {
-        "id": "2",
-        "estado": "warning"
+        "id": 2,
+        "estado": -1
       },
       {
-        "id": "3",
-        "estado": "error"
+        "id": 3,
+        "estado": -1
       },
       {
-        "id": "4",
-        "estado": ""
+        "id": 4,
+        "estado": -1
       }
     ]
   },
   {
-    "nodo": "D",
+    "nombre": "D",
+    "id": 1028,
     "aspersores": [
       {
-        "id": "1",
-        "estado": "normal"
+        "id": 1,
+        "estado": -1
       },
       {
-        "id": "2",
-        "estado": "warning"
+        "id": 2,
+        "estado": -1
       },
       {
-        "id": "3",
-        "estado": "error"
+        "id": 3,
+        "estado": -1
       },
       {
-        "id": "4",
-        "estado": ""
+        "id": 4,
+        "estado": -1
       }
     ]
   },
   {
-    "nodo": "E",
+    "nombre": "E",
+    "id": 1029,
+    "deshabilitado": true,
     "aspersores": [
       {
-        "id": "1",
-        "estado": "normal"
+        "id": 1,
+        "estado": -1
       },
       {
-        "id": "2",
-        "estado": "warning"
+        "id": 2,
+        "estado": -1
       },
       {
-        "id": "3",
-        "estado": "error"
+        "id": 3,
+        "estado": -1
       },
       {
-        "id": "4",
-        "estado": ""
+        "id": 4,
+        "estado": -1
       }
     ]
   },
   {
-    "nodo": "F",
+    "nombre": "F",
+    "id": 1030,
     "aspersores": [
       {
-        "id": "1",
-        "estado": "normal"
+        "id": 1,
+        "estado": -1
       },
       {
-        "id": "2",
-        "estado": "warning"
+        "id": 2,
+        "estado": -1
       },
       {
-        "id": "3",
-        "estado": "error"
+        "id": 3,
+        "estado": -1
       },
       {
-        "id": "4",
-        "estado": ""
+        "id": 4,
+        "estado": -1
       }
     ]
   },
   {
-    "nodo": "G",
+    "nombre": "G",
+    "id": 1031,
     "aspersores": [
       {
-        "id": "1",
-        "estado": "normal"
+        "id": 1,
+        "estado": -1
       },
       {
-        "id": "2",
-        "estado": "warning"
+        "id": 2,
+        "estado": -1
       },
       {
-        "id": "3",
-        "estado": "error"
+        "id": 3,
+        "estado": -1
       },
       {
-        "id": "4",
-        "estado": ""
+        "id": 4,
+        "estado": -1
       }
     ]
   },
   {
-    "nodo": "H",
+    "nombre": "H",
+    "id": 1032,
     "aspersores": [
       {
-        "id": "1",
-        "estado": "normal"
+        "id": 1,
+        "estado": -1
       },
       {
-        "id": "2",
-        "estado": "warning"
+        "id": 2,
+        "estado": -1
       },
       {
-        "id": "3",
-        "estado": "error"
+        "id": 3,
+        "estado": -1
       },
       {
-        "id": "4",
-        "estado": ""
+        "id": 4,
+        "estado": -1
       }
     ]
   },
   {
-    "nodo": "I",
+    "nombre": "I",
+    "id": 1033,
     "aspersores": [
       {
-        "id": "1",
-        "estado": "normal"
+        "id": 1,
+        "estado": -1
       },
       {
-        "id": "2",
-        "estado": "warning"
+        "id": 2,
+        "estado": -1
       },
       {
-        "id": "3",
-        "estado": "error"
+        "id": 3,
+        "deshabilitado": true,
+        "estado": -1
       },
       {
-        "id": "4",
-        "estado": ""
+        "id": 4,
+        "deshabilitado": true,
+        "estado": -1
       }
     ]
   }

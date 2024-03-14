@@ -42,9 +42,9 @@ function Home() {
     }
   }
 
-  const modalClosed = async (acept: boolean): Promise<void> => {
+  const modalClosed = (acept: boolean): void => {
     if (acept) {
-      await window.api.invoke.initTestingAsync()
+      
       navigate('/testing')
     }
   }

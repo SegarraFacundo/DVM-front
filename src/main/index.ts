@@ -5,12 +5,11 @@ import icon from '../../resources/icon.png?asset'
 
 import { OperariosStore } from './api/operarios/operarios.store'
 import { TiposAplicacionesStore } from './api/tipos-aplicaciones/tipos-aplicaciones.store'
-import { datosMeteorologicosEmitAsync, getStateNodoAsync } from './api/socket/socket'
-import { datosTestingAsync } from './api/socket/socket'
 import { ItemsMenuStore } from './api/menu/items-menu.store'
 import { ItemsInfoStore } from './api/info/items-info.store'
 import { LotesStore } from './api/lotes/lotes.store'
 import { NodosStore } from './api/nodos/nodos.store'
+import './api/socket/socket'
 
 function createWindow(): void {
   // Create the browser window.
@@ -18,7 +17,7 @@ function createWindow(): void {
     width: 1280,
     height: 800,
     show: false,
-    frame: false,
+    frame: true,
     fullscreen: false,
     autoHideMenuBar: true,
     ...(process.platform === 'linux' ? { icon } : {}),
@@ -140,26 +139,17 @@ ipcMain.handle('getItemsInfoAsync', async () => {
   return await itemsInfoStore.all()
 })
 
-const nodosStore = NodosStore({
-  urlDataJson: 'nodos.json'
-})
+const nodosStore = NodosStore()
 
 ipcMain.handle('getNodosAsync', async () => {
   return await nodosStore.all()
 })
 
-ipcMain.handle('getDatosMeteorologicosAsync', async () => {
-  return await datosMeteorologicosEmitAsync()
-})
 
-ipcMain.handle('initTestingAsync', async () => {
-  return await datosTestingAsync()
-})
 
-ipcMain.handle('getStateNodoAsync', async () => {
-  return await getStateNodoAsync()
-})
+
 
 ipcMain.handle('isThemeModeDark', () => {
   return nativeTheme.shouldUseDarkColors
 })
+

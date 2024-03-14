@@ -1,23 +1,34 @@
 import { readFileSync } from 'fs'
 import path from 'path'
 
-interface Props {
-  urlDataJson: string
+export type EstadoAspersorType = -1 | 0 | 1 | 2 | 3 | 4
+export interface Aspersor {
+  id: 1 | 2 | 3 | 4
+  estado: EstadoAspersorType
+  deshabilitado?: boolean
 }
 
-interface Aspersor {
-  id: string
-  estado: 'normal' | 'warning' | 'error' | ''
+export interface EstadoNodo {
+  nodo: number
+  state1: EstadoAspersorType
+  state2: EstadoAspersorType
+  state3: EstadoAspersorType
+  state4: EstadoAspersorType
+  voltaje: number
 }
+
+export type NodoType = 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I'
 export interface Nodo {
-  nodo: 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I'
+  id: number
+  nombre: NodoType
+  deshabilitado?: boolean
   aspersores: Aspersor[]
 }
 
-
-export const NodosStore = ({ urlDataJson }: Props) => {
-  urlDataJson = path.join(__dirname, '../../resources/data/', `${urlDataJson}`)
+export const NodosStore = () => {
+  const urlDataJson = path.join(__dirname, '../../resources/data/nodos.json')
   return {
-    all: async (): Promise<Nodo[]> => JSON.parse(await readFileSync(urlDataJson).toString()) as Nodo[]
+    all: async (): Promise<Nodo[]> =>
+      JSON.parse(await readFileSync(urlDataJson).toString()) as Nodo[]
   }
 }

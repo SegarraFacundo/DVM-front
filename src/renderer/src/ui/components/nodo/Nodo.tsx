@@ -6,7 +6,11 @@ interface Props {
 }
 
 export function Nodo({ data }: Props): JSX.Element {
+  console.log('nodo: %j', data)
   const aspersores = data.aspersores.map(function (aspersorData, i) {
+    if (data.deshabilitado) {
+      aspersorData.deshabilitado = true
+    }
     return <Aspersor key={i} data={aspersorData} />
   })
 
@@ -14,7 +18,7 @@ export function Nodo({ data }: Props): JSX.Element {
     <section className="flex gap-8 bg-dark border-[1px] rounded-md border-[#A1A1A1] h-[140px] p-6 text-white shadow-2xl">
       <div className="flex flex-col justify-center items-center">
         <p className="text-[20px] font-bold">NODO</p>
-        <h2 className="text-[48px] font-bold">{data.nodo}</h2>
+        <h2 className="text-[48px] font-bold">{data.nombre}</h2>
       </div>
       <div className="flex flex-row justify-around w-full">{aspersores}</div>
     </section>
@@ -23,31 +27,37 @@ export function Nodo({ data }: Props): JSX.Element {
 
 interface PropsAspersor {
   data: AspersorData
+  animacion: boolean
 }
 
-function Aspersor ({ data }: PropsAspersor): JSX.Element {
+function Aspersor({ data, animacion = true }: PropsAspersor): JSX.Element {
   const [color, setColor] = useState<string>('')
   const [speed, setSpeed] = useState<string>('animate-[spin_8s_linear_infinite]')
 
+  console.log('aspersor: %j', data)
+
   useEffect(() => {
-    switch (data.estado) {
-      case 'normal':
-        setColor('#32CF9C')
-        setSpeed('animate-[spin_0s_linear_infinite]')
-        break
-      case 'warning':
-        setColor('#FFC107')
-        setSpeed('animate-[spin_0s_linear_infinite]')
-        break
-      case 'error':
-        setColor('#DC3545')
-        setSpeed('animate-[spin_0s_linear_infinite]')
-        break
-      case '':
-        setColor('#696767')
-        setSpeed('animate-[spin_0s_linear_infinite]')
+    if (data.deshabilitado) {
+      data.estado = -1
     }
-  }, [])
+    switch (data.estado) {
+      case 0: // Ok
+        setColor('#32CF9C')
+        if (animacion) setSpeed('animate-[spin_8s_linear_infinite]')
+        break
+
+      case 1:
+      case 2:
+      case 3:
+      case 4:
+        setColor('#DC3545')
+        if (animacion) setSpeed('animate-[spin_16s_linear_infinite]')
+        break
+      case -1: // Deshabilitado
+        setColor('#696767')
+        break
+    }
+  }, [data])
 
   return (
     <div className="flex flex-col items-center">
