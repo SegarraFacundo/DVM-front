@@ -11,13 +11,11 @@ import {
   ClientToServerEvents,
   ServerToClientEvents
 } from '@renderer/lib/socket/interfaces/socket-client.interface'
-import { NodoData } from '@renderer/ui/components/nodo/interfaces/nodo-data'
 
 const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io('/')
 
 export function Testing(): JSX.Element {
   const { setTitle } = useTitle()
-  const [data, setData] = useState<NodoData[]>()
   const [percentageLoading, setPercentageLoading] = useState<number>(0)
   const navigate = useNavigate()
   const { getStateModal, addModal, toggleOpenedState } = useModal()
@@ -35,8 +33,6 @@ export function Testing(): JSX.Element {
 
     socket.on('getStateNodo', (nodos) => {
       if (nodos) {
-        console.log('nodos: %j', nodos)
-        setData(nodos)
         setNodos(
           nodos.map((nodoData, i) => {
             return <Nodo key={i} data={nodoData} />

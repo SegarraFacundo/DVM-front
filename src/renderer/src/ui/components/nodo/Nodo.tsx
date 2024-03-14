@@ -27,7 +27,7 @@ export function Nodo({ data }: Props): JSX.Element {
 
 interface PropsAspersor {
   data: AspersorData
-  animacion: boolean
+  animacion?: boolean
 }
 
 function Aspersor({ data, animacion = true }: PropsAspersor): JSX.Element {
