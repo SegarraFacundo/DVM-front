@@ -8,7 +8,7 @@ import { TiposAplicacionesStore } from './api/tipos-aplicaciones/tipos-aplicacio
 import { ItemsMenuStore } from './api/menu/items-menu.store'
 import { ItemsInfoStore } from './api/info/items-info.store'
 import { LotesStore } from './api/lotes/lotes.store'
-import { NodosStore } from './api/nodos/nodos.store'
+import * as shutdown from 'electron-shutdown-command'
 import './api/socket/socket'
 
 function createWindow(): void {
@@ -139,13 +139,9 @@ ipcMain.handle('getItemsInfoAsync', async () => {
   return await itemsInfoStore.all()
 })
 
-const nodosStore = NodosStore()
-
-ipcMain.handle('getNodosAsync', async () => {
-  return await nodosStore.all()
+ipcMain.handle('apagarDispositivo', () => {
+  shutdown.shutdown()
 })
-
-
 
 
 

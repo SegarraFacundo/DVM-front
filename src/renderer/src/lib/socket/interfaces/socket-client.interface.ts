@@ -3,6 +3,8 @@ import { NodoData } from "@renderer/ui/components/nodo/interfaces/nodo-data"
 
 export interface ClientToServerEvents {
   testing: () => Promise<boolean>
+  startJob: (rpm: number) => void
+  stopJob: () => void
 }
 
 export interface ServerToClientEvents {

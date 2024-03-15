@@ -38,7 +38,6 @@ export function FormInitial({ close, acept, props }: Props): JSX.Element {
   }
 
   useEffect(() => {
-    console.log('props', props)
     fetchOperarios()
     fetchLotes()
     fetchTiposAplicaciones()

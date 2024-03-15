@@ -1,21 +1,39 @@
 import { useEffect, useState } from 'react'
 import { AspersorData, NodoData } from './interfaces/nodo-data'
+import clsx from 'clsx'
 
 interface Props {
   data: NodoData
+  animacion?: boolean
 }
 
-export function Nodo({ data }: Props): JSX.Element {
-  console.log('nodo: %j', data)
-  const aspersores = data.aspersores.map(function (aspersorData, i) {
+export function Nodo({ data, animacion = false }: Props): JSX.Element {
+  let aspersores = data.aspersores.map(function (aspersorData, i) {
     if (data.deshabilitado) {
       aspersorData.deshabilitado = true
     }
-    return <Aspersor key={i} data={aspersorData} />
+    return <Aspersor key={i} data={aspersorData} animacion={animacion} />
   })
 
+  useEffect(() => {
+    aspersores = data.aspersores.map(function (aspersorData, i) {
+      if (data.deshabilitado) {
+        aspersorData.deshabilitado = true
+      }
+      return <Aspersor key={i} data={aspersorData} animacion={animacion} />
+    })
+  }, [data, animacion])
+  
   return (
-    <section className="flex gap-8 bg-dark border-[1px] rounded-md border-[#A1A1A1] h-[140px] p-6 text-white shadow-2xl">
+    <section
+      className={clsx(
+        'flex gap-8 bg-dark border-[1px] rounded-md border-[#A1A1A1] h-[140px] p-6 text-white shadow-2xl',
+        {
+          'bg-opacity-5': data.deshabilitado,
+          'text-gray-600': data.deshabilitado
+        }
+      )}
+    >
       <div className="flex flex-col justify-center items-center">
         <p className="text-[20px] font-bold">NODO</p>
         <h2 className="text-[48px] font-bold">{data.nombre}</h2>
@@ -30,11 +48,9 @@ interface PropsAspersor {
   animacion?: boolean
 }
 
-function Aspersor({ data, animacion = true }: PropsAspersor): JSX.Element {
+function Aspersor({ data, animacion = false }: PropsAspersor): JSX.Element {
   const [color, setColor] = useState<string>('')
   const [speed, setSpeed] = useState<string>('animate-[spin_8s_linear_infinite]')
-
-  console.log('aspersor: %j', data)
 
   useEffect(() => {
     if (data.deshabilitado) {
@@ -43,21 +59,22 @@ function Aspersor({ data, animacion = true }: PropsAspersor): JSX.Element {
     switch (data.estado) {
       case 0: // Ok
         setColor('#32CF9C')
-        if (animacion) setSpeed('animate-[spin_8s_linear_infinite]')
+        if (animacion) setSpeed('animate-[spin_20s_linear_infinite]')
+        else setSpeed('animate-[spin_0s_linear_infinite]')
         break
-
       case 1:
       case 2:
       case 3:
       case 4:
         setColor('#DC3545')
-        if (animacion) setSpeed('animate-[spin_16s_linear_infinite]')
+        setSpeed('animate-[spin_0s_linear_infinite]')
         break
       case -1: // Deshabilitado
         setColor('#696767')
+        setSpeed('animate-[spin_0s_linear_infinite]')
         break
     }
-  }, [data])
+  }, [data, animacion])
 
   return (
     <div className="flex flex-col items-center">

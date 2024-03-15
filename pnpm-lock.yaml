@@ -14,6 +14,9 @@ dependencies:
   clsx:
     specifier: ^2.1.0
     version: 2.1.0
+  electron-shutdown-command:
+    specifier: ^2.0.1
+    version: 2.0.1
   electron-updater:
     specifier: ^6.1.7
     version: 6.1.7
@@ -2209,6 +2212,10 @@ packages:
     transitivePeerDependencies:
       - supports-color
     dev: true
+
+  /electron-shutdown-command@2.0.1:
+    resolution: {integrity: sha512-u8fpVGBpKGv0u7c7uAodUWzjF37+FbOeWBxr3vNO/DKt3KISFT48/UIfu/7smTHluCwrWvjwUXLkrZTA8pWPtg==}
+    dev: false
 
   /electron-to-chromium@1.4.665:
     resolution: {integrity: sha512-UpyCWObBoD+nSZgOC2ToaIdZB0r9GhqT2WahPKiSki6ckkSuKhQNso8V2PrFcHBMleI/eqbKgVQgVC4Wni4ilw==}

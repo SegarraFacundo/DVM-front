@@ -14,7 +14,7 @@ interface Props<T> {
   modalContentProps?: T
   crossClose?: boolean
   outsideClose?: boolean
-  closed: (acept: boolean) => void
+  closed: (idModal: string, acept: boolean) => void
 }
 
 export function Modal<T>({
@@ -27,18 +27,18 @@ export function Modal<T>({
   const { toggleOpenedState, getStateModal } = useModal()
 
   const onClickOutside = () => {
-    closed(false)
+    closed(idModal, false)
     if (outsideClose !== true) return
     toggleOpenedState(idModal)
   }
 
   const onEventClose = () => {
-    closed(false)
+    closed(idModal, false)
     toggleOpenedState(idModal)
   }
 
   const onEventAcept = () => {
-    closed(true)
+    closed(idModal, true)
     toggleOpenedState(idModal)
   }
 

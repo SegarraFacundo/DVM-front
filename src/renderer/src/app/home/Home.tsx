@@ -42,7 +42,7 @@ function Home() {
     }
   }
 
-  const modalClosed = (acept: boolean): void => {
+  const modalClosed = (idModal: string, acept: boolean): void => {
     if (acept) {
       
       navigate('/testing')
@@ -74,8 +74,8 @@ function Home() {
           idModal="init-testing"
           ModalContent={Dialog}
           modalContentProps={{
-            title: 'Iniciar Testeo',
-            message: '¿Confirma iniciar el testeo de los aspersores?',
+            title: 'Importante',
+            message: 'Las condiciones meteorológicas actuales no son <br /> las adecuadas para continuar con el trabajo <br /><br /> Al aceptar se iniciará el testeo de los aspersores',
             type: 'warning'
           }}
           closed={modalClosed}

@@ -22,7 +22,7 @@ export function Button({
     <button
       onClick={onClick}
       disabled={disabled}
-      className={clsx('text-[17px] font-roboto text-[#1C2E3D] rounded-md', {
+      className={clsx('text-[17px] font-roboto text-[#1C2E3D] rounded-md whitespace-nowrap', {
         'w-full': maxWith,
         'px-[15px] py-[7px]': size === 'sm',
         'px-[25px] py-[14px]': size === 'md',
