@@ -1,7 +1,7 @@
 import { readFileSync, writeFileSync } from 'fs'
 import path from 'path'
 
-export type EstadoAspersorType = -1 | 0 | 1 | 2 | 3 | 4
+export type EstadoAspersorType = -1 | 0 | 1 | 2 | 3 | 4 | 5
 export interface Aspersor {
   id: 1 | 2 | 3 | 4
   estado: EstadoAspersorType

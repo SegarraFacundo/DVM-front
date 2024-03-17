@@ -7,7 +7,6 @@ import { useCarga } from './hooks/useCarga'
 import { InfoLogin } from './InfoLogin'
 import { useFormInitial } from '@renderer/app/home/components/form-initial/hooks/UseFormInitial'
 
-
 interface Props {
   children: ReactNode
 }

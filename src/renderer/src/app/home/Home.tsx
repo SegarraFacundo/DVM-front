@@ -9,6 +9,7 @@ import { useModal } from '../../ui/components/modal/hooks/UseModal'
 import { Dialog } from '../../ui/components/dialog/Dialog'
 import { useNavigate } from 'react-router-dom'
 import { useFormInitial } from './components/form-initial/hooks/UseFormInitial'
+import { Button } from '@renderer/ui/components/Button'
 
 function Home() {
   const navigate = useNavigate()
@@ -58,14 +59,9 @@ function Home() {
         </section>
       </section>
       <section className="self-end">
-        <button
-          onClick={handleClick}
-          className={clsx('bg-success text-[24px] font-roboto text-[#1C2E3D] w-[271px] h-[82px]', {
-            'bg-success/50': !isValid
-          })}
-        >
+        <Button onClick={handleClick} type='success' size='lg' disabled={!isValid}>
           Iniciar Testing
-        </button>
+        </Button>
         <Modal<{
           title: string
           message: string

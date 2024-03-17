@@ -52,13 +52,12 @@ import {
 //     corr4 : 500,
 //     rpm1 : 3.1,
 //     rpm2 : 3.2,
-//     rpm3 : 3.3,
-//     rpm4 : 6.2,
+//     rpm3 : 3.3,//     rpm4 : 6.2,
 //     voltaje : 12.8
 // }
 
 interface ClientToServerEvents {
-  testing: () => Promise<boolean>
+  testing: () => void
   startJob: (rpm: number) => void
   stopJob: () => void
 }
@@ -77,7 +76,7 @@ const io = new ServerSocket<ClientToServerEvents, ServerToClientEvents>(httpServ
 })
 
 const client = new net.Socket()
-client.connect({ port: 8080, host: '127.0.0.1' })
+if (process.env.NODE_ENV !== 'development') client.connect({ port: 8080, host: '192.168.1.62' })
 
 export interface DatosMeteorologicos {
   humedad: number | null
@@ -115,7 +114,7 @@ const getRandomArbitrary = (
 //     rpm4 : 0,
 // }
 
-const startJobAsync = async (nodo: Nodo): Promise<boolean> => {
+const startJob = (nodo: Nodo): boolean => {
   const send = {
     command: 'normal',
     nodo: nodo.id,
@@ -124,15 +123,19 @@ const startJobAsync = async (nodo: Nodo): Promise<boolean> => {
     rpm3: nodo.deshabilitado || nodo.aspersores[2].deshabilitado ? 0 : nodo.aspersores[2].rpm ?? 0,
     rpm4: nodo.deshabilitado || nodo.aspersores[3].deshabilitado ? 0 : nodo.aspersores[3].rpm ?? 0
   }
+  if (nodo.deshabilitado) {
+    return false
+  }
+  console.log('send normal: %j', send)
   return client.write(Buffer.from(JSON.stringify(send)))
 }
 
-const startTestingAsync = async (socket): Promise<boolean> => {
+const startTestingAsync = async (socket): Promise<void> => {
   const nodosStore = NodosStore()
   const nodos = await nodosStore.all()
   const send = {
     command: 'testing',
-    nodos: [nodos.filter((n) => !n.deshabilitado).map((n) => n.id)]
+    nodos: nodos.filter((n) => !n.deshabilitado).map((n) => n.id)
   }
   if (process.env.NODE_ENV === 'development') {
     let estadosNodosTesting: EstadoNodoTesting[]
@@ -142,10 +145,10 @@ const startTestingAsync = async (socket): Promise<boolean> => {
       .map<EstadoNodoTesting>((n) => ({
         command: 'testing',
         nodo: n.id,
-        state1: getRandomArbitrary(0, 4, 0) as EstadoAspersorType,
-        state2: getRandomArbitrary(0, 4, 0) as EstadoAspersorType,
-        state3: getRandomArbitrary(0, 4, 0) as EstadoAspersorType,
-        state4: getRandomArbitrary(0, 4, 0) as EstadoAspersorType,
+        state1: getRandomArbitrary(0, 5, 0) as EstadoAspersorType,
+        state2: getRandomArbitrary(0, 5, 0) as EstadoAspersorType,
+        state3: getRandomArbitrary(0, 5, 0) as EstadoAspersorType,
+        state4: getRandomArbitrary(0, 5, 0) as EstadoAspersorType,
         voltaje: getRandomArbitrary(0, 20)
       }))
 
@@ -180,8 +183,9 @@ const startTestingAsync = async (socket): Promise<boolean> => {
       }
     })
     socket.emit('getStateNodo', datos)
+  } else {
+    client.write(Buffer.from(JSON.stringify(send)))
   }
-  return client.write(Buffer.from(JSON.stringify(send)))
 }
 
 client.on('error', function (err) {
@@ -196,7 +200,7 @@ io.on('connection', async (socket) => {
   let runningJob = false
   const nodosStore = NodosStore()
   socket.on('testing', () => {
-    return startTestingAsync(socket)
+    startTestingAsync(socket)
   })
 
   socket.on('startJob', async (rpm: number) => {
@@ -204,14 +208,14 @@ io.on('connection', async (socket) => {
     listenJob()
     await nodosStore.startAllNodo(rpm)
     let nodos = await nodosStore.all()
-    nodos.forEach((n) => startJobAsync(n))
+    nodos.forEach((n) => startJob(n))
   })
 
   socket.on('stopJob', async () => {
     runningJob = false
     await nodosStore.stopAllNodos()
     let nodos = await nodosStore.all()
-    nodos.forEach((n) => startJobAsync(n))
+    nodos.forEach((n) => startJob(n))
   })
 
   let estadosNodosJob: EstadoNodoJob[]
@@ -230,10 +234,10 @@ io.on('connection', async (socket) => {
           .map<EstadoNodoJob>((n) => ({
             command: 'estadoGeneralNodo',
             nodo: n.id,
-            state1: getRandomArbitrary(0, 4, 0) as EstadoAspersorType,
-            state2: getRandomArbitrary(0, 4, 0) as EstadoAspersorType,
-            state3: getRandomArbitrary(0, 4, 0) as EstadoAspersorType,
-            state4: getRandomArbitrary(0, 4, 0) as EstadoAspersorType,
+            state1: getRandomArbitrary(0, 5, 0) as EstadoAspersorType,
+            state2: getRandomArbitrary(0, 5, 0) as EstadoAspersorType,
+            state3: getRandomArbitrary(0, 5, 0) as EstadoAspersorType,
+            state4: getRandomArbitrary(0, 5, 0) as EstadoAspersorType,
             voltaje: getRandomArbitrary(0, 20, 2),
             corr1: getRandomArbitrary(0, 9, 2),
             corr2: getRandomArbitrary(0, 9, 2),
@@ -295,6 +299,9 @@ io.on('connection', async (socket) => {
       }, 5000)
     } else {
       client.on('data', async (data) => {
+        if (!runningJob) {
+          return
+        }
         const nodos = await nodosStore.all()
         const infoData = data?.toString('utf-8')
         if (isJsonString(infoData)) {
@@ -358,7 +365,7 @@ io.on('connection', async (socket) => {
       socket.emit('getDatosMeteorologicos', datos)
     }, 5000)
   } else {
-    client.on('data', (data) => {
+    client.on('data', async (data) => {
       const infoData = data?.toString('utf-8')
       if (isJsonString(infoData)) {
         const infoDataJson = JSON.parse(infoData)
@@ -367,6 +374,49 @@ io.on('connection', async (socket) => {
             ...(infoDataJson as DatosMeteorologicos)
           }
           socket.emit('getDatosMeteorologicos', datos)
+        }
+        if (infoDataJson && infoDataJson.command === 'estadoGeneralNodos') {
+          estadosNodosJob = infoDataJson.nodos
+          const nodos = await nodosStore.all()
+          const datos: Nodo[] = nodos.map((n) => {
+            const estadoNodo = estadosNodosJob.find((ean) => n.id === ean.nodo)
+            return {
+              id: n.id,
+              nombre: n.nombre,
+              deshabilitado: n.deshabilitado ?? false,
+              aspersores: [
+                {
+                  id: 1,
+                  estado: estadoNodo?.state1 ?? -1,
+                  rpm: estadoNodo?.rpm1,
+                  rpmDeseado: n.aspersores.find((a) => a.id === 1)?.rpmDeseado,
+                  deshabilitado: n.aspersores.find((a) => a.id === 1)?.deshabilitado ?? false
+                },
+                {
+                  id: 2,
+                  estado: estadoNodo?.state2 ?? -1,
+                  rpm: estadoNodo?.rpm2,
+                  rpmDeseado: n.aspersores.find((a) => a.id === 2)?.rpmDeseado,
+                  deshabilitado: n.aspersores.find((a) => a.id === 2)?.deshabilitado ?? false
+                },
+                {
+                  id: 3,
+                  estado: estadoNodo?.state3 ?? -1,
+                  rpm: estadoNodo?.rpm3,
+                  rpmDeseado: n.aspersores.find((a) => a.id === 3)?.rpmDeseado,
+                  deshabilitado: n.aspersores.find((a) => a.id === 3)?.deshabilitado ?? false
+                },
+                {
+                  id: 4,
+                  estado: estadoNodo?.state4 ?? -1,
+                  rpm: estadoNodo?.rpm4,
+                  rpmDeseado: n.aspersores.find((a) => a.id === 4)?.rpmDeseado,
+                  deshabilitado: n.aspersores.find((a) => a.id === 4)?.deshabilitado ?? false
+                }
+              ]
+            }
+          })
+          socket.emit('getStateNodo', datos)
         }
       }
     })

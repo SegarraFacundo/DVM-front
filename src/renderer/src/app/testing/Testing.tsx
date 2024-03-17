@@ -21,18 +21,15 @@ export function Testing(): JSX.Element {
   const { getStateModal, addModal, toggleOpenedState } = useModal()
   const [nodos, setNodos] = useState<JSX.Element[]>([])
 
-  const startTesting = () => {
+  useEffect(() => {
+    addModal('repetir-testing')
+
     socket.emit('testing')
     setPercentageLoading(0)
 
     for (let index = 1; index < 101; index++) {
       setTimeout(() => setPercentageLoading(index), index * 30)
     }
-  }
-  useEffect(() => {
-    addModal('repetir-testing')
-
-    startTesting()
 
     socket.on('getStateNodo', (nodos) => {
       if (nodos) {
@@ -48,7 +45,12 @@ export function Testing(): JSX.Element {
 
   const modalClosed = (idModal: string, acept: boolean): void => {
     if (acept) {
-      startTesting()
+      socket.emit('testing')
+      setPercentageLoading(0)
+
+      for (let index = 1; index < 101; index++) {
+        setTimeout(() => setPercentageLoading(index), index * 30)
+      }
     }
   }
 
@@ -59,7 +61,7 @@ export function Testing(): JSX.Element {
 
   const handleIniciarTrabajoClick = (): void => {
     navigate('/trabajo', {
-      state: nodos.map(n => n.props['data'])
+      state: nodos.map((n) => n.props['data'])
     })
   }
   return (

@@ -8,14 +8,14 @@ import { Nodo } from '../../ui/components/nodo/Nodo'
 import { TipoGota } from './components/TipoGota'
 import { Button } from '../../ui/components/Button'
 import { useTipoGota } from './hooks/useTipoGota'
-import { EstadoAspersores } from './components/EstadoAspersores'
 import { Socket, io } from 'socket.io-client'
 import {
   ClientToServerEvents,
   ServerToClientEvents
 } from '@renderer/lib/socket/interfaces/socket-client.interface'
-import clsx from 'clsx'
 import { Dialog } from '@renderer/ui/components/dialog/Dialog'
+import { PanelLateralDerecha } from './components/PanelLateralDerecha'
+import { PanelLateralIzquierdo } from './components/PanelLateralIzquierdo'
 
 const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io('/')
 
@@ -25,23 +25,9 @@ export function Trabajo(): JSX.Element {
   const { getStateModal, addModal, toggleOpenedState } = useModal()
   const { tipoGotaseleccionada } = useTipoGota()
   const [nodos, setNodos] = useState<JSX.Element[]>([])
-  const [percentageLoading, setPercentageLoading] = useState<number>(0)
   const [runningJob, setRunningJob] = useState<boolean>(false)
   const { state } = useLocation()
   const [direccionViento, setDireccionViento] = useState<number>(0)
-
-  const startJob = () => {
-    socket.emit('startJob', 200)
-    setPercentageLoading(0)
-
-    for (let index = 1; index < 101; index++) {
-      setTimeout(() => setPercentageLoading(index), index * 30)
-    }
-  }
-
-  const stopJob = () => {
-    socket.emit('stopJob')
-  }
 
   useEffect(() => {
     if (state && state.length > 0)
@@ -53,13 +39,32 @@ export function Trabajo(): JSX.Element {
   }, [state])
 
   useEffect(() => {
+    if (!runningJob) {
+      socket.emit('stopJob')
+      setNodos(
+        nodos.map((nodo, i) => {
+          return <Nodo key={i} data={nodo.props['data']} animacion={false} />
+        })
+      )
+    } else {
+      socket.emit('startJob', 3500)
+      socket.on('getStateNodo', (nodos) => {
+        if (nodos) {
+          setNodos(
+            nodos.map((nodoData, i) => {
+              return <Nodo key={i} data={nodoData} animacion={true} />
+            })
+          )
+        }
+      })
+    }
+  }, [runningJob])
+
+  useEffect(() => {
     addModal('tipo-gota')
     addModal('init-job')
     addModal('end-job')
     setTitle('Trabajo')
-  }, [])
-
-  useEffect(() => {
     socket.on('getDatosMeteorologicos', (res) => setDireccionViento(res.dirViento ?? 0))
   }, [])
 
@@ -76,7 +81,7 @@ export function Trabajo(): JSX.Element {
   }
 
   const finalizarTrabajoClick = () => {
-    stopJob()
+    socket.emit('stopJob')
     navigate('/reportes')
   }
 
@@ -86,43 +91,12 @@ export function Trabajo(): JSX.Element {
   }
 
   const iniciarOPausarTrabajoClick = () => {
-    if (runningJob) {
-      setNodos(
-        nodos.map((nodoElement, i) => {
-          return <Nodo key={i} data={nodoElement.props['data']} animacion={false} />
-        })
-      )
-      stopJob()
-    } else {
-      startJob()
-      setRunningJob(true)
-      socket.on('getStateNodo', (nodos) => {
-        if (nodos) {
-          setNodos(
-            nodos.map((nodoData, i) => {
-              return <Nodo key={i} data={nodoData} animacion={true} />
-            })
-          )
-        }
-      })
-    }
     setRunningJob(!runningJob)
   }
 
   return (
     <article className="w-full grid grid-cols-1 gap-10 h-[100%] px-20 py-16">
       <section className="grid grid-cols-3 gap-4 w-full">{nodos}</section>
-      {nodos.length === 0 && (
-        <section className="flex flex-col gap-2 content-center items-center justify-between">
-          <div className="w-full border-2 border-white bg-transparent p-1 rounded-md">
-            <div className="bg-white h-2 rounded-sm" style={{ width: percentageLoading + '%' }} />
-          </div>
-
-          <div className="w-full flex justify-end">
-            <p className="text-[20px] text-white font-medium">TRABAJO {percentageLoading}%</p>
-          </div>
-        </section>
-      )}
       <section className="grid grid-cols-4 gap-4 w-full">
         <div className="w-full grid grid-cols-3 gap-2">
           <div className="col-span-3">
@@ -274,7 +248,12 @@ export function Trabajo(): JSX.Element {
             crossClose
             outsideClose
           />
-          <Button onClick={() => openModal('init-job')} type={runningJob? 'warning': 'success'} size="lg" disabled={!tipoGotaseleccionada}>
+          <Button
+            onClick={() => openModal('init-job')}
+            type={runningJob ? 'warning' : 'success'}
+            size="lg"
+            disabled={!tipoGotaseleccionada}
+          >
             {!runningJob ? 'Iniciar Trabajo' : 'Pausar'}
           </Button>
           <Modal<{
@@ -297,6 +276,8 @@ export function Trabajo(): JSX.Element {
           />
         </div>
       </section>
+      <PanelLateralIzquierdo />
+      <PanelLateralDerecha />
     </article>
   )
 }

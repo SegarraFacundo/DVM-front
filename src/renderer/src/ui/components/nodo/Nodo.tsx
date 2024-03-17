@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react'
 import { AspersorData, NodoData } from './interfaces/nodo-data'
 import clsx from 'clsx'
+import { Modal } from '../modal/Modal'
+import { DetailNodo } from './components/DetailNodo'
+import { useModal } from '../modal/hooks/UseModal'
 
 interface Props {
   data: NodoData
@@ -8,6 +11,8 @@ interface Props {
 }
 
 export function Nodo({ data, animacion = false }: Props): JSX.Element {
+  const { getStateModal, addModal, toggleOpenedState } = useModal()
+
   let aspersores = data.aspersores.map(function (aspersorData, i) {
     if (data.deshabilitado) {
       aspersorData.deshabilitado = true
@@ -23,7 +28,21 @@ export function Nodo({ data, animacion = false }: Props): JSX.Element {
       return <Aspersor key={i} data={aspersorData} animacion={animacion} />
     })
   }, [data, animacion])
-  
+
+  useEffect(() => {
+    addModal('detail-nodo')
+  }, [])
+
+  const handleClickNodo = () => {
+    if (!getStateModal('detail-nodo')) toggleOpenedState('detail-nodo')
+  }
+
+  const modalClosed = (idModal: string, acept: boolean): void => {
+    if (acept) {
+      if (!getStateModal(idModal)) toggleOpenedState(idModal)
+    }
+  }
+
   return (
     <section
       className={clsx(
@@ -33,7 +52,16 @@ export function Nodo({ data, animacion = false }: Props): JSX.Element {
           'text-gray-600': data.deshabilitado
         }
       )}
+      onClick={handleClickNodo}
     >
+      <Modal<undefined>
+        idModal="detail-nodo"
+        ModalContent={DetailNodo}
+        modalContentProps={undefined}
+        closed={modalClosed}
+        crossClose
+        outsideClose
+      />
       <div className="flex flex-col justify-center items-center">
         <p className="text-[20px] font-bold">NODO</p>
         <h2 className="text-[48px] font-bold">{data.nombre}</h2>
@@ -66,6 +94,7 @@ function Aspersor({ data, animacion = false }: PropsAspersor): JSX.Element {
       case 2:
       case 3:
       case 4:
+      case 5:
         setColor('#DC3545')
         setSpeed('animate-[spin_0s_linear_infinite]')
         break
