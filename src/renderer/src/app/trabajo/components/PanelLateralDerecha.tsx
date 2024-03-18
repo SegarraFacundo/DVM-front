@@ -1,14 +1,25 @@
 import clsx from 'clsx'
 import { useToggle } from '../../../ui/hooks/useToggle'
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import { Socket, io } from 'socket.io-client'
+import {
+  ClientToServerEvents,
+  ServerToClientEvents
+} from '@renderer/lib/socket/interfaces/socket-client.interface'
+import { DatosMeteorologicos } from '@renderer/app/home/interfaces/datos-meteorologicos.interface'
+
+const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io('/')
 
 export function PanelLateralDerecha() {
   const { getStateToggle, addToggle, toggleOpenedState } = useToggle()
   const divContenidoRef = useRef<HTMLDivElement>(null)
   const divPestaniaRef = useRef<HTMLDivElement>(null)
+  const [datosMeteorologicos, setDatosMeteorologicos] = useState<DatosMeteorologicos>()
 
   useEffect(() => {
     addToggle('panel-lateral-derecha')
+
+    socket.on('getDatosMeteorologicos', (res) => setDatosMeteorologicos(res))
 
     const closeClick = (e: Event) => {
       if (
@@ -100,7 +111,10 @@ export function PanelLateralDerecha() {
             </svg>
 
             <h1 className="text-[48px]">
-              00°<span className="text-[20px]">C</span>
+              {datosMeteorologicos?.temperatura !== undefined
+                ? datosMeteorologicos?.temperatura
+                : '-'}
+              °<span className="text-[20px]">C</span>
             </h1>
           </div>
         </div>
@@ -108,14 +122,21 @@ export function PanelLateralDerecha() {
           <div className="border-[1px] border-white w-full h-[122px] rounded-lg p-3 flex flex-col">
             <p className="text-success text-[16px] font-bold">Rocío</p>
             <div className="text-white font-bold flex justify-center align-baseline">
-              <h1 className="text-[48px]">00</h1>
+              <h1 className="text-[48px]">
+                {datosMeteorologicos?.puntoDeRocio !== undefined
+                  ? datosMeteorologicos?.puntoDeRocio
+                  : '-'}
+              </h1>
             </div>
           </div>
           <div className="border-[1px] border-white w-full h-[122px] rounded-lg p-3 flex flex-col">
             <p className="text-success text-[16px] font-bold">Viento</p>
             <div className="text-white font-bold flex justify-center align-baseline">
               <h1 className="text-[48px]">
-                00<span className="text-[20px]">Km/h</span>
+                {datosMeteorologicos?.velViento !== undefined
+                  ? datosMeteorologicos?.velViento
+                  : '-'}
+                <span className="text-[20px]">Km/h</span>
               </h1>
             </div>
           </div>
@@ -125,7 +146,8 @@ export function PanelLateralDerecha() {
             <p className="text-success text-[16px] font-bold">Humedad</p>
             <div className="text-white font-bold flex justify-center align-baseline">
               <h1 className="text-[48px]">
-                00<span className="text-[20px]">%</span>
+                {datosMeteorologicos?.humedad !== undefined ? datosMeteorologicos?.humedad : '-'}
+                <span className="text-[20px]">%</span>
               </h1>
             </div>
           </div>

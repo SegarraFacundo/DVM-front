@@ -12,17 +12,19 @@ interface Props {
 
 export function Nodo({ data, animacion = false }: Props): JSX.Element {
   const { getStateModal, addModal, toggleOpenedState } = useModal()
+  const [nodoData, setNodoData] = useState<NodoData>(data)
 
-  let aspersores = data.aspersores.map(function (aspersorData, i) {
-    if (data.deshabilitado) {
+  let aspersores = nodoData.aspersores.map(function (aspersorData, i) {
+    if (nodoData.deshabilitado) {
       aspersorData.deshabilitado = true
     }
     return <Aspersor key={i} data={aspersorData} animacion={animacion} />
   })
 
   useEffect(() => {
-    aspersores = data.aspersores.map(function (aspersorData, i) {
-      if (data.deshabilitado) {
+    setNodoData(data)
+    aspersores = nodoData.aspersores.map(function (aspersorData, i) {
+      if (nodoData.deshabilitado) {
         aspersorData.deshabilitado = true
       }
       return <Aspersor key={i} data={aspersorData} animacion={animacion} />
@@ -30,11 +32,12 @@ export function Nodo({ data, animacion = false }: Props): JSX.Element {
   }, [data, animacion])
 
   useEffect(() => {
-    addModal('detail-nodo')
-  }, [])
+    addModal(`detail-nodo-${nodoData.nombre}`)
+  }, [data])
 
   const handleClickNodo = () => {
-    if (!getStateModal('detail-nodo')) toggleOpenedState('detail-nodo')
+    if (!getStateModal(`detail-nodo-${nodoData.nombre}`))
+      toggleOpenedState(`detail-nodo-${nodoData.nombre}`)
   }
 
   const modalClosed = (idModal: string, acept: boolean): void => {
@@ -43,31 +46,49 @@ export function Nodo({ data, animacion = false }: Props): JSX.Element {
     }
   }
 
+  const nodoChange = (value: NodoData): void => {
+    toggleOpenedState(`detail-nodo-${nodoData.nombre}`)
+    if (value.deshabilitado !== nodoData.deshabilitado) {
+      window.api.invoke.cambiarHabilitacionNodo(nodoData.id)
+      return
+    }
+    value.aspersores.forEach((a) => window.api.invoke.cambiarHabilitacionAspersor(data.id, a.id, a.deshabilitado))
+    setNodoData(value)
+  }
+
   return (
-    <section
-      className={clsx(
-        'flex gap-8 bg-dark border-[1px] rounded-md border-[#A1A1A1] h-[140px] p-6 text-white shadow-2xl',
-        {
-          'bg-opacity-5': data.deshabilitado,
-          'text-gray-600': data.deshabilitado
-        }
-      )}
-      onClick={handleClickNodo}
-    >
-      <Modal<undefined>
-        idModal="detail-nodo"
+    <>
+      <Modal<{
+        data: NodoData
+        nodoChange: (value: NodoData) => void
+      }>
+        idModal={`detail-nodo-${nodoData.nombre}`}
         ModalContent={DetailNodo}
-        modalContentProps={undefined}
+        modalContentProps={{
+          data: nodoData,
+          nodoChange
+        }}
         closed={modalClosed}
         crossClose
         outsideClose
       />
-      <div className="flex flex-col justify-center items-center">
-        <p className="text-[20px] font-bold">NODO</p>
-        <h2 className="text-[48px] font-bold">{data.nombre}</h2>
-      </div>
-      <div className="flex flex-row justify-around w-full">{aspersores}</div>
-    </section>
+      <section
+        className={clsx(
+          'flex gap-8 bg-dark border-[1px] rounded-md border-[#A1A1A1] h-[140px] p-6 text-white shadow-2xl',
+          {
+            'bg-opacity-5': nodoData.deshabilitado,
+            'text-gray-600': nodoData.deshabilitado
+          }
+        )}
+        onClick={handleClickNodo}
+      >
+        <div className="flex flex-col justify-center items-center">
+          <p className="text-[20px] font-bold">NODO</p>
+          <h2 className="text-[48px] font-bold">{nodoData.nombre}</h2>
+        </div>
+        <div className="flex flex-row justify-around w-full">{aspersores}</div>
+      </section>
+    </>
   )
 }
 
@@ -82,9 +103,12 @@ function Aspersor({ data, animacion = false }: PropsAspersor): JSX.Element {
 
   useEffect(() => {
     if (data.deshabilitado) {
-      data.estado = -1
+      data.estado = {
+        id: -1,
+        descripcion: ''
+      }
     }
-    switch (data.estado) {
+    switch (data.estado?.id) {
       case 0: // Ok
         setColor('#32CF9C')
         if (animacion) setSpeed('animate-[spin_20s_linear_infinite]')

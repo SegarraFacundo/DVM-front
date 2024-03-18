@@ -43,7 +43,7 @@ export function Testing(): JSX.Element {
     setTitle('Testeo de Aspersores')
   }, [])
 
-  const modalClosed = (idModal: string, acept: boolean): void => {
+  const modalClosed = (_: string, acept: boolean): void => {
     if (acept) {
       socket.emit('testing')
       setPercentageLoading(0)

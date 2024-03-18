@@ -4,11 +4,12 @@ import { Server as ServerSocket } from 'socket.io'
 
 import * as net from 'net'
 import {
-  EstadoAspersorType,
+  IdsEstadoAspersorType,
   EstadoNodoTesting,
   EstadoNodoJob,
   Nodo,
-  NodosStore
+  NodosStore,
+  DescripcionEstadoAspersorType
 } from '../nodos/nodos.store'
 
 //Interfaces de API
@@ -126,8 +127,35 @@ const startJob = (nodo: Nodo): boolean => {
   if (nodo.deshabilitado) {
     return false
   }
-  console.log('send normal: %j', send)
   return client.write(Buffer.from(JSON.stringify(send)))
+}
+
+const getDescripcionEstado = (idEstado: IdsEstadoAspersorType): DescripcionEstadoAspersorType => {
+  let value: DescripcionEstadoAspersorType = ''
+  switch (idEstado) {
+    case -1:
+      value = ''
+      break
+    case 0:
+      value = 'OK'
+      break
+    case 1:
+      value = '1Sobrecorriente en motor'
+      break
+    case 2:
+      value = '2Sobrecorriente en motor'
+      break
+    case 3:
+      value = '3Sobrecorriente en motor'
+      break
+    case 4:
+      value = '4Sobrecorriente en motor'
+      break
+    case 5:
+      value = '5Sobrecorriente en motor'
+      break
+  }
+  return value
 }
 
 const startTestingAsync = async (socket): Promise<void> => {
@@ -145,10 +173,10 @@ const startTestingAsync = async (socket): Promise<void> => {
       .map<EstadoNodoTesting>((n) => ({
         command: 'testing',
         nodo: n.id,
-        state1: getRandomArbitrary(0, 5, 0) as EstadoAspersorType,
-        state2: getRandomArbitrary(0, 5, 0) as EstadoAspersorType,
-        state3: getRandomArbitrary(0, 5, 0) as EstadoAspersorType,
-        state4: getRandomArbitrary(0, 5, 0) as EstadoAspersorType,
+        state1: getRandomArbitrary(0, 5, 0) as IdsEstadoAspersorType,
+        state2: getRandomArbitrary(0, 5, 0) as IdsEstadoAspersorType,
+        state3: getRandomArbitrary(0, 5, 0) as IdsEstadoAspersorType,
+        state4: getRandomArbitrary(0, 5, 0) as IdsEstadoAspersorType,
         voltaje: getRandomArbitrary(0, 20)
       }))
 
@@ -161,22 +189,34 @@ const startTestingAsync = async (socket): Promise<void> => {
         aspersores: [
           {
             id: 1,
-            estado: estadoNodo?.state1 ?? -1,
+            estado: {
+              id: estadoNodo?.state1 ?? -1,
+              descripcion: getDescripcionEstado(estadoNodo?.state1 ?? -1)
+            },
             deshabilitado: n.aspersores.find((a) => a.id === 1)?.deshabilitado ?? false
           },
           {
             id: 2,
-            estado: estadoNodo?.state2 ?? -1,
+            estado: {
+              id: estadoNodo?.state2 ?? -1,
+              descripcion: getDescripcionEstado(estadoNodo?.state2 ?? -1)
+            },
             deshabilitado: n.aspersores.find((a) => a.id === 2)?.deshabilitado ?? false
           },
           {
             id: 3,
-            estado: estadoNodo?.state3 ?? -1,
+            estado: {
+              id: estadoNodo?.state3 ?? -1,
+              descripcion: getDescripcionEstado(estadoNodo?.state3 ?? -1)
+            },
             deshabilitado: n.aspersores.find((a) => a.id === 3)?.deshabilitado ?? false
           },
           {
             id: 4,
-            estado: estadoNodo?.state4 ?? -1,
+            estado: {
+              id: estadoNodo?.state4 ?? -1,
+              descripcion: getDescripcionEstado(estadoNodo?.state4 ?? -1)
+            },
             deshabilitado: n.aspersores.find((a) => a.id === 4)?.deshabilitado ?? false
           }
         ]
@@ -234,10 +274,10 @@ io.on('connection', async (socket) => {
           .map<EstadoNodoJob>((n) => ({
             command: 'estadoGeneralNodo',
             nodo: n.id,
-            state1: getRandomArbitrary(0, 5, 0) as EstadoAspersorType,
-            state2: getRandomArbitrary(0, 5, 0) as EstadoAspersorType,
-            state3: getRandomArbitrary(0, 5, 0) as EstadoAspersorType,
-            state4: getRandomArbitrary(0, 5, 0) as EstadoAspersorType,
+            state1: getRandomArbitrary(0, 5, 0) as IdsEstadoAspersorType,
+            state2: getRandomArbitrary(0, 5, 0) as IdsEstadoAspersorType,
+            state3: getRandomArbitrary(0, 5, 0) as IdsEstadoAspersorType,
+            state4: getRandomArbitrary(0, 5, 0) as IdsEstadoAspersorType,
             voltaje: getRandomArbitrary(0, 20, 2),
             corr1: getRandomArbitrary(0, 9, 2),
             corr2: getRandomArbitrary(0, 9, 2),
@@ -258,7 +298,10 @@ io.on('connection', async (socket) => {
             aspersores: [
               {
                 id: 1,
-                estado: estadoNodo?.state1 ?? -1,
+                estado: {
+                  id: estadoNodo?.state1 ?? -1,
+                  descripcion: getDescripcionEstado(estadoNodo?.state1 ?? -1)
+                },
                 rpm: estadoNodo?.rpm1,
                 rpmDeseado: n.aspersores.find((a) => a.id === 1)?.rpmDeseado,
                 deshabilitado:
@@ -267,7 +310,10 @@ io.on('connection', async (socket) => {
               },
               {
                 id: 2,
-                estado: estadoNodo?.state2 ?? -1,
+                estado: {
+                  id: estadoNodo?.state2 ?? -1,
+                  descripcion: getDescripcionEstado(estadoNodo?.state2 ?? -1)
+                },
                 rpm: estadoNodo?.rpm2,
                 rpmDeseado: n.aspersores.find((a) => a.id === 2)?.rpmDeseado,
                 deshabilitado:
@@ -276,7 +322,10 @@ io.on('connection', async (socket) => {
               },
               {
                 id: 3,
-                estado: estadoNodo?.state3 ?? -1,
+                estado: {
+                  id: estadoNodo?.state3 ?? -1,
+                  descripcion: getDescripcionEstado(estadoNodo?.state3 ?? -1)
+                },
                 rpm: estadoNodo?.rpm3,
                 rpmDeseado: n.aspersores.find((a) => a.id === 3)?.rpmDeseado,
                 deshabilitado:
@@ -285,7 +334,10 @@ io.on('connection', async (socket) => {
               },
               {
                 id: 4,
-                estado: estadoNodo?.state4 ?? -1,
+                estado: {
+                  id: estadoNodo?.state4 ?? -1,
+                  descripcion: getDescripcionEstado(estadoNodo?.state4 ?? -1)
+                },
                 rpm: estadoNodo?.rpm4,
                 rpmDeseado: n.aspersores.find((a) => a.id === 4)?.rpmDeseado,
                 deshabilitado:
@@ -317,28 +369,40 @@ io.on('connection', async (socket) => {
                 aspersores: [
                   {
                     id: 1,
-                    estado: estadoNodo?.state1 ?? -1,
+                    estado: {
+                      id: estadoNodo?.state1 ?? -1,
+                      descripcion: getDescripcionEstado(estadoNodo?.state1 ?? -1)
+                    },
                     rpm: estadoNodo?.rpm1,
                     rpmDeseado: n.aspersores.find((a) => a.id === 1)?.rpmDeseado,
                     deshabilitado: n.aspersores.find((a) => a.id === 1)?.deshabilitado ?? false
                   },
                   {
                     id: 2,
-                    estado: estadoNodo?.state2 ?? -1,
+                    estado: {
+                      id: estadoNodo?.state2 ?? -1,
+                      descripcion: getDescripcionEstado(estadoNodo?.state2 ?? -1)
+                    },
                     rpm: estadoNodo?.rpm2,
                     rpmDeseado: n.aspersores.find((a) => a.id === 2)?.rpmDeseado,
                     deshabilitado: n.aspersores.find((a) => a.id === 2)?.deshabilitado ?? false
                   },
                   {
                     id: 3,
-                    estado: estadoNodo?.state3 ?? -1,
+                    estado: {
+                      id: estadoNodo?.state3 ?? -1,
+                      descripcion: getDescripcionEstado(estadoNodo?.state3 ?? -1)
+                    },
                     rpm: estadoNodo?.rpm3,
                     rpmDeseado: n.aspersores.find((a) => a.id === 3)?.rpmDeseado,
                     deshabilitado: n.aspersores.find((a) => a.id === 3)?.deshabilitado ?? false
                   },
                   {
                     id: 4,
-                    estado: estadoNodo?.state4 ?? -1,
+                    estado: {
+                      id: estadoNodo?.state4 ?? -1,
+                      descripcion: getDescripcionEstado(estadoNodo?.state4 ?? -1)
+                    },
                     rpm: estadoNodo?.rpm4,
                     rpmDeseado: n.aspersores.find((a) => a.id === 4)?.rpmDeseado,
                     deshabilitado: n.aspersores.find((a) => a.id === 4)?.deshabilitado ?? false
@@ -387,28 +451,40 @@ io.on('connection', async (socket) => {
               aspersores: [
                 {
                   id: 1,
-                  estado: estadoNodo?.state1 ?? -1,
+                  estado: {
+                    id: estadoNodo?.state1 ?? -1,
+                    descripcion: getDescripcionEstado(estadoNodo?.state1 ?? -1)
+                  },
                   rpm: estadoNodo?.rpm1,
                   rpmDeseado: n.aspersores.find((a) => a.id === 1)?.rpmDeseado,
                   deshabilitado: n.aspersores.find((a) => a.id === 1)?.deshabilitado ?? false
                 },
                 {
                   id: 2,
-                  estado: estadoNodo?.state2 ?? -1,
+                  estado: {
+                    id: estadoNodo?.state2 ?? -1,
+                    descripcion: getDescripcionEstado(estadoNodo?.state2 ?? -1)
+                  },
                   rpm: estadoNodo?.rpm2,
                   rpmDeseado: n.aspersores.find((a) => a.id === 2)?.rpmDeseado,
                   deshabilitado: n.aspersores.find((a) => a.id === 2)?.deshabilitado ?? false
                 },
                 {
                   id: 3,
-                  estado: estadoNodo?.state3 ?? -1,
+                  estado: {
+                    id: estadoNodo?.state3 ?? -1,
+                    descripcion: getDescripcionEstado(estadoNodo?.state3 ?? -1)
+                  },
                   rpm: estadoNodo?.rpm3,
                   rpmDeseado: n.aspersores.find((a) => a.id === 3)?.rpmDeseado,
                   deshabilitado: n.aspersores.find((a) => a.id === 3)?.deshabilitado ?? false
                 },
                 {
                   id: 4,
-                  estado: estadoNodo?.state4 ?? -1,
+                  estado: {
+                    id: estadoNodo?.state4 ?? -1,
+                    descripcion: getDescripcionEstado(estadoNodo?.state4 ?? -1)
+                  },
                   rpm: estadoNodo?.rpm4,
                   rpmDeseado: n.aspersores.find((a) => a.id === 4)?.rpmDeseado,
                   deshabilitado: n.aspersores.find((a) => a.id === 4)?.deshabilitado ?? false

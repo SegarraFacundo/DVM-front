@@ -39,28 +39,6 @@ export function Trabajo(): JSX.Element {
   }, [state])
 
   useEffect(() => {
-    if (!runningJob) {
-      socket.emit('stopJob')
-      setNodos(
-        nodos.map((nodo, i) => {
-          return <Nodo key={i} data={nodo.props['data']} animacion={false} />
-        })
-      )
-    } else {
-      socket.emit('startJob', 3500)
-      socket.on('getStateNodo', (nodos) => {
-        if (nodos) {
-          setNodos(
-            nodos.map((nodoData, i) => {
-              return <Nodo key={i} data={nodoData} animacion={true} />
-            })
-          )
-        }
-      })
-    }
-  }, [runningJob])
-
-  useEffect(() => {
     addModal('tipo-gota')
     addModal('init-job')
     addModal('end-job')
@@ -91,6 +69,25 @@ export function Trabajo(): JSX.Element {
   }
 
   const iniciarOPausarTrabajoClick = () => {
+    if (runningJob) {
+      socket.emit('stopJob')
+      setNodos(
+        nodos.map((nodo, i) => {
+          return <Nodo key={i} data={nodo.props['data']} animacion={false} />
+        })
+      )
+    } else {
+      socket.emit('startJob', 3500)
+      socket.on('getStateNodo', (nodos) => {
+        if (nodos) {
+          setNodos(
+            nodos.map((nodoData, i) => {
+              return <Nodo key={i} data={nodoData} animacion={true} />
+            })
+          )
+        }
+      })
+    }
     setRunningJob(!runningJob)
   }
 
@@ -228,7 +225,7 @@ export function Trabajo(): JSX.Element {
           <div className="w-[70px]"></div>
         </div>
         <div className="flex flex-col justify-around gap-4">
-          <Button onClick={() => openModal('end-job')} type="error" size="lg">
+          <Button onClick={() => openModal('end-job')} type="error" size="lg" disabled={!runningJob}>
             Finalizar
           </Button>
 

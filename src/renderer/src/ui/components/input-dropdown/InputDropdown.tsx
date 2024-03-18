@@ -127,7 +127,7 @@ function OpcionNuevoOperario(): JSX.Element {
   }
 
   const modalClosed = (idModal: string, acept: boolean) => {
-    console.log(acept)
+
   }
 
   return (

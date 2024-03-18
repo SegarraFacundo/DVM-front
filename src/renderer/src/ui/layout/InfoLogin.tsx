@@ -17,7 +17,7 @@ export function InfoLogin(): JSX.Element {
   }, [])
 
   const modalClosed = (idModal: string, acept: boolean): void => {
-    console.log(idModal, acept)
+
   }
 
   const handleEditClick = (): void => {

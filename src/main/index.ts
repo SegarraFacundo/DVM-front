@@ -10,6 +10,7 @@ import { ItemsInfoStore } from './api/info/items-info.store'
 import { LotesStore } from './api/lotes/lotes.store'
 import * as shutdown from 'electron-shutdown-command'
 import './api/socket/socket'
+import { NodosStore } from './api/nodos/nodos.store'
 
 function createWindow(): void {
   // Create the browser window.
@@ -59,8 +60,7 @@ app.whenReady().then(() => {
     optimizer.watchWindowShortcuts(window)
   })
 
-  // IPC test
-  ipcMain.on('ping', () => console.log('pong'))
+
 
   createWindow()
 
@@ -137,6 +137,15 @@ const itemsInfoStore = ItemsInfoStore({
 
 ipcMain.handle('getItemsInfoAsync', async () => {
   return await itemsInfoStore.all()
+})
+
+const nodosStore = NodosStore()
+ipcMain.handle('cambiarHabilitacionNodo', async (_: IpcMainInvokeEvent, idNodo: number) => {
+  return await nodosStore.cambiarHabilitacionNodo(idNodo)
+})
+
+ipcMain.handle('cambiarHabilitacionAspersor', async (_: IpcMainInvokeEvent, idNodo: number, idAspersor: number, deshabilitado: boolean) => {
+  return await nodosStore.cambiarHabilitacionAspersor(idNodo, idAspersor, deshabilitado)
 })
 
 ipcMain.handle('apagarDispositivo', () => {

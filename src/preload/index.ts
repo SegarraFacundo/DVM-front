@@ -20,6 +20,8 @@ export type Api = GetApiType<
     getTiposAplicacionesAsync: () => Promise<TipoAplicacion[]>
     getItemsMenuAsync: () => Promise<ItemMenu[]>
     getItemsInfoAsync: () => Promise<ItemInfoData[]>
+    cambiarHabilitacionNodo: (idNodo: number) => Promise<Nodo[]>
+    cambiarHabilitacionAspersor: (idNodo: number, idAspersor: number, deshabilitado: boolean) => Promise<Nodo[]>
     isThemeModeDark: () => Promise<boolean>
     apagarDispositivo: () => void
   },
@@ -54,6 +56,12 @@ const api: Api = {
     },
     getItemsInfoAsync: async () => {
       return await ipcRenderer.invoke('getItemsInfoAsync')
+    },
+    cambiarHabilitacionNodo: async (idNodo: number) => {
+      return await ipcRenderer.invoke('cambiarHabilitacionNodo', idNodo)
+    },
+    cambiarHabilitacionAspersor: async (idNodo: number, idAspersor: number, deshabilitado: boolean) => {
+      return await ipcRenderer.invoke('cambiarHabilitacionAspersor', idNodo, idAspersor, deshabilitado)
     },
     isThemeModeDark: async () => {
       return await ipcRenderer.invoke('isThemeModeDark')

@@ -1,13 +1,26 @@
 import { readFileSync, writeFileSync } from 'fs'
 import path from 'path'
 
-export type EstadoAspersorType = -1 | 0 | 1 | 2 | 3 | 4 | 5
+export type IdsEstadoAspersorType = -1 | 0 | 1 | 2 | 3 | 4 | 5
+export type DescripcionEstadoAspersorType =
+  | ''
+  | 'OK'
+  | '1Sobrecorriente en motor'
+  | '2Sobrecorriente en motor'
+  | '3Sobrecorriente en motor'
+  | '4Sobrecorriente en motor'
+  | '5Sobrecorriente en motor'
 export interface Aspersor {
   id: 1 | 2 | 3 | 4
-  estado: EstadoAspersorType
+  estado: EstadoAspersor
   deshabilitado?: boolean
   rpm?: number
   rpmDeseado?: number
+}
+
+interface EstadoAspersor {
+  id: IdsEstadoAspersorType
+  descripcion: DescripcionEstadoAspersorType
 }
 
 export interface EstadoNodoJob extends EstadoNodoTesting {
@@ -24,10 +37,10 @@ export interface EstadoNodoJob extends EstadoNodoTesting {
 export interface EstadoNodoTesting {
   command: string
   nodo: number
-  state1: EstadoAspersorType
-  state2: EstadoAspersorType
-  state3: EstadoAspersorType
-  state4: EstadoAspersorType
+  state1: IdsEstadoAspersorType
+  state2: IdsEstadoAspersorType
+  state3: IdsEstadoAspersorType
+  state4: IdsEstadoAspersorType
   voltaje: number
 }
 
@@ -93,12 +106,15 @@ export const NodosStore = () => {
 
       return data
     },
-    startNodoPorAspersor: async (id: number, aspersorRPMs: {
-      rpm1: number,
-      rpm2: number,
-      rpm3: number,
-      rpm4: number
-      }): Promise<Nodo[]> => {
+    startNodoPorAspersor: async (
+      id: number,
+      aspersorRPMs: {
+        rpm1: number
+        rpm2: number
+        rpm3: number
+        rpm4: number
+      }
+    ): Promise<Nodo[]> => {
       let data = JSON.parse(readFileSync(urlDataJson).toString()) as Nodo[]
 
       data = data.map((n) => {
@@ -115,5 +131,37 @@ export const NodosStore = () => {
 
       return data
     },
+    cambiarHabilitacionNodo: async (id: number): Promise<Nodo[]> => {
+      let data = JSON.parse(readFileSync(urlDataJson).toString()) as Nodo[]
+
+      data = data.map((n) => {
+        if (n.id === id) {
+          n.deshabilitado = !n.deshabilitado
+          n.aspersores = n.aspersores.map((a) => ({ ...a, deshabilitado: n.deshabilitado }))
+        }
+        return n
+      })
+
+      await writeFileSync(urlDataJson, JSON.stringify(data))
+
+      return data
+    },
+    cambiarHabilitacionAspersor: async (idNodo: number, idAspersor: number, deshabilitado: boolean): Promise<Nodo[]> => {
+      let data = JSON.parse(readFileSync(urlDataJson).toString()) as Nodo[]
+      data = data.map((n) => {
+        if (n.id == idNodo)
+          n = {
+            ...n,
+            aspersores: n.aspersores.map((a) => {
+              if (a.id == idAspersor) a.deshabilitado = deshabilitado
+              return a
+            })
+          }
+        return n
+      })
+      await writeFileSync(urlDataJson, JSON.stringify(data))
+
+      return data
+    }
   }
 }
