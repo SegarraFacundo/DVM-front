@@ -5,11 +5,11 @@ export type IdsEstadoAspersorType = -1 | 0 | 1 | 2 | 3 | 4 | 5
 export type DescripcionEstadoAspersorType =
   | ''
   | 'OK'
-  | '1Sobrecorriente en motor'
-  | '2Sobrecorriente en motor'
-  | '3Sobrecorriente en motor'
-  | '4Sobrecorriente en motor'
-  | '5Sobrecorriente en motor'
+  | 'Falla en el sensor'
+  | 'Bloqueo del motor'
+  | 'Sobrecalentamiento del motor'
+  | 'Motor desconectado'
+  | '5 Preguntar'
 export interface Aspersor {
   id: 1 | 2 | 3 | 4
   estado: EstadoAspersor
@@ -61,7 +61,7 @@ export const NodosStore = () => {
       let data = JSON.parse(readFileSync(urlDataJson).toString()) as Nodo[]
 
       data = data.map((n) => {
-        n.aspersores = n.aspersores.map((a) => ({ ...a, rpm: 0 }))
+        n.aspersores = n.aspersores.map((a) => ({ ...a, rpmDeseado: 0 }))
 
         return n
       })
@@ -74,7 +74,7 @@ export const NodosStore = () => {
       let data = JSON.parse(readFileSync(urlDataJson).toString()) as Nodo[]
 
       data = data.map((n) => {
-        if (n.id === id) n.aspersores = n.aspersores.map((a) => ({ ...a, rpm: 0 }))
+        if (n.id === id) n.aspersores = n.aspersores.map((a) => ({ ...a, rpmDeseado: 0 }))
         return n
       })
 
@@ -86,7 +86,7 @@ export const NodosStore = () => {
       let data = JSON.parse(readFileSync(urlDataJson).toString()) as Nodo[]
 
       data = data.map((n) => {
-        n.aspersores = n.aspersores.map((a) => ({ ...a, rpm: rpm }))
+        n.aspersores = n.aspersores.map((a) => ({ ...a, rpmDeseado: a.deshabilitado ? 0 : rpm }))
         return n
       })
 
@@ -98,7 +98,8 @@ export const NodosStore = () => {
       let data = JSON.parse(readFileSync(urlDataJson).toString()) as Nodo[]
 
       data = data.map((n) => {
-        if (n.id === id) n.aspersores = n.aspersores.map((a) => ({ ...a, rpm: rpm }))
+        if (n.id === id)
+          n.aspersores = n.aspersores.map((a) => ({ ...a, rpmDeseado: a.deshabilitado ? 0 : rpm }))
         return n
       })
 
@@ -119,10 +120,10 @@ export const NodosStore = () => {
 
       data = data.map((n) => {
         if (n.id === id) {
-          n.aspersores[0].rpm = aspersorRPMs.rpm1
-          n.aspersores[1].rpm = aspersorRPMs.rpm2
-          n.aspersores[2].rpm = aspersorRPMs.rpm3
-          n.aspersores[3].rpm = aspersorRPMs.rpm4
+          n.aspersores[0].rpmDeseado = aspersorRPMs.rpm1
+          n.aspersores[1].rpmDeseado = aspersorRPMs.rpm2
+          n.aspersores[2].rpmDeseado = aspersorRPMs.rpm3
+          n.aspersores[3].rpmDeseado = aspersorRPMs.rpm4
         }
         return n
       })
@@ -137,7 +138,11 @@ export const NodosStore = () => {
       data = data.map((n) => {
         if (n.id === id) {
           n.deshabilitado = !n.deshabilitado
-          n.aspersores = n.aspersores.map((a) => ({ ...a, deshabilitado: n.deshabilitado }))
+          n.aspersores = n.aspersores.map((a) => ({
+            ...a,
+            deshabilitado: n.deshabilitado,
+            rpmDeseado: n.deshabilitado ? 0 : a.rpmDeseado
+          }))
         }
         return n
       })
@@ -146,7 +151,11 @@ export const NodosStore = () => {
 
       return data
     },
-    cambiarHabilitacionAspersor: async (idNodo: number, idAspersor: number, deshabilitado: boolean): Promise<Nodo[]> => {
+    cambiarHabilitacionAspersor: async (
+      idNodo: number,
+      idAspersor: number,
+      deshabilitado: boolean
+    ): Promise<Nodo[]> => {
       let data = JSON.parse(readFileSync(urlDataJson).toString()) as Nodo[]
       data = data.map((n) => {
         if (n.id == idNodo)
@@ -154,6 +163,7 @@ export const NodosStore = () => {
             ...n,
             aspersores: n.aspersores.map((a) => {
               if (a.id == idAspersor) a.deshabilitado = deshabilitado
+              a.rpmDeseado = deshabilitado ? 0 : a.rpmDeseado
               return a
             })
           }

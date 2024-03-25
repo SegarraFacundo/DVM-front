@@ -9,11 +9,8 @@ interface Props extends ModalProps<undefined> {
   nodoChange: (value: NodoData) => void
 }
 
-export function DetailNodo({ data, nodoChange }: Props): JSX.Element {
-  const [nodo, setNodo] = useState<NodoData>(data)
-  useEffect(() => {
-    setNodo(data)
-  }, [data])
+export function DetailNodo({ data: initialData, nodoChange }: Props): JSX.Element {
+  const [nodo, setNodo] = useState<NodoData>(initialData)
 
   const handleBotonNodoClick = (): void => {
     setNodo({
