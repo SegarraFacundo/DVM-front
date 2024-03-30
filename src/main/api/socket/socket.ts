@@ -175,10 +175,9 @@ const startTestingAsync = async (socket): Promise<void> => {
     command: 'testing',
     nodos: nodos.map((n) => n.id)
   }
-  if (process.env.NODE_ENV !== 'development') {
-    let estadosNodosTesting: EstadoNodoTesting[]
-    let nodos = await nodosStore.all()
-    estadosNodosTesting = nodos.map<EstadoNodoTesting>((n) => ({
+  if (process.env.NODE_ENV === 'development') {
+    const nodos = await nodosStore.all()
+    const estadosNodosTesting = nodos.map<EstadoNodoTesting>((n) => ({
       command: 'testing',
       nodo: n.id,
       state1: getRandomArbitrary(0, 5, 0) as IdsEstadoAspersorType,
@@ -255,28 +254,28 @@ io.on('connection', async (socket) => {
     runningJob = true
     listenJob()
     await nodosStore.startAllNodo(rpmDeseado)
-    let nodos = await nodosStore.all()
+    const nodos = await nodosStore.all()
     nodos.forEach((n) => startJob(n))
   })
 
   socket.on('stopJob', async () => {
     runningJob = false
     await nodosStore.stopAllNodos()
-    let nodos = await nodosStore.all()
+    const nodos = await nodosStore.all()
     nodos.forEach((n) => startJob(n))
   })
 
   let estadosNodosJob: EstadoNodoJob[]
   console.log('process.env.NODE_ENV: %s', process.env.NODE_ENV)
 
-  const listenJob = () => {
-    if (process.env.NODE_ENV !== 'development') {
-      let refreshIntervalId = setInterval(async () => {
+  const listenJob = (): void => {
+    if (process.env.NODE_ENV === 'development') {
+      const refreshIntervalId = setInterval(async () => {
         if (!runningJob) {
           clearInterval(refreshIntervalId)
           return
         }
-        let nodos = await nodosStore.all()
+        const nodos = await nodosStore.all()
         estadosNodosJob = nodos.map<EstadoNodoJob>((n) => ({
           command: 'estadoGeneralNodo',
           nodo: n.id,
@@ -423,7 +422,7 @@ io.on('connection', async (socket) => {
     }
   }
 
-  if (process.env.NODE_ENV !== 'development') {
+  if (process.env.NODE_ENV === 'development') {
     setInterval(async () => {
       const datos: DatosMeteorologicos = {
         humedad: getRandomArbitrary(0, 100, 0),

@@ -17,29 +17,38 @@ const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io('/')
 export function ItemInfo({ data }: Props): JSX.Element {
   const [datosMeteorologicos, setDatosMeteorologicos] = useState<DatosMeteorologicos>()
 
-  const showData = (): string => {
-    let resp = ''
+  const getData = (): {
+    valor: string
+    unidad: string
+  } => {
+    let resp = {
+      valor: '',
+      unidad: ''
+    }
     switch (data.title) {
       case 'Humedad':
-        resp = datosMeteorologicos?.humedad !== undefined ? datosMeteorologicos?.humedad + '%' : '-'
+        resp =
+          datosMeteorologicos?.humedad !== undefined
+            ? { valor: datosMeteorologicos?.humedad?.toString() ?? '', unidad: '%' }
+            : { valor: '-', unidad: '' }
         break
       case 'Viento':
         resp =
           datosMeteorologicos?.velViento !== undefined
-            ? datosMeteorologicos?.velViento + 'k/h'
-            : '-'
+            ? { valor: datosMeteorologicos?.velViento?.toString() ?? '', unidad: 'Km/h' }
+            : { valor: '-', unidad: '' }
         break
       case 'Temperatura':
         resp =
           datosMeteorologicos?.temperatura !== undefined
-            ? datosMeteorologicos?.temperatura + '°'
-            : '-'
+            ? { valor: datosMeteorologicos?.temperatura?.toString() ?? '', unidad: '°C' }
+            : { valor: '-', unidad: '' }
         break
       case 'Rocío':
         resp =
           datosMeteorologicos?.puntoDeRocio !== undefined
-            ? datosMeteorologicos?.puntoDeRocio + '°'
-            : '-'
+            ? { valor: datosMeteorologicos?.puntoDeRocio?.toString() ?? '', unidad: '°C' }
+            : { valor: '-', unidad: '' }
         break
     }
     return resp
@@ -59,7 +68,10 @@ export function ItemInfo({ data }: Props): JSX.Element {
         <h3 className="text-white text-[32px] font-roboto font-bold">{data.title}</h3>
         <span className="text-success font-roboto text-[13px]">{data.info}</span>
       </div>
-      <h1 className="text-white text-[48px] font-bold">{showData()}</h1>
+      <div className='flex items-baseline gap-2'>
+        <h1 className="text-white text-[48px] font-bold">{getData().valor}</h1>
+        <p className="text-white text-[34px] font-light">{getData().unidad}</p>
+      </div>
     </div>
   )
 }

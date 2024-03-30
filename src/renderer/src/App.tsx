@@ -10,6 +10,8 @@ import { useEffect, useState } from 'react'
 import { useCarga } from './ui/layout/hooks/useCarga'
 import { Trabajo } from './app/trabajo/Trabajo'
 import { Reportes } from './app/reportes/Reportes'
+import ConfiguracionGeneral from './app/configuracion-general/ConfiguracionGeneral'
+import ConfiguracionAvanzada from './app/configuracion-avanzada/ConfiguracionAvanzada'
 
 export function App () {
   const { setCargando } = useCarga()
@@ -32,6 +34,8 @@ export function App () {
             <Route path='/' element={<Home />} />
             <Route path='/testing' element={<Testing />} />
             <Route path='/trabajo' element={<Trabajo />} />
+            <Route path='/configuracion-general' element={<ConfiguracionGeneral />} />
+            <Route path='/configuracion-avanzada' element={<ConfiguracionAvanzada />} />
             <Route path='/reportes' element={<Reportes />} />
           </Routes>
         </Layout>

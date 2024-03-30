@@ -11,6 +11,7 @@ import { LotesStore } from './api/lotes/lotes.store'
 import * as shutdown from 'electron-shutdown-command'
 import './api/socket/socket'
 import { NodosStore } from './api/nodos/nodos.store'
+import { Configuraciones } from './api/configuraciones/configuraciones'
 
 function createWindow(): void {
   // Create the browser window.
@@ -152,9 +153,16 @@ ipcMain.handle('apagarDispositivo', () => {
   shutdown.shutdown()
 })
 
-
-
 ipcMain.handle('isThemeModeDark', () => {
   return nativeTheme.shouldUseDarkColors
 })
 
+const configuraciones = Configuraciones()
+
+ipcMain.handle('setBrillo', async (_: IpcMainInvokeEvent, porcentaje: number) => {
+  return await configuraciones.setBrillo(porcentaje)
+})
+
+ipcMain.handle('getBrilloActual', async () => {
+  return await configuraciones.getBrilloActual()
+})
