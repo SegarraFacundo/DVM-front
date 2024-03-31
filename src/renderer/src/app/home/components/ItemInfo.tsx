@@ -7,6 +7,7 @@ import {
   ClientToServerEvents,
   ServerToClientEvents
 } from '@renderer/lib/socket/interfaces/socket-client.interface'
+import { DataUnidad } from '../interfaces/data-unidad.interface'
 
 interface Props {
   data: ItemInfoData
@@ -16,7 +17,7 @@ const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io('/')
 
 export function ItemInfo({ data }: Props): JSX.Element {
   const [datosMeteorologicos, setDatosMeteorologicos] = useState<DatosMeteorologicos>()
-
+  const [unidades, setUnidades] = useState<DataUnidad[]>([])
   const getData = (): {
     valor: string
     unidad: string
@@ -29,32 +30,38 @@ export function ItemInfo({ data }: Props): JSX.Element {
       case 'Humedad':
         resp =
           datosMeteorologicos?.humedad !== undefined
-            ? { valor: datosMeteorologicos?.humedad?.toString() ?? '', unidad: '%' }
+            ? { valor: datosMeteorologicos?.humedad?.toString() ?? '', unidad: data.unidad }
             : { valor: '-', unidad: '' }
         break
       case 'Viento':
         resp =
           datosMeteorologicos?.velViento !== undefined
-            ? { valor: datosMeteorologicos?.velViento?.toString() ?? '', unidad: 'Km/h' }
+            ? { valor: datosMeteorologicos?.velViento?.toString() ?? '', unidad: unidades.find(u => u.estaSeleccionada && u.tipo === 'velocidad')?.unidad?? '' }
             : { valor: '-', unidad: '' }
         break
       case 'Temperatura':
         resp =
           datosMeteorologicos?.temperatura !== undefined
-            ? { valor: datosMeteorologicos?.temperatura?.toString() ?? '', unidad: '°C' }
+            ? { valor: datosMeteorologicos?.temperatura?.toString() ?? '', unidad: unidades.find(u => u.estaSeleccionada && u.tipo === 'temperatura')?.unidad?? '' }
             : { valor: '-', unidad: '' }
         break
       case 'Rocío':
         resp =
           datosMeteorologicos?.puntoDeRocio !== undefined
-            ? { valor: datosMeteorologicos?.puntoDeRocio?.toString() ?? '', unidad: '°C' }
+            ? { valor: datosMeteorologicos?.puntoDeRocio?.toString() ?? '', unidad: data.unidad }
             : { valor: '-', unidad: '' }
         break
     }
     return resp
   }
 
+  const fetchData = async () => {
+    const result = await window.api.invoke.getUnidadesAsync()
+    setUnidades(result)
+  }
+
   useEffect(() => {
+    fetchData()
     socket.on('getDatosMeteorologicos', (res) => setDatosMeteorologicos(res))
   }, [])
 

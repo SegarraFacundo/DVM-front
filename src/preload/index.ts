@@ -6,6 +6,7 @@ import { ItemMenu } from '../main/api/menu/items-menu.store'
 import { ItemInfoData } from '../main/api/info/items-info.store'
 import { Lote } from '../main/api/lotes/lotes.store'
 import { Nodo } from '../main/api/nodos/nodos.store'
+import { Unidad } from '../main/api/unidades/unidades.store'
 
 const ipcRenderer = createIpcRenderer<Api>()
 
@@ -25,7 +26,10 @@ export type Api = GetApiType<
     isThemeModeDark: () => Promise<boolean>
     apagarDispositivo: () => void
     setBrillo: (porcentaje: number) => Promise<void>
-    getBrilloActual: () => Promise<number>
+    getBrilloActual: () => Promise<number>,
+    getUnidadesAsync: () => Promise<Unidad[]>,
+    cambiarUnidadVelocidad: (id: 1 | 2) => Promise<void>,
+    cambiarUnidadTemperatura: (id: 1 | 2) => Promise<void>
   },
   {}
 >
@@ -72,7 +76,10 @@ const api: Api = {
       ipcRenderer.invoke('apagarDispositivo')
     },
     setBrillo: async (porcentaje: number) => ipcRenderer.invoke('setBrillo', porcentaje),
-    getBrilloActual: async () => ipcRenderer.invoke('getBrilloActual')
+    getBrilloActual: async () => ipcRenderer.invoke('getBrilloActual'),
+    getUnidadesAsync: async () => ipcRenderer.invoke('getUnidadesAsync'),
+    cambiarUnidadVelocidad: async (id: 1 | 2) => ipcRenderer.invoke('cambiarUnidadVelocidad', id),
+    cambiarUnidadTemperatura: async (id: 1 | 2) => ipcRenderer.invoke('cambiarUnidadTemperatura', id)
   },
   on: {}
 }

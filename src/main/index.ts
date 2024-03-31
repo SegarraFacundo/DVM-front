@@ -12,6 +12,7 @@ import * as shutdown from 'electron-shutdown-command'
 import './api/socket/socket'
 import { NodosStore } from './api/nodos/nodos.store'
 import { Configuraciones } from './api/configuraciones/configuraciones'
+import { UnidadesStore } from './api/unidades/unidades.store'
 
 function createWindow(): void {
   // Create the browser window.
@@ -165,4 +166,18 @@ ipcMain.handle('setBrillo', async (_: IpcMainInvokeEvent, porcentaje: number) =>
 
 ipcMain.handle('getBrilloActual', async () => {
   return await configuraciones.getBrilloActual()
+})
+
+const unidadesStore = UnidadesStore()
+
+ipcMain.handle('getUnidadesAsync', async () => {
+  return await unidadesStore.all()
+})
+
+ipcMain.handle('cambiarUnidadVelocidad', async (_: IpcMainInvokeEvent, id: 1 | 2) => {
+  return await unidadesStore.cambiarUnidadVelocidad(id)
+})
+
+ipcMain.handle('cambiarUnidadTemperatura', async (_: IpcMainInvokeEvent, id: 1 | 2) => {
+  return await unidadesStore.cambiarUnidadTemperatura(id)
 })

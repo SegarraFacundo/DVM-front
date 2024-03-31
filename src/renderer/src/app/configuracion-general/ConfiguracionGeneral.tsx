@@ -1,6 +1,7 @@
 import { useTitle } from '@renderer/lib/hooks/UseTitle'
 import { Button } from '@renderer/ui/components/Button'
 import { useEffect, useState } from 'react'
+import { DataUnidad } from '../home/interfaces/data-unidad.interface'
 
 export default function ConfiguracionGeneral(): JSX.Element {
   const { setTitle } = useTitle()
@@ -8,15 +9,23 @@ export default function ConfiguracionGeneral(): JSX.Element {
 
   const [mostrarDropDownVelocidad, setMostrarDropDownVelocidad] = useState<boolean>(false)
   const [mostrarDropDownTemperatura, setMostrarDropDownTemperatura] = useState<boolean>(false)
+  const [unidadVelocidadSeleccionada, setUnidadVelocidadSeleccionada] = useState<DataUnidad>()
+  const [unidades, setUnidades] = useState<DataUnidad[]>([])
 
   const fetchBrilloActual = async (): Promise<void> => {
     const brilloActual = await window.api.invoke.getBrilloActual()
     setPercentageLoading(brilloActual)
   }
 
+  const fetchUnidades = async () => {
+    const result = await window.api.invoke.getUnidadesAsync()
+    setUnidades(result)
+  }
+
   useEffect(() => {
     setTitle('Configuración General')
     fetchBrilloActual()
+    fetchUnidades()
   }, [])
   const handleClickTop = (): void => {
     const porcentaje = percentageLoading === 100 ? 100 : percentageLoading + 10
@@ -37,27 +46,24 @@ export default function ConfiguracionGeneral(): JSX.Element {
     if (input === 'velocidad') {
       setMostrarDropDownVelocidad(!mostrarDropDownVelocidad)
       setMostrarDropDownTemperatura(false)
+
     }
   }
 
   const setTemperatura = (input: 1 | 2): void => {
-    if (input === 1) {
-    }
-    if (input === 2) {
-    }
-    
+    window.api.invoke.cambiarUnidadTemperatura(input)
+
     setMostrarDropDownVelocidad(false)
     setMostrarDropDownTemperatura(false)
+    fetchUnidades()
   }
 
   const setVelocidad = (input: 1 | 2): void => {
-    if (input === 1) {
-    }
-    if (input === 2) {
-    }
-    
+    window.api.invoke.cambiarUnidadVelocidad(input)
+
     setMostrarDropDownVelocidad(false)
     setMostrarDropDownTemperatura(false)
+    fetchUnidades()
   }
 
   return (
@@ -83,12 +89,12 @@ export default function ConfiguracionGeneral(): JSX.Element {
       <div className="flex w-full gap-10">
         <div className="flex">
           <label className="text-white text-[20px] pr-4 pt-3">Velocidad</label>
-          <div className="flex flex-col">
+          <div className="flex flex-col cursor-pointer">
             <div
               className="bg-dark w-full flex items-center justify-evenly rounded-[5px] mr-8 p-4 border border-solid border-[#fff] pl-[18px] text-white"
               onClick={() => handleClickDropdown('velocidad')}
             >
-              Seleccionar
+              {unidades.find(u => u.estaSeleccionada && u.tipo === 'velocidad' )?.unidad}
               <svg
                 width="16"
                 height="9"
@@ -125,12 +131,12 @@ export default function ConfiguracionGeneral(): JSX.Element {
 
         <div className="flex">
           <label className="text-white text-[20px] pr-4 pt-3">Temperatura</label>
-          <div className="flex flex-col">
+          <div className="flex flex-col cursor-pointer">
             <div
               className="bg-dark w-full flex items-center justify-evenly rounded-[5px] mr-8 p-4 border border-solid border-[#fff] pl-[18px] text-white"
               onClick={() => handleClickDropdown('temperatura')}
             >
-              Seleccionar
+               {unidades.find(u => u.estaSeleccionada && u.tipo === 'temperatura' )?.unidad}
               <svg
                 width="16"
                 height="9"
@@ -165,11 +171,11 @@ export default function ConfiguracionGeneral(): JSX.Element {
           </div>
         </div>
       </div>
-      <div className="flex w-full h-full items-end justify-end mb-10">
+      {/* <div className="flex w-full h-full items-end justify-end mb-10">
         <Button type="success" size="lg" maxWith={false}>
           Guardar
         </Button>
-      </div>
+      </div> */}
     </article>
   )
 }
