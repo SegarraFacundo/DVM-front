@@ -19,7 +19,7 @@ export default function AgregarOperario({ close }: ModalProps<undefined>) {
 
   return (
 
-    <form className='flex flex-col justify-between w-auto h-auto bg-[#1C2E3D] boder border-white p-[28px]' onSubmit={handleSubmit(submit)}>
+    <form className='flex flex-col justify-between w-auto h-auto bg-dark boder border-white p-[28px]' onSubmit={handleSubmit(submit)}>
 
       <div className='flex items-center'>
         <h3 className=' text-3xl not-italic font-bold text-white'>Agregar Operario</h3>

@@ -67,7 +67,7 @@ export function FormInitial({ close, acept, props }: Props): JSX.Element {
   return (
     <form
       className={clsx('flex flex-col justify-between w-auto h-auto boder border-white p-[28px]', {
-        'bg-[#1C2E3D]': props?.openedModal
+        'bg-dark': props?.openedModal
       })}
       onChange={handleChange}
     >

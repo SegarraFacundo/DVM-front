@@ -54,7 +54,7 @@ function Home() {
     <article className="w-full flex flex-col content-center justify-around h-[100%] px-20">
       <section className="flex flex-row content-center items-center justify-between">
         <FormInitial props={{ openedModal: false }} />
-        <section className="bg-[#1C2E3D] w-[480px] h-[528px] flex flex-col justify-evenly">
+        <section className="bg-dark w-[480px] h-[528px] flex flex-col justify-evenly">
           {items}
         </section>
       </section>

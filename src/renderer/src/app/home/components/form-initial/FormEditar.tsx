@@ -65,7 +65,7 @@ export function FormEditar({ close, acept }: Props): JSX.Element {
 
   return (
     <form
-      className="flex flex-col justify-between w-auto boder border-white p-[28px] bg-[#1C2E3D]"
+      className="flex flex-col justify-between w-auto boder border-white p-[28px] bg-dark"
       onChange={handleChange}
     >
       <div className="flex items-center">

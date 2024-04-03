@@ -3,7 +3,7 @@ import { ModalProps } from '../../../../ui/components/modal/Modal'
 
 export function InfoInitTesting ({ close, acept }: ModalProps<undefined>) {
   return (
-    <div className='flex flex-col justify-between  w-[591px] h-[362px] bg-[#1C2E3D] boder border-white p-[28px]'>
+    <div className='flex flex-col justify-between  w-[591px] h-[362px] bg-dark boder border-white p-[28px]'>
 
       <div className='flex items-center'>
         <div className='mr-[14px]'>

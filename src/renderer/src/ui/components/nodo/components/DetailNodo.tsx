@@ -37,7 +37,7 @@ export function DetailNodo({ data: initialData, nodoChange }: Props): JSX.Elemen
         <Button
           size="md"
           onClick={handleBotonNodoClick}
-          type={nodo.deshabilitado ? 'success' : 'error'}
+          type={nodo.deshabilitado ? 'success-light' : 'error'}
           maxWith={false}
         >
           {nodo.deshabilitado ? 'Habilitar Nodo' : 'Deshabilitar Nodo'}
@@ -102,7 +102,7 @@ export function DetailNodo({ data: initialData, nodoChange }: Props): JSX.Elemen
           )}
           <Button
             size="sm"
-            type={nodo.aspersores[0].deshabilitado ? 'success' : 'error'}
+            type={nodo.aspersores[0].deshabilitado ? 'success-light' : 'error'}
             maxWith={false}
             onClick={() => handleBotonAspersorClick(nodo.aspersores[0].id)}
           >
@@ -163,7 +163,7 @@ export function DetailNodo({ data: initialData, nodoChange }: Props): JSX.Elemen
           )}
           <Button
             size="sm"
-            type={nodo.aspersores[1].deshabilitado ? 'success' : 'error'}
+            type={nodo.aspersores[1].deshabilitado ? 'success-light' : 'error'}
             maxWith={false}
             onClick={() => handleBotonAspersorClick(nodo.aspersores[1].id)}
           >
@@ -224,7 +224,7 @@ export function DetailNodo({ data: initialData, nodoChange }: Props): JSX.Elemen
           )}
           <Button
             size="sm"
-            type={nodo.aspersores[2].deshabilitado ? 'success' : 'error'}
+            type={nodo.aspersores[2].deshabilitado ? 'success-light' : 'error'}
             maxWith={false}
             onClick={() => handleBotonAspersorClick(nodo.aspersores[2].id)}
           >
@@ -285,7 +285,7 @@ export function DetailNodo({ data: initialData, nodoChange }: Props): JSX.Elemen
           )}
           <Button
             size="sm"
-            type={nodo.aspersores[3].deshabilitado ? 'success' : 'error'}
+            type={nodo.aspersores[3].deshabilitado ? 'success-light' : 'error'}
             maxWith={false}
             onClick={() => handleBotonAspersorClick(nodo.aspersores[3].id)}
           >

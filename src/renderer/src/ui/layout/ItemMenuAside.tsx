@@ -19,7 +19,7 @@ export function ItemMenuAside ({ itemMenu }: PropsItemMenu) {
       <div className='pl-[18px]'>
         <img src={`data:image/svg+xml;utf8,${encodeURIComponent(itemMenu.icon)}`} />
       </div>
-      <p className='text-[#1C2E3D] text-center font-roboto text-[16px] not-italic leading-[normal] pl-[18px]'>
+      <p className='text-dark text-center font-roboto text-[16px] not-italic leading-[normal] pl-[18px]'>
         {itemMenu.title}
       </p>
     </Link>

@@ -37,7 +37,7 @@ export function Dialog({ close, acept, title, message, type, buttons }: DialogPr
     return color
   }
   return (
-    <div className="flex flex-col justify-between  w-[591px] h-auto gap-10 bg-[#1C2E3D] boder border-white p-[28px]">
+    <div className="flex flex-col justify-between  w-[591px] h-auto gap-10 bg-dark boder border-white p-[28px]">
       <div className="flex items-center">
         <div className="mr-[14px]">
           <svg

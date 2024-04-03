@@ -29,6 +29,13 @@ module.exports = {
         warning: '#FFC107',
         error: '#DC3545',
         dark: '#1C2E3D'
+      },
+      accentColor: {
+        default: '#D9D9D9',
+        success: '#32CF9C',
+        warning: '#FFC107',
+        error: '#DC3545',
+        dark: '#1C2E3D'
       }
     }
   },
