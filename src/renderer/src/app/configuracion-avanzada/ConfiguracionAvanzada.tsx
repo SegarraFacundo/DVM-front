@@ -4,6 +4,9 @@ import { useEffect, useRef, useState } from 'react'
 import clsx from 'clsx'
 import showPassword from './icons/eye.svg'
 import hidePasword from './icons/hidden.svg'
+import { Modal } from '@renderer/ui/components/modal/Modal'
+import { ConfiguracionDeNodo } from './components/ConfiguracionDeNodo'
+import { useModal } from '@renderer/ui/components/modal/hooks/UseModal'
 
 const PASSWORD_CONFIGURACION_AVANZADA = '2024.C0NFIGURACI0N'
 
@@ -81,7 +84,26 @@ export default function ConfiguracionAvanzada(): JSX.Element {
 }
 
 function Ajustes(): JSX.Element {
+  const { getStateModal, addModal, toggleOpenedState } = useModal()
   const [error, setError] = useState<boolean>(false)
+
+  const openModal = (idModal: string): void => {
+    if (getStateModal(idModal)) return
+    toggleOpenedState(idModal)
+  }
+
+  const modalClosed = (idModal: string, acept: boolean) => {
+    if (acept) {
+      if (!getStateModal(idModal)) toggleOpenedState(idModal)
+      if (idModal === 'configuracion-de-nodo') {
+        
+      }
+    }
+  }
+
+  useEffect(() => {
+    addModal('configuracion-de-nodo')
+  }, [])
 
   return (
     <div className="bg-dark rounded-[5px] w-full h-[528px] overflow-y-scroll flex flex-col gap-8 p-20">
@@ -325,14 +347,14 @@ function Ajustes(): JSX.Element {
               <p className="font-roboto text-white text-[20px]">NODO A:</p>{' '}
               <span className="font-roboto text-success text-[20px]">Id: 0000</span>
             </div>
-            <Button type="success-light" size="sm" maxWith={false}>
+            <Button type="success-light" size="sm" maxWith={false} onClick={() => openModal('configuracion-de-nodo')}>
               Configuración
             </Button>
             <div className="flex gap-4">
               <p className="font-roboto text-white text-[20px]">NODO A:</p>{' '}
               <span className="font-roboto text-success text-[20px]">Id: 0000</span>
             </div>
-            <Button type="success-light" size="sm" maxWith={false}>
+            <Button type="success-light" size="sm" maxWith={false} onClick={() => openModal('configuracion-de-nodo')}>
               Configuración
             </Button>
           </div>
@@ -341,14 +363,14 @@ function Ajustes(): JSX.Element {
               <p className="font-roboto text-white text-[20px]">NODO A:</p>{' '}
               <span className="font-roboto text-success text-[20px]">Id: 0000</span>
             </div>
-            <Button type="success-light" size="sm" maxWith={false}>
+            <Button type="success-light" size="sm" maxWith={false} onClick={() => openModal('configuracion-de-nodo')}>
               Configuración
             </Button>
             <div className="flex gap-4">
               <p className="font-roboto text-white text-[20px]">NODO A:</p>{' '}
               <span className="font-roboto text-success text-[20px]">Id: 0000</span>
             </div>
-            <Button type="success-light" size="sm" maxWith={false}>
+            <Button type="success-light" size="sm" maxWith={false} onClick={() => openModal('configuracion-de-nodo')}>
               Configuración
             </Button>
           </div>
@@ -357,14 +379,14 @@ function Ajustes(): JSX.Element {
               <p className="font-roboto text-white text-[20px]">NODO A:</p>{' '}
               <span className="font-roboto text-success text-[20px]">Id: 0000</span>
             </div>
-            <Button type="success-light" size="sm" maxWith={false}>
+            <Button type="success-light" size="sm" maxWith={false} onClick={() => openModal('configuracion-de-nodo')}>
               Configuración
             </Button>
             <div className="flex gap-4">
               <p className="font-roboto text-white text-[20px]">NODO A:</p>{' '}
               <span className="font-roboto text-success text-[20px]">Id: 0000</span>
             </div>
-            <Button type="success-light" size="sm" maxWith={false}>
+            <Button type="success-light" size="sm" maxWith={false} onClick={() => openModal('configuracion-de-nodo')}>
               Configuración
             </Button>
           </div>
@@ -373,18 +395,25 @@ function Ajustes(): JSX.Element {
               <p className="font-roboto text-white text-[20px]">NODO A:</p>{' '}
               <span className="font-roboto text-success text-[20px]">Id: 0000</span>
             </div>
-            <Button type="success-light" size="sm" maxWith={false}>
+            <Button type="success-light" size="sm" maxWith={false} onClick={() => openModal('configuracion-de-nodo')}>
               Configuración
             </Button>
             <div className="flex gap-4">
               <p className="font-roboto text-white text-[20px]">NODO A:</p>{' '}
               <span className="font-roboto text-success text-[20px]">Id: 0000</span>
             </div>
-            <Button type="success-light" size="sm" maxWith={false}>
+            <Button type="success-light" size="sm" maxWith={false} onClick={() => openModal('configuracion-de-nodo')}>
               Configuración
             </Button>
+            <Modal<undefined>
+            idModal="configuracion-de-nodo"
+            ModalContent={ConfiguracionDeNodo}
+            closed={modalClosed}
+            crossClose
+            outsideClose
+          />
           </div>
-        </div>
+        </div>  
       </div>
     </div>
   )
