@@ -1,17 +1,13 @@
 import { readFileSync, writeFileSync } from 'fs'
 import path from 'path'
 
-interface Props {
-  urlDataJson: string
-}
-
 export interface Operario {
   id: number
   name: string
 }
 
-export const OperariosStore = ({ urlDataJson }: Props) => {
-  urlDataJson = path.join(__dirname, '../../resources/data/', `${urlDataJson}`)
+export const OperariosStore = () => {
+  const urlDataJson = path.join(__dirname, '../../resources/data/operarios.json')
   return {
     all: async () => JSON.parse(await readFileSync(urlDataJson).toString()) as Operario[],
     get: async (id: number) =>

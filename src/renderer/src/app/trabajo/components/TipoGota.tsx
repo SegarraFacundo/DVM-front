@@ -25,10 +25,10 @@ export function TipoGota ({ close, acept }: ModalProps<undefined>) {
         </Button>
       </div>
       <div className='flex flex-row gap-4 justify-end'>
-        <Button type='error' onClick={close}>
+        <Button type='error' onClick={close} maxWith={false}>
           Cancelar
         </Button>
-        <Button type='success' onClick={acept} disabled={!tipoGotaseleccionada}>
+        <Button type='success' onClick={acept} disabled={!tipoGotaseleccionada} maxWith={false}>
           Confirmar
         </Button>
       </div>

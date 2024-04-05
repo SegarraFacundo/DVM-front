@@ -136,7 +136,7 @@ export default function ConfiguracionGeneral(): JSX.Element {
               className="bg-dark w-full flex items-center justify-evenly rounded-[5px] mr-8 p-4 border border-solid border-[#fff] pl-[18px] text-white"
               onClick={() => handleClickDropdown('temperatura')}
             >
-               {unidades.find(u => u.estaSeleccionada && u.tipo === 'temperatura' )?.unidad}
+               °{unidades.find(u => u.estaSeleccionada && u.tipo === 'temperatura' )?.unidad}
               <svg
                 width="16"
                 height="9"

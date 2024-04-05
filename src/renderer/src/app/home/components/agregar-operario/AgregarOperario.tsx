@@ -29,10 +29,10 @@ export default function AgregarOperario({ close }: ModalProps<undefined>) {
         <InputText label='Identificación' name='lote' register={register} errors={errors} options={{ required: true }} />
       </div>
       <div className='w-full flex flex-row mt-8 gap-4 justify-end'>
-        <Button type='error' onClick={close}>
+        <Button type='error' onClick={close} maxWith={false}>
           Cancelar
         </Button>
-        <Button type='success' onClick={handleSubmit(submit)}>
+        <Button type='success' onClick={handleSubmit(submit)} maxWith={false}>
           Agregar
         </Button>
       </div>

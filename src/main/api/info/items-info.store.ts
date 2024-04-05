@@ -1,10 +1,6 @@
 import { readFileSync } from 'fs'
 import path from 'path'
 
-interface Props {
-  urlDataJson: string
-}
-
 export interface ItemInfoData {
   icon: string
   title: string
@@ -13,8 +9,8 @@ export interface ItemInfoData {
   info: string
 }
 
-export const ItemsInfoStore = ({ urlDataJson }: Props) => {
-  urlDataJson = path.join(__dirname, '../../resources/data/', `${urlDataJson}`)
+export const ItemsInfoStore = () => {
+  const urlDataJson = path.join(__dirname, '../../resources/data/items-info.json')
   return {
     all: async () => JSON.parse(await readFileSync(urlDataJson).toString()) as ItemInfoData[],
   }

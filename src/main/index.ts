@@ -3,6 +3,7 @@ import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 
+
 import { OperariosStore } from './api/operarios/operarios.store'
 import { TiposAplicacionesStore } from './api/tipos-aplicaciones/tipos-aplicaciones.store'
 import { ItemsMenuStore } from './api/menu/items-menu.store'
@@ -13,6 +14,11 @@ import './api/socket/socket'
 import { NodosStore } from './api/nodos/nodos.store'
 import { Configuraciones } from './api/configuraciones/configuraciones'
 import { UnidadesStore } from './api/unidades/unidades.store'
+import { ConfiguracionLogger } from './logs/configuracion-logger'
+import log from 'electron-log/main'
+
+log.initialize()
+ConfiguracionLogger()
 
 function createWindow(): void {
   // Create the browser window.
@@ -62,8 +68,6 @@ app.whenReady().then(() => {
     optimizer.watchWindowShortcuts(window)
   })
 
-
-
   createWindow()
 
   app.on('activate', function () {
@@ -71,6 +75,8 @@ app.whenReady().then(() => {
     // dock icon is clicked and there are no other windows open.
     if (BrowserWindow.getAllWindows().length === 0) createWindow()
   })
+
+  log.info('Comenzo la aplicacion...')
 })
 
 // Quit when all windows are closed, except on macOS. There, it's common
@@ -78,6 +84,7 @@ app.whenReady().then(() => {
 // explicitly with Cmd + Q.
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
+    log.info('Aplicacion cerrada...')
     app.quit()
   }
 })
@@ -85,99 +92,123 @@ app.on('window-all-closed', () => {
 // In this file you can include the rest of your app"s specific main process
 // code. You can also put them in separate files and require them here.
 
-const operariosStore = OperariosStore({
-  urlDataJson: 'operarios.json'
-})
+const operariosStore = OperariosStore()
 
 ipcMain.handle('getOperariosAsync', async () => {
-  return await operariosStore.all()
+  const operarios = await operariosStore.all()
+  log.info('Operarios: %j', operarios)
+  return operarios
 })
 
 ipcMain.handle('addOperarioAsync', async (_: IpcMainInvokeEvent, name: string) => {
-  return await operariosStore.add({ name })
+  const nuevoOperario = await operariosStore.add({ name })
+  log.info('Nuevo operario: %j', nuevoOperario)
+  return nuevoOperario
 })
 
 ipcMain.handle('removeOperarioAsync', async (_: IpcMainInvokeEvent, id: number) => {
-  return await operariosStore.remove(id)
+  const operarioEliminado = await operariosStore.remove(id)
+  log.info('Operario eliminado: %j', operarioEliminado)
+  return operarioEliminado
 })
 
-const lotesStore = LotesStore({
-  urlDataJson: 'lotes.json'
-})
+const lotesStore = LotesStore()
 
 ipcMain.handle('getLotesAsync', async () => {
-  return await lotesStore.all()
+  const lotes = await lotesStore.all()
+  log.info('Lotes: %j', lotes)
+  return lotes
 })
 
 ipcMain.handle('addLoteAsync', async (_: IpcMainInvokeEvent, name: string) => {
-  return await lotesStore.add({ name })
+  const nuevoLote = await lotesStore.add({ name })
+  log.info('Nuevo lote: %j', nuevoLote)
+  return nuevoLote
 })
 
 ipcMain.handle('removeLoteAsync', async (_: IpcMainInvokeEvent, id: number) => {
-  return await lotesStore.remove(id)
+  const loteEliminado = await lotesStore.remove(id)
+  log.info('Lote eliminado: %j', loteEliminado)
+  return loteEliminado
 })
 
-const tiposAplicacionesStore = TiposAplicacionesStore({
-  urlDataJson: 'tipos-aplicaciones.json'
-})
+const tiposAplicacionesStore = TiposAplicacionesStore()
 
 ipcMain.handle('getTiposAplicacionesAsync', async () => {
-  return await tiposAplicacionesStore.all()
+  const tiposAplicaciones = await tiposAplicacionesStore.all()
+  log.info('Tipos de Aplicaciones: %j', tiposAplicaciones)
+  return tiposAplicaciones
 })
 
-const itemsMenuStore = ItemsMenuStore({
-  urlDataJson: 'items-menu.json'
-})
+const itemsMenuStore = ItemsMenuStore()
 
 ipcMain.handle('getItemsMenuAsync', async () => {
-  return await itemsMenuStore.all()
+  const items = await itemsMenuStore.all()
+  log.info('Items del menu: %j', items)
+  return items
 })
 
-const itemsInfoStore = ItemsInfoStore({
-  urlDataJson: 'items-info.json'
-})
+const itemsInfoStore = ItemsInfoStore()
 
 ipcMain.handle('getItemsInfoAsync', async () => {
-  return await itemsInfoStore.all()
+  const items = await itemsInfoStore.all()
+  log.info('Info meterologico: %j', items)
+  return items
 })
 
 const nodosStore = NodosStore()
 ipcMain.handle('cambiarHabilitacionNodo', async (_: IpcMainInvokeEvent, idNodo: number) => {
-  return await nodosStore.cambiarHabilitacionNodo(idNodo)
+  const nodoCambiado = await nodosStore.cambiarHabilitacionNodo(idNodo)
+  log.info('Cambiar habilitacion del nodo: %j', nodoCambiado.find(n => n.id === idNodo))
+  return nodoCambiado
 })
 
-ipcMain.handle('cambiarHabilitacionAspersor', async (_: IpcMainInvokeEvent, idNodo: number, idAspersor: number, deshabilitado: boolean) => {
-  return await nodosStore.cambiarHabilitacionAspersor(idNodo, idAspersor, deshabilitado)
-})
+ipcMain.handle(
+  'cambiarHabilitacionAspersor',
+  async (_: IpcMainInvokeEvent, idNodo: number, idAspersor: number, deshabilitado: boolean) => {
+    const nodoConElAspersorCambiado = await nodosStore.cambiarHabilitacionAspersor(idNodo, idAspersor, deshabilitado)
+    log.info('Cambiar habilitacion del aspersor: %j', nodoConElAspersorCambiado.find(n => n.id === idNodo)?.aspersores.find(a => a.id === idAspersor))
+    return nodoConElAspersorCambiado
+  }
+)
 
 ipcMain.handle('apagarDispositivo', () => {
+  log.warn('Apagando dispositivo')
   shutdown.shutdown()
 })
 
 ipcMain.handle('isThemeModeDark', () => {
+  log.info('Es modo dark: %s', nativeTheme.shouldUseDarkColors)
   return nativeTheme.shouldUseDarkColors
 })
 
 const configuraciones = Configuraciones()
 
 ipcMain.handle('setBrillo', async (_: IpcMainInvokeEvent, porcentaje: number) => {
+  log.info('Cambiando brilla a la pantalla: %s', nativeTheme.shouldUseDarkColors)
   return await configuraciones.setBrillo(porcentaje)
 })
 
 ipcMain.handle('getBrilloActual', async () => {
-  return await configuraciones.getBrilloActual()
+  const brilloActual = await configuraciones.getBrilloActual()
+  log.info('Obteniendo el brillo actual: %s', brilloActual)
+  return brilloActual
 })
 
 const unidadesStore = UnidadesStore()
 
 ipcMain.handle('getUnidadesAsync', async () => {
-  return await unidadesStore.all()
+  const unidades =  await unidadesStore.all()
+  log.info('Unidades: %s', unidades)
+  return unidades
 })
 
 ipcMain.handle('cambiarUnidadVelocidad', async (_: IpcMainInvokeEvent, id: 1 | 2) => {
+  log.info('Cambiando unidad de velocidad: %s', id == 1? 'Km/h': 'mi/h')
   return await unidadesStore.cambiarUnidadVelocidad(id)
 })
 
 ipcMain.handle('cambiarUnidadTemperatura', async (_: IpcMainInvokeEvent, id: 1 | 2) => {
+  log.info('Cambiando unidad de temperatura: %s', id == 1? '°C': '°F')
   return await unidadesStore.cambiarUnidadTemperatura(id)
 })

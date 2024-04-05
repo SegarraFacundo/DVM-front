@@ -7,6 +7,7 @@ import {
   ServerToClientEvents
 } from '@renderer/lib/socket/interfaces/socket-client.interface'
 import { DatosMeteorologicos } from '@renderer/app/home/interfaces/datos-meteorologicos.interface'
+import { DataUnidad } from '@renderer/app/home/interfaces/data-unidad.interface'
 
 const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io('/')
 
@@ -15,11 +16,18 @@ export function PanelLateralDerecha() {
   const divContenidoRef = useRef<HTMLDivElement>(null)
   const divPestaniaRef = useRef<HTMLDivElement>(null)
   const [datosMeteorologicos, setDatosMeteorologicos] = useState<DatosMeteorologicos>()
+  const [unidades, setUnidades] = useState<DataUnidad[]>([])
+
+  const fetchUnidades = async () => {
+    const result = await window.api.invoke.getUnidadesAsync()
+    setUnidades(result)
+  }
 
   useEffect(() => {
     addToggle('panel-lateral-derecha')
 
     socket.on('getDatosMeteorologicos', (res) => setDatosMeteorologicos(res))
+    fetchUnidades()
 
     const closeClick = (e: Event) => {
       if (
@@ -114,7 +122,7 @@ export function PanelLateralDerecha() {
               {datosMeteorologicos?.temperatura !== undefined
                 ? datosMeteorologicos?.temperatura
                 : '-'}
-              °<span className="text-[20px]">C</span>
+              °<span className="text-[20px]">{unidades.find(u => u.estaSeleccionada && u.tipo === 'temperatura' )?.unidad}</span>
             </h1>
           </div>
         </div>
@@ -126,6 +134,7 @@ export function PanelLateralDerecha() {
                 {datosMeteorologicos?.puntoDeRocio !== undefined
                   ? datosMeteorologicos?.puntoDeRocio
                   : '-'}
+                  °<span className="text-[20px]">{unidades.find(u => u.estaSeleccionada && u.tipo === 'temperatura' )?.unidad}</span>
               </h1>
             </div>
           </div>

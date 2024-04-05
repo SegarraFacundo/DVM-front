@@ -136,7 +136,9 @@ const startJob = (nodo: Nodo): boolean => {
         ? 0
         : nodo.aspersores[3].rpmDeseado ?? 0
   }
-  console.log(send)
+
+  console.info('Comenzo el trabajo: %j', send)
+
   return client.write(Buffer.from(JSON.stringify(send)))
 }
 
@@ -169,6 +171,7 @@ const getDescripcionEstado = (idEstado: IdsEstadoAspersorType): DescripcionEstad
 }
 
 const startTestingAsync = async (socket): Promise<void> => {
+  console.info('Iniciando el testing...')
   const nodosStore = NodosStore()
   const nodos = await nodosStore.all()
   const send = {
@@ -230,20 +233,22 @@ const startTestingAsync = async (socket): Promise<void> => {
       }
     })
     socket.emit('getStateNodo', datos)
-  } else {
+  } else {    
+    console.info('Comenzo el testing: %j', send)
     client.write(Buffer.from(JSON.stringify(send)))
   }
 }
 
 client.on('error', function (err) {
-  console.log('Error : ', err)
+  console.error('Error socket: ', err)
 })
 
 client.on('close', function () {
-  console.log('socket closed')
+  console.warn('socket closed')
 })
 
 io.on('connection', async (socket) => {
+  console.info('Socket conectado...')
   let runningJob = false
   const nodosStore = NodosStore()
   socket.on('testing', () => {
@@ -251,6 +256,7 @@ io.on('connection', async (socket) => {
   })
 
   socket.on('startJob', async (rpmDeseado: number) => {
+    console.info('Comenzo el trabajo con RPM deseado:', rpmDeseado)
     runningJob = true
     listenJob()
     await nodosStore.startAllNodo(rpmDeseado)
@@ -266,7 +272,6 @@ io.on('connection', async (socket) => {
   })
 
   let estadosNodosJob: EstadoNodoJob[]
-  console.log('process.env.NODE_ENV: %s', process.env.NODE_ENV)
 
   const listenJob = (): void => {
     if (process.env.NODE_ENV === 'development') {
@@ -364,6 +369,7 @@ io.on('connection', async (socket) => {
         if (isJsonString(infoData)) {
           const infoDataJson = JSON.parse(infoData)
           if (infoDataJson && infoDataJson.command === 'estadoGeneralNodos') {
+
             estadosNodosJob = infoDataJson.nodos
             const datos: Nodo[] = nodos.map((n) => {
               const estadoNodo = estadosNodosJob.find((ean) => n.id === ean.nodo)
@@ -415,6 +421,8 @@ io.on('connection', async (socket) => {
                 ]
               }
             })
+
+            console.info('Emitiendo estado del nodo: %j', datos)
             socket.emit('getStateNodo', datos)
           }
         }
@@ -442,62 +450,8 @@ io.on('connection', async (socket) => {
           const datos: DatosMeteorologicos = {
             ...(infoDataJson as DatosMeteorologicos)
           }
+          console.info('Emitiendo datos meteorologicos: %j', datos)
           socket.emit('getDatosMeteorologicos', datos)
-        }
-        if (infoDataJson && infoDataJson.command === 'estadoGeneralNodos') {
-          estadosNodosJob = infoDataJson.nodos
-          const nodos = await nodosStore.all()
-          const datos: Nodo[] = nodos.map((n) => {
-            const estadoNodo = estadosNodosJob.find((ean) => n.id === ean.nodo)
-            return {
-              id: n.id,
-              nombre: n.nombre,
-              deshabilitado: n.deshabilitado ?? false,
-              aspersores: [
-                {
-                  id: 1,
-                  estado: {
-                    id: estadoNodo?.state1 ?? -1,
-                    descripcion: getDescripcionEstado(estadoNodo?.state1 ?? -1)
-                  },
-                  rpm: estadoNodo?.rpm1,
-                  rpmDeseado: n.aspersores.find((a) => a.id === 1)?.rpmDeseado,
-                  deshabilitado: n.aspersores.find((a) => a.id === 1)?.deshabilitado ?? false
-                },
-                {
-                  id: 2,
-                  estado: {
-                    id: estadoNodo?.state2 ?? -1,
-                    descripcion: getDescripcionEstado(estadoNodo?.state2 ?? -1)
-                  },
-                  rpm: estadoNodo?.rpm2,
-                  rpmDeseado: n.aspersores.find((a) => a.id === 2)?.rpmDeseado,
-                  deshabilitado: n.aspersores.find((a) => a.id === 2)?.deshabilitado ?? false
-                },
-                {
-                  id: 3,
-                  estado: {
-                    id: estadoNodo?.state3 ?? -1,
-                    descripcion: getDescripcionEstado(estadoNodo?.state3 ?? -1)
-                  },
-                  rpm: estadoNodo?.rpm3,
-                  rpmDeseado: n.aspersores.find((a) => a.id === 3)?.rpmDeseado,
-                  deshabilitado: n.aspersores.find((a) => a.id === 3)?.deshabilitado ?? false
-                },
-                {
-                  id: 4,
-                  estado: {
-                    id: estadoNodo?.state4 ?? -1,
-                    descripcion: getDescripcionEstado(estadoNodo?.state4 ?? -1)
-                  },
-                  rpm: estadoNodo?.rpm4,
-                  rpmDeseado: n.aspersores.find((a) => a.id === 4)?.rpmDeseado,
-                  deshabilitado: n.aspersores.find((a) => a.id === 4)?.deshabilitado ?? false
-                }
-              ]
-            }
-          })
-          socket.emit('getStateNodo', datos)
         }
       }
     })

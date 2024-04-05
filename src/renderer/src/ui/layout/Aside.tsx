@@ -29,7 +29,7 @@ export function Aside() {
   return (
     <aside
       className={clsx(
-        'fixed top-0 left-0 z-20 mt-[80px] w-[277px] h-screen transition-transform  bg-success rounded-r-lg dark:bg-success flex flex-col justify-between',
+        'fixed top-0 left-0 z-40 mt-[80px] w-[277px] h-screen transition-transform  bg-success rounded-r-lg dark:bg-success flex flex-col justify-between',
         {
           '-translate-x-full': !getStateToggle('menu-lateral')
         }

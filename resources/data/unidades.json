@@ -1,1 +1,1 @@
-[{"id":1,"unidad":"Km/h","tipo":"velocidad","estaSeleccionada":false},{"id":2,"unidad":"mi/h","tipo":"velocidad","estaSeleccionada":true},{"id":1,"unidad":"°C","tipo":"temperatura","estaSeleccionada":false},{"id":2,"unidad":"°F","tipo":"temperatura","estaSeleccionada":true}]
+[{"id":1,"unidad":"Km/h","tipo":"velocidad","estaSeleccionada":false},{"id":2,"unidad":"mi/h","tipo":"velocidad","estaSeleccionada":true},{"id":1,"unidad":"C","tipo":"temperatura","estaSeleccionada":false},{"id":2,"unidad":"F","tipo":"temperatura","estaSeleccionada":true}]

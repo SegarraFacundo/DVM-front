@@ -22,7 +22,6 @@ export default function ConfiguracionAvanzada(): JSX.Element {
   }, [])
 
   const handleIngresarClick = (): void => {
-    console.log(inputRef.current ? inputRef.current.value : 'Sin valor')
     if (inputRef.current && PASSWORD_CONFIGURACION_AVANZADA === inputRef.current.value) {
       setError(false)
       setEstaHabilitado(true)
@@ -76,7 +75,7 @@ export default function ConfiguracionAvanzada(): JSX.Element {
       {!estaHabilitado && <Ajustes />}
       <div className="flex w-full items-end justify-end mb-10">
         <Button type="success" size="lg" maxWith={false} onClick={handleIngresarClick}>
-          Ingresar
+          Guardar
         </Button>
       </div>
     </article>

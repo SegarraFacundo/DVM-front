@@ -4,7 +4,7 @@ import path from 'path'
 export interface Unidad {
   id: 1 | 2
   tipo: 'velocidad' | 'temperatura'
-  unidad: 'Km/h' | 'mi/h' | '°C' | '°F'
+  unidad: 'Km/h' | 'mi/h' | 'C' | 'F'
   estaSeleccionada: boolean
 }
 

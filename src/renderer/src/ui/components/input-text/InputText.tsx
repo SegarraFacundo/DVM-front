@@ -50,12 +50,9 @@ export function InputText({ label, name, register, options, errors }: Props): JS
 
   const onChange = (input: string): void => {
     setState({ input })
-    console.log('Input changed', input)
   }
 
   const onKeyPress = (button: string): void => {
-    console.log('Button pressed', button)
-
     if (button === '{enter}') setShowKeyboard(false)
 
     /**

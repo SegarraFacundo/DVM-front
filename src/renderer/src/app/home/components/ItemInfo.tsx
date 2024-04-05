@@ -42,13 +42,13 @@ export function ItemInfo({ data }: Props): JSX.Element {
       case 'Temperatura':
         resp =
           datosMeteorologicos?.temperatura !== undefined
-            ? { valor: datosMeteorologicos?.temperatura?.toString() ?? '', unidad: unidades.find(u => u.estaSeleccionada && u.tipo === 'temperatura')?.unidad?? '' }
+            ? { valor: datosMeteorologicos?.temperatura?.toString() ?? '', unidad: '°' + unidades.find(u => u.estaSeleccionada && u.tipo === 'temperatura')?.unidad?? '' }
             : { valor: '-', unidad: '' }
         break
       case 'Rocío':
         resp =
           datosMeteorologicos?.puntoDeRocio !== undefined
-            ? { valor: datosMeteorologicos?.puntoDeRocio?.toString() ?? '', unidad: data.unidad }
+            ? { valor: datosMeteorologicos?.puntoDeRocio?.toString() ?? '', unidad: '°' + unidades.find(u => u.estaSeleccionada && u.tipo === 'temperatura')?.unidad?? '' }
             : { valor: '-', unidad: '' }
         break
     }

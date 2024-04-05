@@ -4,12 +4,12 @@ import { ItemInfo } from './components/ItemInfo'
 import { ItemInfoData } from './interfaces/item-info.interface'
 import { Modal } from '../../ui/components/modal/Modal'
 import { FormInitial } from './components/form-initial/FormInitial'
-import clsx from 'clsx'
 import { useModal } from '../../ui/components/modal/hooks/UseModal'
 import { Dialog } from '../../ui/components/dialog/Dialog'
 import { useNavigate } from 'react-router-dom'
 import { useFormInitial } from './components/form-initial/hooks/UseFormInitial'
 import { Button } from '@renderer/ui/components/Button'
+import log from 'electron-log/renderer';
 
 function Home() {
   const navigate = useNavigate()
@@ -23,6 +23,7 @@ function Home() {
 
   const fetchData = async () => {
     const result = await window.api.invoke.getItemsInfoAsync()
+    log.info('item', result)
     setData(result)
   }
 

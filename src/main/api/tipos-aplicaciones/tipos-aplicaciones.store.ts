@@ -10,8 +10,8 @@ export interface TipoAplicacion {
   name: string
 }
 
-export const TiposAplicacionesStore = ({ urlDataJson }: Props) => {
-  urlDataJson = path.join(__dirname, '../../resources/data/', `${urlDataJson}`)
+export const TiposAplicacionesStore = () => {
+  const urlDataJson = path.join(__dirname, '../../resources/data/tipos-aplicaciones.json')
   return {
     all: async () => JSON.parse(await readFileSync(urlDataJson).toString()) as TipoAplicacion[],
     get: async (id: number) =>
