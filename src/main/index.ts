@@ -16,6 +16,7 @@ import { Configuraciones } from './api/configuraciones/configuraciones'
 import { UnidadesStore } from './api/unidades/unidades.store'
 import { ConfiguracionLogger } from './logs/configuracion-logger'
 import log from 'electron-log/main'
+import { ConfiguracionesAvanzadas, ConfiguracionesAvanzadasStore } from './api/configuraciones/avanzadas/configuraciones-avanzadas.store'
 
 log.initialize()
 ConfiguracionLogger()
@@ -157,6 +158,14 @@ ipcMain.handle('getItemsInfoAsync', async () => {
 })
 
 const nodosStore = NodosStore()
+
+ipcMain.handle('getNodosAsync', async () => {
+  const nodos = await nodosStore.all()
+  log.info('Nodos: %j', nodos)
+  return nodos
+})
+
+
 ipcMain.handle('cambiarHabilitacionNodo', async (_: IpcMainInvokeEvent, idNodo: number) => {
   const nodoCambiado = await nodosStore.cambiarHabilitacionNodo(idNodo)
   log.info('Cambiar habilitacion del nodo: %j', nodoCambiado.find(n => n.id === idNodo))
@@ -211,4 +220,18 @@ ipcMain.handle('cambiarUnidadVelocidad', async (_: IpcMainInvokeEvent, id: 1 | 2
 ipcMain.handle('cambiarUnidadTemperatura', async (_: IpcMainInvokeEvent, id: 1 | 2) => {
   log.info('Cambiando unidad de temperatura: %s', id == 1? '°C': '°F')
   return await unidadesStore.cambiarUnidadTemperatura(id)
+})
+
+const configuracionesAvanzadasStore = ConfiguracionesAvanzadasStore()
+
+ipcMain.handle('getConfiguracionesAvanzadasAsync', async () => {
+  const configuracionesAvanzadas =  await configuracionesAvanzadasStore.get()
+  log.info('Obteniendo configuraciones Avanzadas: %s', configuracionesAvanzadas)
+  return configuracionesAvanzadas
+})
+
+ipcMain.handle('editConfiguracionesAvanzadasAsync', async (_: IpcMainInvokeEvent, value: ConfiguracionesAvanzadas) => {
+  const configuracionesAvanzadasEdit =  await configuracionesAvanzadasStore.edit(value)
+  log.info('Editando Configuraciones Avanzadas: %s', configuracionesAvanzadasEdit)
+  return configuracionesAvanzadasEdit
 })

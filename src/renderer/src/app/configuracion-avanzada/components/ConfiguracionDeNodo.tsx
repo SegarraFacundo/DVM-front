@@ -3,39 +3,50 @@ import { Button } from '@renderer/ui/components/Button'
 import { Dialog } from '@renderer/ui/components/dialog/Dialog'
 import { Modal, ModalProps } from '@renderer/ui/components/modal/Modal'
 import { useModal } from '@renderer/ui/components/modal/hooks/UseModal'
+import { NodoData } from '@renderer/ui/components/nodo/interfaces/nodo-data'
 import clsx from 'clsx'
 import { useEffect, useState } from 'react'
 
 const dataSelect: DataSelect[] = [
   {
     id: 1,
-    name: "Ruedas"
+    name: 'Ruedas'
   },
   {
     id: 2,
-    name: "No conectado"
+    name: 'No conectado'
   },
   {
     id: 3,
-    name: "Izquierda"
+    name: 'Izquierda'
   },
   {
     id: 4,
-    name: "Derecha"
+    name: 'Derecha'
   },
   {
     id: 5,
-    name: "Centro"
+    name: 'Centro'
   },
   {
     id: 6,
-    name: "Sin asignar"
+    name: 'Sin asignar'
   }
 ]
-export function ConfiguracionDeNodo({ close, acept }: ModalProps<undefined>): JSX.Element {
+
+interface Props {
+  close?,
+  acept?,
+  nodoData: NodoData
+}
+export function ConfiguracionDeNodo({
+  close,
+  acept,
+  nodoData
+}: Props): JSX.Element {
   const { getStateModal, addModal, toggleOpenedState } = useModal()
   const [error, setError] = useState<boolean>(false)
-
+  
   const openModal = (idModal: string): void => {
     if (getStateModal(idModal)) return
     toggleOpenedState(idModal)
@@ -51,17 +62,20 @@ export function ConfiguracionDeNodo({ close, acept }: ModalProps<undefined>): JS
 
   useEffect(() => {
     addModal('restablecer-configuracion-de-nodo')
-  }, [])
+  }, [nodoData])
 
   return (
     <div className="flex flex-col gap-8 p-4">
-      <h1 className="font-roboto font-bold text-success text-[32px]">Nodo A</h1>
+      <h1 className="font-roboto font-bold text-success text-[32px]">
+        Nodo {nodoData?.nombre}
+      </h1>
       <div className="flex flex-col gap-4">
         <label className="font-roboto font-bold text-success text-[20px] tracking-[0] leading-[normal] whitespace-nowrap">
           Identificación
         </label>
         <div className="flex gap-4 items-center">
           <input
+            value={nodoData?.id}
             className={clsx(
               'h-[60px] w-full rounded-[5px] bg-[#172530] border border-solid border-[#fff] pl-[18px] text-white p-4',
               {
@@ -74,17 +88,15 @@ export function ConfiguracionDeNodo({ close, acept }: ModalProps<undefined>): JS
           />
         </div>
       </div>
-      <div className="flex items-center justify-between gap-8">
-        <label className="font-roboto font-bold text-white text-[20px]">A - 1</label>
-       <Select data={dataSelect} />
-        <label className="font-roboto font-bold text-white text-[20px]">A - 1</label>
-        <Select data={dataSelect} />
-      </div>
-      <div className="flex items-center justify-between gap-8">
-        <label className="font-roboto font-bold text-white text-[20px]">A - 1</label>
-       <Select data={dataSelect} />
-        <label className="font-roboto font-bold text-white text-[20px]">A - 1</label>
-        <Select data={dataSelect} />
+      <div className="grid grid-cols-[min-content_minmax(100px,_1fr)_min-content_minmax(100px,_1fr)] gap-4 items-center">
+      {nodoData?.aspersores.map((a) => (
+        <>
+          <label className="font-roboto font-bold text-white text-[20px] whitespace-nowrap">
+            {nodoData?.nombre} - {a.id}
+          </label>
+          <Select data={dataSelect} />
+        </>
+      ))}
       </div>
       <div className="flex flex-row gap-4 justify-end">
         <Button type="error-light" onClick={() => openModal('restablecer-configuracion-de-nodo')}>
