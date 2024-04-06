@@ -1,15 +1,21 @@
-import { readFileSync, writeFileSync } from 'fs'
+import { existsSync, readFileSync, writeFileSync } from 'fs'
 import path from 'path'
+import { APP_DATA_PATH } from '../../utils/urls'
 
-export type IdsEstadoAspersorType = -1 | 0 | 1 | 2 | 3 | 4 | 5
+export type IdsEstadoAspersorType = -1 | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
 export type DescripcionEstadoAspersorType =
   | ''
   | 'OK'
-  | 'Falla en el sensor'
-  | 'Bloqueo del motor'
-  | 'Sobrecalentamiento del motor'
-  | 'Motor desconectado'
-  | '5 Preguntar'
+  | 'Cortocircuito' // Grave
+  | 'Motor bloqueado' // Grave
+  | 'Motor no conectado'
+  | 'Sobrecorriente'
+  | 'Subcorriente'
+  | 'Baja tension'
+  | 'Error de sensor'
+  | 'RPM no alcanzada'
+  | 'Error de caudalimetro'
+  
 export interface Aspersor {
   id: 1 | 2 | 3 | 4
   estado: EstadoAspersor
@@ -53,7 +59,11 @@ export interface Nodo {
 }
 
 export const NodosStore = () => {
-  const urlDataJson = path.join(__dirname, '../../resources/data/nodos.json')
+  let urlDataJson = path.join(APP_DATA_PATH, 'nodos.json')
+  const urlDataJsonDefault = path.join(__dirname, '../../resources/data/nodos.json')
+  if (!existsSync(urlDataJson))
+    urlDataJson = urlDataJsonDefault
+  console.log("URL de los nodos: ", urlDataJson)
   return {
     all: async (): Promise<Nodo[]> =>
       JSON.parse(await readFileSync(urlDataJson).toString()) as Nodo[],

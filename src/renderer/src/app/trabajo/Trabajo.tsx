@@ -7,7 +7,7 @@ import { useModal } from '../../ui/components/modal/hooks/UseModal'
 import { Nodo } from '../../ui/components/nodo/Nodo'
 import { TipoGota } from './components/TipoGota'
 import { Button } from '../../ui/components/Button'
-import { useTipoGota } from './hooks/useTipoGota'
+import { TipoGotaType, useTipoGota } from './hooks/useTipoGota'
 import { Socket, io } from 'socket.io-client'
 import {
   ClientToServerEvents,
@@ -16,6 +16,7 @@ import {
 import { Dialog } from '@renderer/ui/components/dialog/Dialog'
 import { PanelLateralDerecha } from './components/PanelLateralDerecha'
 import { PanelLateralIzquierdo } from './components/PanelLateralIzquierdo'
+import { ConfiguracionesAvanzadasData } from '../configuracion-avanzada/interfaces/configuraciones-avanzadas-data'
 
 const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io('/')
 
@@ -28,6 +29,14 @@ export function Trabajo(): JSX.Element {
   const [runningJob, setRunningJob] = useState<boolean>(false)
   const { state } = useLocation()
   const [direccionViento, setDireccionViento] = useState<number>(0)
+  const [configuracionesAvanzadasData, setConfiguracionesAvanzadasData] =
+    useState<ConfiguracionesAvanzadasData>()
+
+  const fetchConfiguracionesAvanzadas = async () => {
+    const configuracionesAvanzadasData = await window.api.invoke.getConfiguracionesAvanzadasAsync()
+    console.info('fetchConfiguracionesAvanzadas: %j', configuracionesAvanzadasData)
+    setConfiguracionesAvanzadasData(configuracionesAvanzadasData)
+  }
 
   useEffect(() => {
     if (state && state.length > 0)
@@ -44,6 +53,7 @@ export function Trabajo(): JSX.Element {
     addModal('end-job')
     setTitle('Trabajo')
     socket.on('getDatosMeteorologicos', (res) => setDireccionViento(res.dirViento ?? 0))
+    fetchConfiguracionesAvanzadas()
   }, [])
 
   const modalClosed = (idModal: string, acept: boolean) => {
@@ -68,8 +78,16 @@ export function Trabajo(): JSX.Element {
     toggleOpenedState(idModal)
   }
 
+  const getRPMDeseado = (tipoGotaSeleccionada: TipoGotaType | undefined): number => {
+    let rpmDeseado: number = 3500
+    if (configuracionesAvanzadasData && tipoGotaSeleccionada)
+      rpmDeseado = configuracionesAvanzadasData.gota[tipoGotaSeleccionada.toLowerCase()]
+    console.log('RPM Deseado para el trabajo:', rpmDeseado)
+    return rpmDeseado
+  }
   const iniciarOPausarTrabajoClick = () => {
     if (runningJob) {
+
       socket.emit('stopJob')
       setNodos(
         nodos.map((nodo, i) => {
@@ -77,7 +95,7 @@ export function Trabajo(): JSX.Element {
         })
       )
     } else {
-      socket.emit('startJob', 3500)
+      socket.emit('startJob', getRPMDeseado(tipoGotaseleccionada))
       socket.on('getStateNodo', (nodos) => {
         if (nodos) {
           setNodos(
@@ -225,7 +243,12 @@ export function Trabajo(): JSX.Element {
           <div className="w-[70px]"></div>
         </div>
         <div className="flex flex-col justify-around gap-4">
-          <Button onClick={() => openModal('end-job')} type="error" size="lg" disabled={!runningJob}>
+          <Button
+            onClick={() => openModal('end-job')}
+            type="error"
+            size="lg"
+            disabled={!runningJob}
+          >
             Finalizar
           </Button>
 

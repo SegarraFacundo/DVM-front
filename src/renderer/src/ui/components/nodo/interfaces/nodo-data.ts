@@ -1,12 +1,17 @@
-export type IdsEstadoAspersorType = -1 | 0 | 1 | 2 | 3 | 4 | 5
+export type IdsEstadoAspersorType = -1 | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
 export type DescripcionEstadoAspersorType =
   | ''
   | 'OK'
-  | '1Sobrecorriente en motor'
-  | '2Sobrecorriente en motor'
-  | '3Sobrecorriente en motor'
-  | '4Sobrecorriente en motor'
-  | '5Sobrecorriente en motor'
+  | 'Cortocircuito' // Grave
+  | 'Motor bloqueado' // Grave
+  | 'Motor no conectado'
+  | 'Sobrecorriente'
+  | 'Subcorriente'
+  | 'Baja tension'
+  | 'Error de sensor'
+  | 'RPM no alcanzada'
+  | 'Error de caudalimetro'
+  
 export interface AspersorData {
   id: 1 | 2 | 3 | 4
   deshabilitado?: boolean

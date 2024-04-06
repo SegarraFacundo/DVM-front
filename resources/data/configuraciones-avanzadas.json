@@ -1,1 +1,9 @@
-{"ancho":"5","gota":{"fina":"2000","media":"2400","gruesa":"2800","custom":"3000"},"variacion":{"min":12,"max":"24"},"corriente":{"maximo":"2000","minimo":"1000","limite":"3000"},"sensorRPM":"on","electroValvula":"on"}
+{
+  "ancho": 5,
+  "gota": { "fina": 2000, "media": 2400, "gruesa": 2800, "custom": 3000 },
+  "variacion": { "min": 12, "max": 24 },
+  "corriente": { "maximo": 2000, "minimo": 1000, "limite": 3000 },
+  "sensorRPM": false,
+  "electroValvula": false,
+  "password": 12
+}

@@ -162,16 +162,14 @@ function Ajustes({ valueInicial, sendConfiguracionesAvanzadasData }: AjustesProp
       | 'sensorRPM'
       | 'electroValvula'
   ) => {
-    console.log(event.target.value)
-    if (type === 'ancho') configuracionesAvanzadasData[type] = event.target.value
+    if (type === 'ancho') configuracionesAvanzadasData[type] = parseFloat(event.target.value)
     else if (type === 'sensorRPM' || type === 'electroValvula')
-      configuracionesAvanzadasData[type] = event.target.value
-    else configuracionesAvanzadasData[type.split('.')[0]][type.split('.')[1]] = event.target.value
+      configuracionesAvanzadasData[type] = event.target.checked
+    else configuracionesAvanzadasData[type.split('.')[0]][type.split('.')[1]] = parseFloat(event.target.value)
 
     setConfiguracionesAvanzadasData(configuracionesAvanzadasData)
     sendConfiguracionesAvanzadasData({
-      ...configuracionesAvanzadasData,
-      ancho: event.target.value
+      ...configuracionesAvanzadasData
     })
   }
 
@@ -441,7 +439,7 @@ function Ajustes({ valueInicial, sendConfiguracionesAvanzadasData }: AjustesProp
           <div className="grid grid-cols-4 gap-4">
             {nodos?.map((nodoData, i) => {
               return (
-                <>
+                <div key={i}>
                   <div className="flex gap-4">
                     <p className="font-roboto text-white text-[20px]">NODO {nodoData.nombre}:</p>{' '}
                     <span className="font-roboto text-success text-[20px]">Id: {nodoData.id}</span>
@@ -464,7 +462,7 @@ function Ajustes({ valueInicial, sendConfiguracionesAvanzadasData }: AjustesProp
                     crossClose
                     outsideClose
                   />
-                </>
+                </div>
               )
             })}
           </div>

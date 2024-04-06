@@ -1,5 +1,6 @@
-import { readFileSync, writeFileSync } from 'fs'
+import { existsSync, readFileSync, writeFileSync } from 'fs'
 import path from 'path'
+import { APP_DATA_PATH } from '../../../utils/urls'
 
 export interface ConfiguracionesAvanzadas {
   ancho: number
@@ -20,10 +21,17 @@ export interface ConfiguracionesAvanzadas {
   }
   sensorRPM: true
   electroValvula: true
+  password: string
 }
 
 export const ConfiguracionesAvanzadasStore = () => {
-  const urlDataJson = path.join(__dirname, '../../resources/data/configuraciones-avanzadas.json')
+    
+  let urlDataJson = path.join(APP_DATA_PATH, 'configuraciones-avanzadas.json')
+  const urlDataJsonDefault = path.join(__dirname, '../../resources/data/configuraciones-avanzadas.json')
+  if (!existsSync(urlDataJson))
+    urlDataJson = urlDataJsonDefault
+  console.log("URL de las configuraciones avanzadas: ", urlDataJson)
+
   return {
     get: async () => await (JSON.parse(readFileSync(urlDataJson).toString()) as ConfiguracionesAvanzadas) ?? null,
     edit: async (value: ConfiguracionesAvanzadas) => {
@@ -32,6 +40,10 @@ export const ConfiguracionesAvanzadasStore = () => {
       await writeFileSync(urlDataJson, JSON.stringify(data))
 
       return data
+    },
+    login: async (password: string) => {
+      let data = await JSON.parse(readFileSync(urlDataJson).toString()) as ConfiguracionesAvanzadas
+      return data.password === password
     }
   }
 }

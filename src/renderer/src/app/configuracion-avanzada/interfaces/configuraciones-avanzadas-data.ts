@@ -17,4 +17,5 @@ export interface ConfiguracionesAvanzadasData {
   }
   sensorRPM: true
   electroValvula: true
+  password: string
 }

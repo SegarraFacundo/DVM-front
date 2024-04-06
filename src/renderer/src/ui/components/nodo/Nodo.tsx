@@ -116,11 +116,19 @@ function Aspersor({ data, animacion = false }: PropsAspersor): JSX.Element {
         break
       case 1:
       case 2:
+        setColor('#DC3545')
+        setSpeed('animate-[spin_0s_linear_infinite]')
+        break
       case 3:
       case 4:
       case 5:
-        setColor('#DC3545')
-        setSpeed('animate-[spin_0s_linear_infinite]')
+      case 6:
+      case 7:
+      case 8:
+      case 9:
+        setColor('#FFC107')
+        if (animacion) setSpeed('animate-[spin_40s_linear_infinite]')
+          else setSpeed('animate-[spin_0s_linear_infinite]')
         break
       case -1: // Deshabilitado
         setColor('#696767')
