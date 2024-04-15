@@ -9,6 +9,13 @@ import { ConfiguracionDeNodo } from './components/ConfiguracionDeNodo'
 import { useModal } from '@renderer/ui/components/modal/hooks/UseModal'
 import { NodoData } from '@renderer/ui/components/nodo/interfaces/nodo-data'
 import { ConfiguracionesAvanzadasData } from './interfaces/configuraciones-avanzadas-data'
+import { Socket, io } from 'socket.io-client'
+import {
+  ClientToServerEvents,
+  ServerToClientEvents
+} from './lib/socket/interfaces/socket-client.interface'
+
+const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io('/')
 
 const PASSWORD_CONFIGURACION_AVANZADA = '2024.C0NFIGURACI0N'
 
@@ -22,7 +29,7 @@ export default function ConfiguracionAvanzada(): JSX.Element {
     useState<ConfiguracionesAvanzadasData>(null)
 
   const fetchConfiguracionesAvanzadas = async () => {
-    const configuracionesAvanzadasData = await window.api.invoke.getConfiguracionesAvanzadasAsync()
+    const configuracionesAvanzadasData: ConfiguracionesAvanzadasData = await window.api.invoke.getConfiguracionesAvanzadasAsync()
     console.info('fetchConfiguracionesAvanzadas: %j', configuracionesAvanzadasData)
     setConfiguracionesAvanzadasData(configuracionesAvanzadasData)
   }
@@ -40,7 +47,7 @@ export default function ConfiguracionAvanzada(): JSX.Element {
   }
 
   const handleGuardarClick = (): void => {
-    if (inputRef.current && PASSWORD_CONFIGURACION_AVANZADA === inputRef.current.value) {
+    if (inputRef.current && configuracionesAvanzadasData.password === inputRef.current.value) {
       setError(false)
       setEstaHabilitado(true)
       editConfiguracionesAvanzadas()
@@ -90,7 +97,8 @@ export default function ConfiguracionAvanzada(): JSX.Element {
           </div>
           {error && (
             <p className="absolute top-[150%] text-white text-[20px]">
-              Contraseña incorrecta. Inténtelo nuevamente.
+              Contraseña incorrecta.
+              <br /> Inténtelo nuevamente.
             </p>
           )}
         </div>
@@ -103,7 +111,7 @@ export default function ConfiguracionAvanzada(): JSX.Element {
       )}
       <div className="flex w-full items-end justify-end mb-10">
         <Button type="success" size="lg" maxWith={false} onClick={handleGuardarClick}>
-          Guardar
+          Ingresar
         </Button>
       </div>
     </article>
@@ -121,6 +129,7 @@ function Ajustes({ valueInicial, sendConfiguracionesAvanzadasData }: AjustesProp
   const [nodos, setNodos] = useState<NodoData[]>([])
   const [configuracionesAvanzadasData, setConfiguracionesAvanzadasData] =
     useState<ConfiguracionesAvanzadasData>(valueInicial)
+  const [nodosDisponibles, setNodosDisponibles] = useState<number[]>([])
 
   const fetchNodos = async () => {
     const nodos = await window.api.invoke.getNodosAsync()
@@ -143,6 +152,7 @@ function Ajustes({ valueInicial, sendConfiguracionesAvanzadasData }: AjustesProp
 
   useEffect(() => {
     fetchNodos()
+    addModal('nodos-disponibles')
     nodos.forEach((_, i) => addModal('configuracion-de-nodo' + i))
   }, [])
 
@@ -154,22 +164,33 @@ function Ajustes({ valueInicial, sendConfiguracionesAvanzadasData }: AjustesProp
       | 'gota.media'
       | 'gota.gruesa'
       | 'gota.custom'
-      | 'variacion.min'
-      | 'variacion.max'
+      | 'variacionRPM'
       | 'corriente.maximo'
       | 'corriente.minimo'
       | 'corriente.limite'
       | 'sensorRPM'
       | 'electroValvula'
   ) => {
-    if (type === 'ancho') configuracionesAvanzadasData[type] = parseFloat(event.target.value)
+    if (type === 'ancho' || type === 'variacionRPM')
+      configuracionesAvanzadasData[type] = parseFloat(event.target.value)
     else if (type === 'sensorRPM' || type === 'electroValvula')
       configuracionesAvanzadasData[type] = event.target.checked
-    else configuracionesAvanzadasData[type.split('.')[0]][type.split('.')[1]] = parseFloat(event.target.value)
+    else
+      configuracionesAvanzadasData[type.split('.')[0]][type.split('.')[1]] = parseFloat(
+        event.target.value
+      )
 
     setConfiguracionesAvanzadasData(configuracionesAvanzadasData)
     sendConfiguracionesAvanzadasData({
       ...configuracionesAvanzadasData
+    })
+  }
+
+  const escanear = (): void => {
+    socket.emit('scan')
+    socket.on('rtaScan', (nodosDisponibles: number[]) => {
+      setNodosDisponibles(nodosDisponibles)
+      openModal('nodos-disponibles')
     })
   }
 
@@ -301,8 +322,8 @@ function Ajustes({ valueInicial, sendConfiguracionesAvanzadasData }: AjustesProp
               <label className="font-roboto text-white text-[20px]">Variación +/-</label>
               <div className="flex gap-4 items-center">
                 <input
-                  value={configuracionesAvanzadasData.variacion.max}
-                  onChange={($e) => onChangeConfiguracionesAvanzada($e, 'variacion.max')}
+                  value={configuracionesAvanzadasData.variacionRPM}
+                  onChange={($e) => onChangeConfiguracionesAvanzada($e, 'variacionRPM')}
                   className={clsx(
                     'h-[60px] w-[150px] rounded-[5px] bg-[#172530] border border-solid border-[#fff] pl-[18px] text-white p-4',
                     {
@@ -431,9 +452,19 @@ function Ajustes({ valueInicial, sendConfiguracionesAvanzadasData }: AjustesProp
               Modifica las especificaciones individuales de cada nodo
             </p>
           </div>
-          <Button type="success" maxWith={false} size="sm">
+          <Button type="success" maxWith={false} size="sm" onClick={escanear}>
             Escanear
           </Button>
+          <Modal<{
+            nodosDisponibles: number[]
+          }>
+            idModal={'nodos-disponibles'}
+            ModalContent={ResultadoDeEscaneoPuerto}
+            modalContentProps={{ nodosDisponibles }}
+            closed={modalClosed}
+            crossClose
+            outsideClose
+          />
         </div>
         <div className="w-full h-auto rounded-[5px] border border-solid border-success p-12 flex flex-col gap-8">
           <div className="grid grid-cols-4 gap-4">
@@ -469,5 +500,20 @@ function Ajustes({ valueInicial, sendConfiguracionesAvanzadasData }: AjustesProp
         </div>
       </div>
     </div>
+  )
+}
+
+interface Props {
+  nodosDisponibles: number[]
+}
+
+function ResultadoDeEscaneoPuerto({ nodosDisponibles }: Props): JSX.Element {
+  return (
+    <>
+      {nodosDisponibles.length > 0 &&
+        nodosDisponibles.map((n, i) => {
+          return <div key={i}>Valor: {n}</div>
+        })}
+    </>
   )
 }

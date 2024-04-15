@@ -6,10 +6,7 @@ export interface ConfiguracionesAvanzadasData {
     gruesa: number
     custom: number
   }
-  variacion: {
-    min: number
-    max: number
-  }
+  variacionRPM: number
   corriente: {
     maximo: number
     minimo: number
@@ -18,4 +15,13 @@ export interface ConfiguracionesAvanzadasData {
   sensorRPM: true
   electroValvula: true
   password: string
+}
+
+export interface SendConfiguracionesAvanzadasData {
+  variacionRPM: number
+  subcorriente: number
+  sobrecorriente: number
+  cortocicuito: number
+  sensor: boolean
+  electrovalvula: boolean
 }

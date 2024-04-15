@@ -1,15 +1,15 @@
 import { DataSelect } from '@renderer/app/home/interfaces/data-select.interface'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { FieldErrors, RegisterOptions, UseFormRegister } from 'react-hook-form'
 import clsx from 'clsx'
 import { useModal } from '../modal/hooks/UseModal'
 import { useFormInitial } from '@renderer/app/home/components/form-initial/hooks/UseFormInitial'
 import { Modal } from '../modal/Modal'
-import AgregarOperario from '@renderer/app/home/components/agregar-operario/AgregarOperario'
+import Agregar from '@renderer/app/home/components/agregar/Agregar'
 
 interface Props {
   label: string
-  name: string
+  name: 'operario' | 'lote' | 'tipoAplicacion'
   data: DataSelect[]
   options?: RegisterOptions
   register: UseFormRegister<Record<string, number>>
@@ -17,13 +17,18 @@ interface Props {
   withAdd?: boolean
 }
 
-const InputDropdown = ({ label, name, data, errors, withAdd = false }: Props) => {
+const InputDropdown = ({ label, name, data, errors, withAdd = false }: Props): JSX.Element => {
   const [inputValue, setInputValue] = useState('')
   const [selected, setSelected] = useState<DataSelect>()
   const [open, setOpen] = useState(false)
+  const [items, setItems] = useState<JSX.Element[]>([])
+  const [dataSelect, setDataSelect] = useState<DataSelect[]>([])
 
   const { setFormInitial, isValid, operario, lote, tipoAplicacion } = useFormInitial()
 
+  const divRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => setDataSelect(data), [data])
   useEffect(() => {
     if (selected) {
       const nuevoEstado = {
@@ -52,6 +57,40 @@ const InputDropdown = ({ label, name, data, errors, withAdd = false }: Props) =>
     }
   }, [selected])
 
+  useEffect(() => {
+    setItems(
+      dataSelect?.map((value) => (
+        <li
+          key={value?.name}
+          className={`p-2 text-sm border-b-[1px] border-b-success px-[30px] py-[20px] hover:bg-sky-600 hover:text-white
+        ${value?.name?.toLowerCase() === selected?.name?.toLowerCase() && 'bg-sky-600 text-white'}
+        ${value?.name?.toLowerCase().startsWith(inputValue) ? 'block' : 'hidden'}`}
+          onClick={() => {
+            if (value?.name?.toLowerCase() !== selected?.name.toLowerCase()) {
+              setSelected(value)
+              setOpen(false)
+              setInputValue('')
+            }
+          }}
+        >
+          {value?.name}
+        </li>
+      ))
+    )
+  }, [dataSelect])
+
+  useEffect(() => {
+    const handleClickOutside = (event): void => {
+      if (divRef.current && !divRef.current.contains(event.target)) {
+        setOpen(false)
+      }
+    }
+    document.addEventListener('click', handleClickOutside, true)
+    return () => {
+      document.removeEventListener('click', handleClickOutside, true)
+    }
+  }, [])
+
   return (
     <div
       className={clsx('relative flex flex-col min-w-[300px]', {
@@ -59,6 +98,7 @@ const InputDropdown = ({ label, name, data, errors, withAdd = false }: Props) =>
         'focus:border-error': errors && errors[name],
         'focus-visible:border-error': errors && errors[name]
       })}
+      ref={divRef}
     >
       <label className="font-roboto font-bold text-success text-[20px] tracking-[0] leading-[normal] whitespace-nowrap mb-[13px]">
         {label}
@@ -92,47 +132,43 @@ const InputDropdown = ({ label, name, data, errors, withAdd = false }: Props) =>
       <ul
         className={` absolute z-30 top-[5.5rem] bg-dark rounded-[5px] text-white mt-2 overflow-y-auto w-full ${open ? 'max-h-[140px]' : 'max-h-0'} `}
       >
-        {data?.map((value) => (
-          <li
-            key={value?.name}
-            className={`p-2 text-sm border-b-[1px] border-b-success px-[30px] py-[20px] hover:bg-sky-600 hover:text-white
-            ${value?.name?.toLowerCase() === selected?.name?.toLowerCase() && 'bg-sky-600 text-white'}
-            ${value?.name?.toLowerCase().startsWith(inputValue) ? 'block' : 'hidden'}`}
-            onClick={() => {
-              if (value?.name?.toLowerCase() !== selected?.name.toLowerCase()) {
-                setSelected(value)
-                setOpen(false)
-                setInputValue('')
-              }
+        {items}
+        {withAdd && (
+          <OpcionNuevo
+            name={name}
+            added={(value) => {
+              setDataSelect([...dataSelect, value])
+              setSelected(value)
+              setOpen(false)
             }}
-          >
-            {value?.name}
-          </li>
-        ))}
-        {withAdd && <OpcionNuevoOperario />}
+          />
+        )}
       </ul>
     </div>
   )
 }
 
-function OpcionNuevoOperario(): JSX.Element {
+interface PropsOpcionNuevo {
+  added: (data: DataSelect) => void
+  name: 'operario' | 'lote' | 'tipoAplicacion'
+}
+
+function OpcionNuevo({ added, name }: PropsOpcionNuevo): JSX.Element {
   const { addModal, toggleOpenedState } = useModal()
   useEffect(() => {
-    addModal('agregar-operario')
+    addModal('agregar' + name)
   }, [])
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>): void => {
-    toggleOpenedState('agregar-operario')
+    toggleOpenedState('agregar' + name)
     event.preventDefault()
   }
 
-  const modalClosed = (idModal: string, acept: boolean) => {
-
-  }
+  const modalClosed = (): void => {}
 
   return (
     <li className="flex justify-between items-center text-sm border-b-[1px] border-b-success px-[30px] h-[60px] hover:bg-sky-600 text-success font-bold">
-      Agregar Operario
+      Agregar {name.charAt(0).toUpperCase() + name.slice(1)}
       <div className="">
         <button
           onClick={handleClick}
@@ -141,13 +177,15 @@ function OpcionNuevoOperario(): JSX.Element {
           +
         </button>
       </div>
-      <Modal<undefined>
-        idModal="agregar-operario"
-        ModalContent={AgregarOperario}
-        modalContentProps={undefined}
-        closed={modalClosed}
+      <Modal<{
+        added
+        name
+      }>
+        idModal={'agregar' + name}
+        ModalContent={Agregar}
+        modalContentProps={{ added, name }}
         crossClose
-        outsideClose
+        closed={modalClosed}
       />
     </li>
   )

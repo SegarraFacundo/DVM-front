@@ -1,31 +1,24 @@
 import { useEffect, useRef, useState } from 'react'
-import { FieldErrors, RegisterOptions, UseFormRegister } from 'react-hook-form'
 import clsx from 'clsx'
 import './keyboard.css'
 import Keyboard from 'react-simple-keyboard'
 
 interface Props {
   label: string
-  name: string
-  options: RegisterOptions<Record<string, string>>
-  register: UseFormRegister<Record<string, string>>
-  errors?: FieldErrors
-  initialValue?: string
+  required?: boolean
+  onChange: (value: string) => void
 }
 
-export function InputText({ label, name, register, options, errors }: Props): JSX.Element {
+export function InputText({ label, required, onChange }: Props): JSX.Element {
   const [showKeyboard, setShowKeyboard] = useState<boolean>(false)
-  const [state, setState] = useState<{
-    layoutName?: string
-    input?: string
-  }>({
-    layoutName: 'default',
-    input: ''
-  })
 
+  const inputRef = useRef<HTMLInputElement>(null)
+  const [value, setValue] = useState<string>('')
   const divRef = useRef<HTMLDivElement>(null)
 
   const [theme, setTheme] = useState<string>('hg-theme-default')
+
+  const keyboardRef = useRef<any>(null)
 
   const setThemeKeyboard = async (): Promise<void> => {
     const result = await window.api.invoke.getOperariosAsync()
@@ -36,7 +29,12 @@ export function InputText({ label, name, register, options, errors }: Props): JS
     setThemeKeyboard()
 
     const handleClickOutside = (event): void => {
-      if (divRef.current && !divRef.current.contains(event.target)) {
+      if (
+        inputRef.current &&
+        !inputRef.current.contains(event.target) &&
+        divRef.current &&
+        !divRef.current.contains(event.target)
+      ) {
         setShowKeyboard(false)
       }
     }
@@ -46,32 +44,15 @@ export function InputText({ label, name, register, options, errors }: Props): JS
     }
   }, [])
 
-  let keyboardRef = useRef()
-
-  const onChange = (input: string): void => {
-    setState({ input })
-  }
-
   const onKeyPress = (button: string): void => {
-    if (button === '{enter}') setShowKeyboard(false)
-
-    /**
-     * If you want to handle the shift and caps lock buttons
-     */
-    if (button === '{shift}' || button === '{lock}') handleShift()
-  }
-
-  const handleShift = (): void => {
-    const layoutName = state.layoutName
-
-    setState({
-      layoutName: layoutName === 'default' ? 'shift' : 'default',
-      input: state.input
-    })
+    if (button === '{enter}') {
+      setShowKeyboard(false)
+    }
   }
 
   const onFocusInput = (): void => {
     setShowKeyboard(true)
+    keyboardRef.current.setInput(value)
   }
 
   const display = {
@@ -81,12 +62,6 @@ export function InputText({ label, name, register, options, errors }: Props): JS
     '{tab}': 'Tab',
     '{lock}': 'Lock',
     '{shift}': 'Shift'
-  }
-
-  const onChangeInput = (event): void => {
-    const input = event.target.value
-    setState({ input })
-    keyboardRef.setInput(input)
   }
 
   return (
@@ -99,30 +74,34 @@ export function InputText({ label, name, register, options, errors }: Props): JS
           className={clsx(
             'h-[64px] w-[366px] rounded-[5px] bg-[#172530] border border-solid border-[#fff] pl-[18px] text-white p-4',
             {
-              'border-error': errors && errors[name],
-              'focus:border-error': errors && errors[name],
-              'focus-visible:border-error': errors && errors[name]
+              'border-error': required && inputRef && inputRef.current && !inputRef.current.value,
+              'focus:border-error':
+                required && inputRef && inputRef.current && !inputRef.current.value,
+              'focus-visible:border-error':
+                required && inputRef && inputRef.current && !inputRef.current.value
             }
           )}
           type="text"
-          value={state.input}
-          {...register(name, options)}
-          onChange={onChangeInput}
-          onFocus={onFocusInput}
+          onClick={onFocusInput}
+          value={value}
+          ref={inputRef}
         />
       </div>
-      {showKeyboard && (
-        <div ref={divRef} className="fixed inset-x-0 bottom-0 z-50">
-          <Keyboard
-            keyboardRef={(r) => (keyboardRef = r)}
-            layoutName={state.layoutName}
-            display={display}
-            onChange={onChange}
-            onKeyPress={onKeyPress}
-            theme={theme}
-          />
-        </div>
-      )}
+      <div
+        ref={divRef}
+        className={clsx('fixed inset-x-0 bottom-0 z-50', {
+          hidden: !showKeyboard
+        })}
+      >
+        <Keyboard
+          keyboardRef={(r) => (keyboardRef.current = r)}
+          display={display}
+          onChange={setValue}
+          onKeyPress={onKeyPress}
+          onKeyReleased={() => onChange(value)}
+          theme={theme}
+        />
+      </div>
     </>
   )
 }

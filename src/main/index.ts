@@ -141,6 +141,18 @@ ipcMain.handle('getTiposAplicacionesAsync', async () => {
   return tiposAplicaciones
 })
 
+ipcMain.handle('addTipoAplicacionAsync', async (_: IpcMainInvokeEvent, name: string) => {
+  const tipoAplicacion = await tiposAplicacionesStore.add({ name })
+  log.info('Nuevo tipo de aplicacion: %j', tipoAplicacion)
+  return tipoAplicacion
+})
+
+ipcMain.handle('removeTipoAplicacionAsync', async (_: IpcMainInvokeEvent, id: number) => {
+  const tipoAplicacionEliminado = await tiposAplicacionesStore.remove(id)
+  log.info('Tipo de Aplicacion eliminado: %j', tipoAplicacionEliminado)
+  return tipoAplicacionEliminado
+})
+
 const itemsMenuStore = ItemsMenuStore()
 
 ipcMain.handle('getItemsMenuAsync', async () => {

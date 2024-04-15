@@ -20,6 +20,8 @@ export type Api = GetApiType<
     addLoteAsync: (name: string) => Promise<Lote>
     removeLoteAsync: (id: number) => Promise<Lote>
     getTiposAplicacionesAsync: () => Promise<TipoAplicacion[]>
+    addTipoAplicacionAsync: (name: string) => Promise<Lote>
+    removeTipoAplicacionAsync: (id: number) => Promise<Operario>
     getItemsMenuAsync: () => Promise<ItemMenu[]>
     getItemsInfoAsync: () => Promise<ItemInfoData[]>
     getNodosAsync: () => Promise<Nodo[]>
@@ -60,6 +62,12 @@ const api: Api = {
     },
     getTiposAplicacionesAsync: async () => {
       return await ipcRenderer.invoke('getTiposAplicacionesAsync')
+    },
+    addTipoAplicacionAsync: async (name: string) => {
+      return await ipcRenderer.invoke('addTipoAplicacionAsync', name)
+    },
+    removeTipoAplicacionAsync: async (id: number) => {
+      return await ipcRenderer.invoke('removeTipoAplicacionAsync', id)
     },
     getItemsMenuAsync: async () => {
       return await ipcRenderer.invoke('getItemsMenuAsync')

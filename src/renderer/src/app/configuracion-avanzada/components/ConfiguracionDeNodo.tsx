@@ -5,7 +5,8 @@ import { Modal, ModalProps } from '@renderer/ui/components/modal/Modal'
 import { useModal } from '@renderer/ui/components/modal/hooks/UseModal'
 import { NodoData } from '@renderer/ui/components/nodo/interfaces/nodo-data'
 import clsx from 'clsx'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import Keyboard from 'react-simple-keyboard'
 
 const dataSelect: DataSelect[] = [
   {
@@ -46,7 +47,15 @@ export function ConfiguracionDeNodo({
 }: Props): JSX.Element {
   const { getStateModal, addModal, toggleOpenedState } = useModal()
   const [error, setError] = useState<boolean>(false)
-  
+  const [state, setState] = useState<{
+    input: "",
+    layoutName?: "default"
+  }>()
+
+  const keyboardRef = useRef<any>(null)
+  const inputRef = useRef<HTMLInputElement>(null)
+  const divRef = useRef<HTMLDivElement>(null)
+
   const openModal = (idModal: string): void => {
     if (getStateModal(idModal)) return
     toggleOpenedState(idModal)
@@ -63,6 +72,25 @@ export function ConfiguracionDeNodo({
   useEffect(() => {
     addModal('restablecer-configuracion-de-nodo')
   }, [nodoData])
+
+
+  const onChange = (input) => {
+    setState({
+      input: input
+    });
+  };
+
+  const onKeyPress = (button) => {
+    console.log("Button pressed", button);
+  };
+
+  const handleClear = () => {
+    setState(
+      {
+        input: ""
+      }
+    )
+  }
 
   return (
     <div className="flex flex-col gap-8 p-4">
@@ -118,6 +146,7 @@ export function ConfiguracionDeNodo({
           crossClose
           outsideClose
         />
+        
         <Button type="error" onClick={close}>
           Cancelar
         </Button>
@@ -125,6 +154,31 @@ export function ConfiguracionDeNodo({
           Guardar
         </Button>
       </div>
+      <div
+        ref={divRef}
+        className={clsx('fixed inset-x-0 bottom-0 z-50', {
+          hidden: false
+        })}
+      >
+        <Keyboard
+          keyboardRef={(r) => (keyboardRef.current = r)}
+          layoutName={state?.layoutName?? 'default'}
+          theme={
+            "hg-theme-default hg-theme-numeric hg-layout-numeric numeric-theme"
+          }
+          layout={{
+            default: ["1 2 3", "4 5 6", "7 8 9", "{clear} 0 {bksp}"]
+          }}
+          mergeDisplay
+          display={{
+            "{clear}": "Clear",
+            "{bksp}": "&#8592"
+          }}
+          maxLength={4}
+          onChange={(input) => onChange(input)}
+          onKeyPress={(button) => onKeyPress(button)}
+        />
+        </div>
     </div>
   )
 }

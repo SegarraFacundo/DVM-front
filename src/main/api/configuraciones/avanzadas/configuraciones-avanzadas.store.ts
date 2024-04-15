@@ -10,10 +10,7 @@ export interface ConfiguracionesAvanzadas {
     gruesa: number
     custom: number
   }
-  variacion: {
-    min: number
-    max: number
-  }
+  variacionRPM: number
   corriente: {
     maximo: number
     minimo: number

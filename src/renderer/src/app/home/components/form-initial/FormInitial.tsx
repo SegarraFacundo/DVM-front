@@ -100,6 +100,7 @@ export function FormInitial({ close, acept, props }: Props): JSX.Element {
           data={tiposAplicaciones}
           name="tipoAplicacion"
           register={register}
+          withAdd
           errors={errors}
           options={{ required: true }}
         />

@@ -97,6 +97,7 @@ export function FormEditar({ close, acept }: Props): JSX.Element {
           data={tiposAplicaciones}
           name="tipoAplicacion"
           register={register}
+          withAdd
           errors={errors}
           options={{ required: true }}
         />

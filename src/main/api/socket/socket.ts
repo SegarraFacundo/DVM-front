@@ -61,11 +61,24 @@ interface ClientToServerEvents {
   testing: () => void
   startJob: (rpmDeseado: number) => void
   stopJob: () => void
+  setConfiguracion: (value: {
+    variacionRPM: number
+    subcorriente: number
+    sobrecorriente: number
+    cortocicuito: number
+    sensor: boolean
+    electrovalvula: boolean
+  }) => void
+  scan: () => void
 }
 
 interface ServerToClientEvents {
   getStateNodo: (data: Nodo[]) => void
   getDatosMeteorologicos: (data: DatosMeteorologicos) => void
+  conectado: () => void
+  rtaScan: (data: number[]) => void
+  desconectado: () => void
+  error: (err: any) => void
 }
 
 const app = express()
@@ -138,6 +151,16 @@ const startJob = (nodo: Nodo): boolean => {
   }
 
   console.info('Comenzo el trabajo: %j', send)
+
+  return client.write(Buffer.from(JSON.stringify(send)))
+}
+
+const scan = (): boolean => {
+  const send = {
+    command: 'scan'
+  }
+
+  console.info('Comenzo el escaneo de nodos: %j', send)
 
   return client.write(Buffer.from(JSON.stringify(send)))
 }
@@ -253,10 +276,12 @@ const startTestingAsync = async (socket): Promise<void> => {
 
 client.on('error', function (err) {
   console.error('Error socket: ', err)
+  io.emit('error', err)
 })
 
 client.on('close', function () {
   console.warn('socket closed')
+  io.emit('desconectado')
 })
 
 io.on('connection', async (socket) => {
@@ -272,16 +297,56 @@ io.on('connection', async (socket) => {
     runningJob = true
     listenJob()
     nodosStore.startAllNodo(rpmDeseado).then(() => {
-      nodosStore.all().then((nodos) => nodos.forEach((n, i) => setTimeout(() => startJob(n),  i * 2000)))
+      nodosStore
+        .all()
+        .then((nodos) => nodos.forEach((n, i) => setTimeout(() => startJob(n), i * 2000)))
     })
   })
+
+  socket.on('scan', () => {
+    scan()
+  })
+
+  socket.on(
+    'setConfiguracion',
+    async (value: {
+      variacionRPM: number
+      subcorriente: number
+      sobrecorriente: number
+      cortocicuito: number
+      sensor: boolean
+      electrovalvula: boolean
+    }) => {
+      const nodos = await nodosStore.all()
+      nodos.forEach((n, i) =>
+        setTimeout(() => {
+          const send = {
+            command: 'setConfiguracion',
+            configuraciones: [
+              {
+                nodo: n.id,
+                ...value,
+                sensor: value.sensor ? 1 : 0,
+                electrovalvula: value.electrovalvula ? 1 : 0
+              }
+            ]
+          }
+
+          console.info(`Nueva configuracion para el nodo ${n.id}: ${JSON.stringify(send)}`)
+
+          return client.write(Buffer.from(JSON.stringify(send)))
+        }, i * 2000)
+      )
+    }
+  )
 
   socket.on('stopJob', () => {
     runningJob = false
     nodosStore.stopAllNodos().then(() => {
-      nodosStore.all().then((nodos) => nodos.forEach((n, i) => setTimeout(() => startJob(n), i *  2000)))
+      nodosStore
+        .all()
+        .then((nodos) => nodos.forEach((n, i) => setTimeout(() => startJob(n), i * 2000)))
     })
-  
   })
 
   let estadosNodosJob: EstadoNodoJob[]
@@ -521,6 +586,11 @@ io.on('connection', async (socket) => {
 
           console.info('Emitiendo estado del nodo: %j', datos)
           socket.emit('getStateNodo', datos)
+        }
+        if (infoDataJson && infoDataJson.command === 'rtaScan' && infoDataJson['nodos']) {
+          const datos: number[] = infoDataJson.nodos
+          console.info('Emitiendo datos escaneo: %j', datos)
+          socket.emit('rtaScan', datos)
         }
       }
     })
