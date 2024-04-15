@@ -10,14 +10,13 @@ import { useModal } from '@renderer/ui/components/modal/hooks/UseModal'
 import { NodoData } from '@renderer/ui/components/nodo/interfaces/nodo-data'
 import { ConfiguracionesAvanzadasData } from './interfaces/configuraciones-avanzadas-data'
 import { Socket, io } from 'socket.io-client'
+import Keyboard from 'react-simple-keyboard'
 import {
   ClientToServerEvents,
   ServerToClientEvents
-} from './lib/socket/interfaces/socket-client.interface'
+} from '@renderer/lib/socket/interfaces/socket-client.interface'
 
 const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io('/')
-
-const PASSWORD_CONFIGURACION_AVANZADA = '2024.C0NFIGURACI0N'
 
 export default function ConfiguracionAvanzada(): JSX.Element {
   const { setTitle } = useTitle()
@@ -27,9 +26,51 @@ export default function ConfiguracionAvanzada(): JSX.Element {
   const [estaHabilitado, setEstaHabilitado] = useState<boolean>(false)
   const [configuracionesAvanzadasData, setConfiguracionesAvanzadasData] =
     useState<ConfiguracionesAvanzadasData>(null)
+  const [value, setValue] = useState<string>('')
+  const divRef = useRef<HTMLDivElement>(null)
+  const [theme, setTheme] = useState<string>('hg-theme-default')
+  const keyboardRef = useRef<any>(null)
+  const [showKeyboard, setShowKeyboard] = useState<boolean>(false)
+
+  const setThemeKeyboard = async (): Promise<void> => {
+    const result = await window.api.invoke.getOperariosAsync()
+    setTheme(result ? 'hg-theme-dark' : 'hg-theme-default')
+  }
+
+  useEffect(() => {
+    setThemeKeyboard()
+
+    const handleClickOutside = (event): void => {
+      if (
+        inputRef.current &&
+        !inputRef.current.contains(event.target) &&
+        divRef.current &&
+        !divRef.current.contains(event.target)
+      ) {
+        setShowKeyboard(false)
+      }
+    }
+    document.addEventListener('click', handleClickOutside, true)
+    return () => {
+      document.removeEventListener('click', handleClickOutside, true)
+    }
+  }, [])
+
+  const onKeyPress = (button: string): void => {
+    if (button === '{enter}') {
+      setShowKeyboard(false)
+      handleGuardarClick()
+    }
+  }
+
+  const onFocusInput = (): void => {
+    setShowKeyboard(true)
+    keyboardRef.current.setInput(value)
+  }
 
   const fetchConfiguracionesAvanzadas = async () => {
-    const configuracionesAvanzadasData: ConfiguracionesAvanzadasData = await window.api.invoke.getConfiguracionesAvanzadasAsync()
+    const configuracionesAvanzadasData: ConfiguracionesAvanzadasData =
+      await window.api.invoke.getConfiguracionesAvanzadasAsync()
     console.info('fetchConfiguracionesAvanzadas: %j', configuracionesAvanzadasData)
     setConfiguracionesAvanzadasData(configuracionesAvanzadasData)
   }
@@ -38,6 +79,15 @@ export default function ConfiguracionAvanzada(): JSX.Element {
     fetchConfiguracionesAvanzadas()
     setTitle('Configuración Avanzada')
   }, [])
+
+  const display = {
+    '{bksp}': 'Retroceso',
+    '{enter}': 'Enter',
+    '{space}': 'Espacio',
+    '{tab}': 'Tab',
+    '{lock}': 'Lock',
+    '{shift}': 'Shift'
+  }
 
   const editConfiguracionesAvanzadas = async () => {
     const configuracionesAvanzadasEditData =
@@ -57,7 +107,7 @@ export default function ConfiguracionAvanzada(): JSX.Element {
     }
   }
 
-  function handleDataFromChild(data) {
+  const handleDataFromChild = (data): void => {
     setConfiguracionesAvanzadasData(data)
   }
 
@@ -79,6 +129,8 @@ export default function ConfiguracionAvanzada(): JSX.Element {
             )}
             type={passwordType ? 'password' : 'text'}
             ref={inputRef}
+            value={value}
+            onClick={onFocusInput}
           />
           <div onClick={() => setPasswordType((prev) => !prev)}>
             {passwordType ? (
@@ -101,6 +153,23 @@ export default function ConfiguracionAvanzada(): JSX.Element {
               <br /> Inténtelo nuevamente.
             </p>
           )}
+          <div
+            ref={divRef}
+            className={clsx('fixed inset-x-0 bottom-0 z-50', {
+              hidden: !showKeyboard
+            })}
+          >
+            <Keyboard
+              keyboardRef={(r) => (keyboardRef.current = r)}
+              display={display}
+              onChange={setValue}
+              onKeyPress={onKeyPress}
+              onKeyReleased={() => {
+                if (inputRef && inputRef.current) inputRef.current.value = value
+              }}
+              theme={theme}
+            />
+          </div>
         </div>
       )}
       {estaHabilitado && (
