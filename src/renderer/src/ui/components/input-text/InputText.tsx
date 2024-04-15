@@ -21,7 +21,7 @@ export function InputText({ label, required, onChange }: Props): JSX.Element {
   const keyboardRef = useRef<any>(null)
 
   const setThemeKeyboard = async (): Promise<void> => {
-    const result = await window.api.invoke.getOperariosAsync()
+    const result = await window.api.invoke.isThemeModeDark()
     setTheme(result ? 'hg-theme-dark' : 'hg-theme-default')
   }
 

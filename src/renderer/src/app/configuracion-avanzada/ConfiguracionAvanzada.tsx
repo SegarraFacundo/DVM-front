@@ -33,7 +33,7 @@ export default function ConfiguracionAvanzada(): JSX.Element {
   const [showKeyboard, setShowKeyboard] = useState<boolean>(false)
 
   const setThemeKeyboard = async (): Promise<void> => {
-    const result = await window.api.invoke.getOperariosAsync()
+    const result = await window.api.invoke.isThemeModeDark()
     setTheme(result ? 'hg-theme-dark' : 'hg-theme-default')
   }
 
@@ -80,16 +80,7 @@ export default function ConfiguracionAvanzada(): JSX.Element {
     setTitle('Configuración Avanzada')
   }, [])
 
-  const display = {
-    '{bksp}': 'Retroceso',
-    '{enter}': 'Enter',
-    '{space}': 'Espacio',
-    '{tab}': 'Tab',
-    '{lock}': 'Lock',
-    '{shift}': 'Shift'
-  }
-
-  const editConfiguracionesAvanzadas = async () => {
+  const editConfiguracionesAvanzadas = async (): void => {
     const configuracionesAvanzadasEditData =
       await window.api.invoke.editConfiguracionesAvanzadasAsync(configuracionesAvanzadasData)
     console.info('fetchConfiguracionesAvanzadas: %j', configuracionesAvanzadasEditData)
@@ -109,6 +100,15 @@ export default function ConfiguracionAvanzada(): JSX.Element {
 
   const handleDataFromChild = (data): void => {
     setConfiguracionesAvanzadasData(data)
+  }
+
+  const display = {
+    '{bksp}': 'Retroceso',
+    '{enter}': 'Enter',
+    '{space}': 'Espacio',
+    '{tab}': 'Tab',
+    '{lock}': 'Lock',
+    '{shift}': 'Shift'
   }
 
   return (
@@ -180,7 +180,7 @@ export default function ConfiguracionAvanzada(): JSX.Element {
       )}
       <div className="flex w-full items-end justify-end mb-10">
         <Button type="success" size="lg" maxWith={false} onClick={handleGuardarClick}>
-          Ingresar
+          {estaHabilitado ? 'Guardar' : 'Ingresar'}
         </Button>
       </div>
     </article>
@@ -223,7 +223,7 @@ function Ajustes({ valueInicial, sendConfiguracionesAvanzadasData }: AjustesProp
     fetchNodos()
     addModal('nodos-disponibles')
     nodos.forEach((_, i) => addModal('configuracion-de-nodo' + i))
-  }, [])
+  }, [nodos])
 
   const onChangeConfiguracionesAvanzada = (
     event: ChangeEvent,
@@ -560,7 +560,6 @@ function Ajustes({ valueInicial, sendConfiguracionesAvanzadasData }: AjustesProp
                     modalContentProps={{ nodoData }}
                     closed={modalClosed}
                     crossClose
-                    outsideClose
                   />
                 </div>
               )

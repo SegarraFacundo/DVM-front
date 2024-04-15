@@ -1,7 +1,7 @@
 import { DataSelect } from '@renderer/app/home/interfaces/data-select.interface'
 import { Button } from '@renderer/ui/components/Button'
 import { Dialog } from '@renderer/ui/components/dialog/Dialog'
-import { Modal, ModalProps } from '@renderer/ui/components/modal/Modal'
+import { Modal } from '@renderer/ui/components/modal/Modal'
 import { useModal } from '@renderer/ui/components/modal/hooks/UseModal'
 import { NodoData } from '@renderer/ui/components/nodo/interfaces/nodo-data'
 import clsx from 'clsx'
@@ -36,25 +36,48 @@ const dataSelect: DataSelect[] = [
 ]
 
 interface Props {
-  close?,
-  acept?,
+  close?
+  acept?
   nodoData: NodoData
 }
-export function ConfiguracionDeNodo({
-  close,
-  acept,
-  nodoData
-}: Props): JSX.Element {
+export function ConfiguracionDeNodo({ close, acept, nodoData }: Props): JSX.Element {
   const { getStateModal, addModal, toggleOpenedState } = useModal()
   const [error, setError] = useState<boolean>(false)
-  const [state, setState] = useState<{
-    input: "",
-    layoutName?: "default"
-  }>()
 
   const keyboardRef = useRef<any>(null)
   const inputRef = useRef<HTMLInputElement>(null)
   const divRef = useRef<HTMLDivElement>(null)
+  const [value, setValue] = useState<string>(nodoData?.id.toString() ?? '')
+  const [theme, setTheme] = useState<string>('hg-theme-default')
+  const [showKeyboard, setShowKeyboard] = useState<boolean>(false)
+
+  const setThemeKeyboard = async (): Promise<void> => {
+    const result = await window.api.invoke.isThemeModeDark()
+    setTheme(
+      result
+        ? 'hg-theme-dark hg-theme-numeric-dark hg-layout-numeric-dark numeric-theme-dark'
+        : 'hg-theme-default hg-theme-numeric hg-layout-numeric numeric-theme'
+    )
+  }
+
+  useEffect(() => {
+    setThemeKeyboard()
+
+    const handleClickOutside = (event): void => {
+      if (
+        inputRef.current &&
+        !inputRef.current.contains(event.target) &&
+        divRef.current &&
+        !divRef.current.contains(event.target)
+      ) {
+        setShowKeyboard(false)
+      }
+    }
+    document.addEventListener('click', handleClickOutside, true)
+    return () => {
+      document.removeEventListener('click', handleClickOutside, true)
+    }
+  }, [])
 
   const openModal = (idModal: string): void => {
     if (getStateModal(idModal)) return
@@ -64,8 +87,6 @@ export function ConfiguracionDeNodo({
   const modalClosed = (idModal: string, acept: boolean) => {
     if (acept) {
       if (!getStateModal(idModal)) toggleOpenedState(idModal)
-      if (idModal === 'restablecer-configuracion-de-nodo') {
-      }
     }
   }
 
@@ -73,37 +94,39 @@ export function ConfiguracionDeNodo({
     addModal('restablecer-configuracion-de-nodo')
   }, [nodoData])
 
+  const onKeyPress = (button: string): void => {
+    if (button === '{enter}') {
+      setShowKeyboard(false)
+    }
+    if (button === '{clear}') setValue('')
+  }
 
-  const onChange = (input) => {
-    setState({
-      input: input
-    });
-  };
+  const onFocusInput = (): void => {
+    setShowKeyboard(true)
+    keyboardRef.current.setInput(value)
+  }
 
-  const onKeyPress = (button) => {
-    console.log("Button pressed", button);
-  };
-
-  const handleClear = () => {
-    setState(
-      {
-        input: ""
-      }
-    )
+  const display = {
+    '{bksp}': 'Borrar',
+    '{enter}': 'Enter',
+    '{space}': 'Espacio',
+    '{tab}': 'Tab',
+    '{lock}': 'Lock',
+    '{clear}': 'Limpiar',
+    '{shift}': 'Shift'
   }
 
   return (
     <div className="flex flex-col gap-8 p-4">
-      <h1 className="font-roboto font-bold text-success text-[32px]">
-        Nodo {nodoData?.nombre}
-      </h1>
+      <h1 className="font-roboto font-bold text-success text-[32px]">Nodo {nodoData?.nombre}</h1>
       <div className="flex flex-col gap-4">
         <label className="font-roboto font-bold text-success text-[20px] tracking-[0] leading-[normal] whitespace-nowrap">
           Identificación
         </label>
         <div className="flex gap-4 items-center">
           <input
-            value={nodoData?.id}
+            ref={inputRef}
+            value={value}
             className={clsx(
               'h-[60px] w-full rounded-[5px] bg-[#172530] border border-solid border-[#fff] pl-[18px] text-white p-4',
               {
@@ -112,19 +135,20 @@ export function ConfiguracionDeNodo({
                 'focus-visible:border-error': error
               }
             )}
+            onClick={onFocusInput}
             type="number"
           />
         </div>
       </div>
       <div className="grid grid-cols-[min-content_minmax(100px,_1fr)_min-content_minmax(100px,_1fr)] gap-4 items-center">
-      {nodoData?.aspersores.map((a) => (
-        <>
-          <label className="font-roboto font-bold text-white text-[20px] whitespace-nowrap">
-            {nodoData?.nombre} - {a.id}
-          </label>
-          <Select data={dataSelect} />
-        </>
-      ))}
+        {nodoData?.aspersores.map((a) => (
+          <>
+            <label className="font-roboto font-bold text-white text-[20px] whitespace-nowrap">
+              {nodoData?.nombre} - {a.id}
+            </label>
+            <Select data={dataSelect} />
+          </>
+        ))}
       </div>
       <div className="flex flex-row gap-4 justify-end">
         <Button type="error-light" onClick={() => openModal('restablecer-configuracion-de-nodo')}>
@@ -146,7 +170,7 @@ export function ConfiguracionDeNodo({
           crossClose
           outsideClose
         />
-        
+
         <Button type="error" onClick={close}>
           Cancelar
         </Button>
@@ -157,28 +181,24 @@ export function ConfiguracionDeNodo({
       <div
         ref={divRef}
         className={clsx('fixed inset-x-0 bottom-0 z-50', {
-          hidden: false
+          hidden: !showKeyboard
         })}
       >
         <Keyboard
           keyboardRef={(r) => (keyboardRef.current = r)}
-          layoutName={state?.layoutName?? 'default'}
-          theme={
-            "hg-theme-default hg-theme-numeric hg-layout-numeric numeric-theme"
-          }
+          theme={theme}
           layout={{
-            default: ["1 2 3", "4 5 6", "7 8 9", "{clear} 0 {bksp}"]
+            default: ['1 2 3', '4 5 6', '7 8 9', '{clear} 0 {bksp}']
           }}
           mergeDisplay
-          display={{
-            "{clear}": "Clear",
-            "{bksp}": "&#8592"
+          display={display}
+          onChange={setValue}
+          onKeyPress={onKeyPress}
+          onKeyReleased={() => {
+            if (inputRef && inputRef.current) inputRef.current.value = value
           }}
-          maxLength={4}
-          onChange={(input) => onChange(input)}
-          onKeyPress={(button) => onKeyPress(button)}
         />
-        </div>
+      </div>
     </div>
   )
 }
