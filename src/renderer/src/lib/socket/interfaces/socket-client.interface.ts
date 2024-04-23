@@ -1,5 +1,5 @@
-import { DatosMeteorologicos } from "@renderer/app/home/interfaces/datos-meteorologicos.interface"
-import { NodoData } from "@renderer/ui/components/nodo/interfaces/nodo-data"
+import { DatosMeteorologicos } from '@renderer/app/home/interfaces/datos-meteorologicos.interface'
+import { NodoData } from '@renderer/ui/components/nodo/interfaces/nodo-data'
 
 export interface ClientToServerEvents {
   testing: () => Promise<boolean>
@@ -13,11 +13,15 @@ export interface ClientToServerEvents {
     sensor: boolean
     electrovalvula: boolean
   }) => void
+  scan: () => void
+  renombrar: (idNodo: number, nuevoIdNodo: number) => void
 }
 
 export interface ServerToClientEvents {
   getStateNodo: (data: NodoData[]) => void
   getDatosMeteorologicos: (data: DatosMeteorologicos) => void
+  conectado: () => void
+  rtaScan: (data: number[]) => void
   desconectado: () => void
   error: (err: any) => void
 }

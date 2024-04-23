@@ -263,6 +263,10 @@ function Ajustes({ valueInicial, sendConfiguracionesAvanzadasData }: AjustesProp
     })
   }
 
+  const renombrar = (): void => {
+    socket.emit('renombrar', 3, 4)
+  }
+
   return (
     <div className="bg-dark rounded-[5px] w-full h-[528px] overflow-y-scroll flex flex-col gap-8 p-20">
       <p className="font-roboto text-white text-[20px]">
@@ -524,6 +528,9 @@ function Ajustes({ valueInicial, sendConfiguracionesAvanzadasData }: AjustesProp
           <Button type="success" maxWith={false} size="sm" onClick={escanear}>
             Escanear
           </Button>
+          <Button type="success" maxWith={false} size="sm" onClick={renombrar}>
+            Renombrar
+          </Button>
           <Modal<{
             nodosDisponibles: number[]
           }>
@@ -578,10 +585,13 @@ interface Props {
 function ResultadoDeEscaneoPuerto({ nodosDisponibles }: Props): JSX.Element {
   return (
     <>
-      {nodosDisponibles.length > 0 &&
+      {nodosDisponibles.length > 0 ? (
         nodosDisponibles.map((n, i) => {
           return <div key={i}>Valor: {n}</div>
-        })}
+        })
+      ) : (
+        <div>No hay nodos disponibles</div>
+      )}
     </>
   )
 }

@@ -17,6 +17,7 @@ import { Dialog } from '@renderer/ui/components/dialog/Dialog'
 import { PanelLateralDerecha } from './components/PanelLateralDerecha'
 import { PanelLateralIzquierdo } from './components/PanelLateralIzquierdo'
 import { ConfiguracionesAvanzadasData } from '../configuracion-avanzada/interfaces/configuraciones-avanzadas-data'
+import PreparacionBomba from '@renderer/ui/components/preparacion-bomba/PreparacionBomba'
 
 const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io('/')
 
@@ -50,6 +51,7 @@ export function Trabajo(): JSX.Element {
   useEffect(() => {
     addModal('tipo-gota')
     addModal('init-job')
+    addModal('preparacion-bomba')
     addModal('end-job')
     setTitle('Trabajo')
     socket.on('getDatosMeteorologicos', (res) => setDireccionViento(res.dirViento ?? 0))
@@ -60,10 +62,13 @@ export function Trabajo(): JSX.Element {
     if (acept) {
       if (!getStateModal(idModal)) toggleOpenedState(idModal)
       if (idModal === 'init-job') {
-        iniciarOPausarTrabajoClick()
+        toggleOpenedState('preparacion-bomba')
       }
       if (idModal === 'end-job') {
         finalizarTrabajoClick()
+      }
+      if (idModal === 'preparacion-bomba') {
+        iniciarOPausarTrabajoClick()
       }
     }
   }
@@ -290,6 +295,13 @@ export function Trabajo(): JSX.Element {
                 : 'Se iniciará el funcionamiento de los<br />aspersores, ¿Desea Continuar?',
               type: 'warning'
             }}
+            closed={modalClosed}
+            crossClose
+            outsideClose
+          />
+          <Modal<undefined>
+            idModal="preparacion-bomba"
+            ModalContent={PreparacionBomba}
             closed={modalClosed}
             crossClose
             outsideClose

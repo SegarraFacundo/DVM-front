@@ -70,6 +70,7 @@ interface ClientToServerEvents {
     electrovalvula: boolean
   }) => void
   scan: () => void
+  renombrar: (idNodo: number, nuevoIdNodo: number) => void
 }
 
 interface ServerToClientEvents {
@@ -90,7 +91,7 @@ const io = new ServerSocket<ClientToServerEvents, ServerToClientEvents>(httpServ
 })
 
 const client = new net.Socket()
-if (process.env.NODE_ENV !== 'development') client.connect({ port: 8080, host: '127.0.0.1' })
+if (process.env.NODE_ENV === 'development') client.connect({ port: 8080, host: '192.168.1.62' })
 
 export interface DatosMeteorologicos {
   humedad: number | null
@@ -213,7 +214,7 @@ const startTestingAsync = async (socket): Promise<void> => {
     command: 'testing',
     nodos: nodos.map((n) => n.id)
   }
-  if (process.env.NODE_ENV === 'development') {
+  if (process.env.NODE_ENV !== 'development') {
     const nodos = await nodosStore.all()
     const estadosNodosTesting = nodos.map<EstadoNodoTesting>((n) => ({
       command: 'testing',
@@ -299,12 +300,24 @@ io.on('connection', async (socket) => {
     nodosStore.startAllNodo(rpmDeseado).then(() => {
       nodosStore
         .all()
-        .then((nodos) => nodos.forEach((n, i) => setTimeout(() => startJob(n), i * 2000)))
+        .then((nodos) => nodos.forEach((n, i) => setTimeout(() => startJob(n), i * 1000)))
     })
   })
 
   socket.on('scan', () => {
     scan()
+  })
+
+  socket.on('renombrar', (idNodo: number, nuevoIdNodo: number) => {
+    const send = {
+      command: 'renombrar',
+      nodo: idNodo,
+      nodoNombreNuevo: nuevoIdNodo
+    }
+
+    console.info(`Renombramos el nodo id ${send.nodo} a ${send.nodoNombreNuevo}`)
+
+    return client.write(Buffer.from(JSON.stringify(send)))
   })
 
   socket.on(
@@ -318,25 +331,20 @@ io.on('connection', async (socket) => {
       electrovalvula: boolean
     }) => {
       const nodos = await nodosStore.all()
-      nodos.forEach((n, i) =>
-        setTimeout(() => {
-          const send = {
-            command: 'setConfiguracion',
-            configuraciones: [
-              {
-                nodo: n.id,
-                ...value,
-                sensor: value.sensor ? 1 : 0,
-                electrovalvula: value.electrovalvula ? 1 : 0
-              }
-            ]
-          }
 
-          console.info(`Nueva configuracion para el nodo ${n.id}: ${JSON.stringify(send)}`)
+      const send = {
+        command: 'setConfiguracion',
+        configuraciones: nodos.map((n) => ({
+          nodo: n.id,
+          ...value,
+          sensor: value.sensor ? 1 : 0,
+          electrovalvula: value.electrovalvula ? 1 : 0
+        }))
+      }
 
-          return client.write(Buffer.from(JSON.stringify(send)))
-        }, i * 2000)
-      )
+      console.info(`Nueva configuracion: ${JSON.stringify(send)}`)
+
+      return client.write(Buffer.from(JSON.stringify(send)))
     }
   )
 
@@ -345,14 +353,14 @@ io.on('connection', async (socket) => {
     nodosStore.stopAllNodos().then(() => {
       nodosStore
         .all()
-        .then((nodos) => nodos.forEach((n, i) => setTimeout(() => startJob(n), i * 2000)))
+        .then((nodos) => nodos.forEach((n, i) => setTimeout(() => startJob(n), i * 1000)))
     })
   })
 
   let estadosNodosJob: EstadoNodoJob[]
 
   const listenJob = (): void => {
-    if (process.env.NODE_ENV === 'development') {
+    if (process.env.NODE_ENV !== 'development') {
       const refreshIntervalId = setInterval(async () => {
         if (!runningJob) {
           clearInterval(refreshIntervalId)
@@ -507,7 +515,7 @@ io.on('connection', async (socket) => {
     }
   }
 
-  if (process.env.NODE_ENV === 'development') {
+  if (process.env.NODE_ENV !== 'development') {
     setInterval(async () => {
       const datos: DatosMeteorologicos = {
         humedad: getRandomArbitrary(0, 100, 0),
