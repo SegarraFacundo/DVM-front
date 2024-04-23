@@ -91,7 +91,7 @@ const io = new ServerSocket<ClientToServerEvents, ServerToClientEvents>(httpServ
 })
 
 const client = new net.Socket()
-if (process.env.NODE_ENV === 'development') client.connect({ port: 8080, host: '192.168.1.62' })
+if (process.env.NODE_ENV !== 'development') client.connect({ port: 8080, host: '127.0.0.1' })
 
 export interface DatosMeteorologicos {
   humedad: number | null
@@ -214,7 +214,7 @@ const startTestingAsync = async (socket): Promise<void> => {
     command: 'testing',
     nodos: nodos.map((n) => n.id)
   }
-  if (process.env.NODE_ENV !== 'development') {
+  if (process.env.NODE_ENV === 'development') {
     const nodos = await nodosStore.all()
     const estadosNodosTesting = nodos.map<EstadoNodoTesting>((n) => ({
       command: 'testing',
@@ -360,7 +360,7 @@ io.on('connection', async (socket) => {
   let estadosNodosJob: EstadoNodoJob[]
 
   const listenJob = (): void => {
-    if (process.env.NODE_ENV !== 'development') {
+    if (process.env.NODE_ENV === 'development') {
       const refreshIntervalId = setInterval(async () => {
         if (!runningJob) {
           clearInterval(refreshIntervalId)
@@ -515,7 +515,7 @@ io.on('connection', async (socket) => {
     }
   }
 
-  if (process.env.NODE_ENV !== 'development') {
+  if (process.env.NODE_ENV === 'development') {
     setInterval(async () => {
       const datos: DatosMeteorologicos = {
         humedad: getRandomArbitrary(0, 100, 0),

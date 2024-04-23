@@ -49,7 +49,6 @@ export function Aside() {
             fill="#1C2E3D"
           />
         </svg>
-        hola
       </div>
     </aside>
   )
