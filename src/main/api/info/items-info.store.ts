@@ -1,6 +1,6 @@
 import { existsSync, readFileSync } from 'fs'
 import path from 'path'
-import { APP_DATA_PATH() } from '../../utils/urls'
+import { APP_DATA_PATH } from '../../utils/urls'
 
 export interface ItemInfoData {
   icon: string

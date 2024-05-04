@@ -1,6 +1,6 @@
 import { existsSync, readFileSync, writeFileSync } from 'fs'
 import path from 'path'
-import { APP_DATA_PATH() } from '../../utils/urls'
+import { APP_DATA_PATH } from '../../utils/urls'
 
 export type IdsEstadoAspersorType = -1 | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
 export type DescripcionEstadoAspersorType =

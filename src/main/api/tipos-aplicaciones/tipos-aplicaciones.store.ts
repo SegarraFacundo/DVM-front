@@ -1,6 +1,6 @@
 import { existsSync, readFileSync, writeFileSync } from 'fs'
 import path from 'path'
-import { APP_DATA_PATH() } from '../../utils/urls'
+import { APP_DATA_PATH } from '../../utils/urls'
 
 interface Props {
   urlDataJson: string
