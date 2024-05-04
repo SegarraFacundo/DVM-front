@@ -119,26 +119,11 @@ export function ConfiguracionDeNodo({ close, acept, nodoData }: Props): JSX.Elem
   return (
     <div className="flex flex-col gap-8 p-4">
       <h1 className="font-roboto font-bold text-success text-[32px]">Nodo {nodoData?.nombre}</h1>
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-row gap-4">
         <label className="font-roboto font-bold text-success text-[20px] tracking-[0] leading-[normal] whitespace-nowrap">
-          Identificación
+          Identificación:
         </label>
-        <div className="flex gap-4 items-center">
-          <input
-            ref={inputRef}
-            value={value}
-            className={clsx(
-              'h-[60px] w-full rounded-[5px] bg-[#172530] border border-solid border-[#fff] pl-[18px] text-white p-4',
-              {
-                'border-error': error,
-                'focus:border-error': error,
-                'focus-visible:border-error': error
-              }
-            )}
-            onClick={onFocusInput}
-            type="number"
-          />
-        </div>
+        <p className="font-roboto font-bold text-white text-[20px] tracking-[0] leading-[normal] whitespace-nowrap">Sin asignar</p>
       </div>
       <div className="grid grid-cols-[min-content_minmax(100px,_1fr)_min-content_minmax(100px,_1fr)] gap-4 items-center">
         {nodoData?.aspersores.map((a) => (

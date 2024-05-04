@@ -11,7 +11,7 @@ import { ItemsInfoStore } from './api/info/items-info.store'
 import { LotesStore } from './api/lotes/lotes.store'
 import * as shutdown from 'electron-shutdown-command'
 import './api/socket/socket'
-import { NodosStore } from './api/nodos/nodos.store'
+import { Nodo, NodosStore } from './api/nodos/nodos.store'
 import { Configuraciones } from './api/configuraciones/configuraciones'
 import { UnidadesStore } from './api/unidades/unidades.store'
 import { ConfiguracionLogger } from './logs/configuracion-logger'
@@ -177,6 +177,11 @@ ipcMain.handle('getNodosAsync', async () => {
   return nodos
 })
 
+ipcMain.handle('cambiarIdsNodosAsync', async (_: IpcMainInvokeEvent, nodos: Nodo[]) => {
+  const nodoCambiado = await nodosStore.cambiarIdsNodosAsync(nodos)
+  log.info('Nodos con nuevo ids: %j', nodoCambiado)
+  return nodoCambiado
+})
 
 ipcMain.handle('cambiarHabilitacionNodo', async (_: IpcMainInvokeEvent, idNodo: number) => {
   const nodoCambiado = await nodosStore.cambiarHabilitacionNodo(idNodo)

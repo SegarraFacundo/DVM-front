@@ -10,10 +10,12 @@ export interface DialogProps {
   acept?
   buttons?: {
     cancelar?: {
+      noShow?: boolean
       text: string
       type: DialogType
     }
     aceptar?: {
+      noShow?: boolean
       text: string
       type: DialogType
     }
@@ -78,12 +80,24 @@ export function Dialog({ close, acept, title, message, type, buttons }: DialogPr
         ></p>
       </div>
       <div className="w-full flex flex-row gap-4 justify-end">
-        <Button type={buttons?.cancelar ? buttons.cancelar.type : 'error'} onClick={close} maxWith={false}>
-          {buttons?.cancelar ? buttons.cancelar.text : 'Cancelar'}
-        </Button>
-        <Button type={buttons?.aceptar ? buttons.aceptar.type : 'success'} onClick={acept} maxWith={false}>
-          {buttons?.aceptar ? buttons.aceptar.text : 'Aceptar'}
-        </Button>
+        {!buttons?.cancelar?.noShow && (
+          <Button
+            type={buttons?.cancelar ? buttons.cancelar.type : 'error'}
+            onClick={close}
+            maxWith={false}
+          >
+            {buttons?.cancelar ? buttons.cancelar.text : 'Cancelar'}
+          </Button>
+        )}
+        {!buttons?.aceptar?.noShow && (
+          <Button
+            type={buttons?.aceptar ? buttons.aceptar.type : 'success'}
+            onClick={acept}
+            maxWith={false}
+          >
+            {buttons?.aceptar ? buttons.aceptar.text : 'Aceptar'}
+          </Button>
+        )}
       </div>
     </div>
   )

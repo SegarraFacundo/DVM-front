@@ -15,6 +15,8 @@ import {
   ClientToServerEvents,
   ServerToClientEvents
 } from '@renderer/lib/socket/interfaces/socket-client.interface'
+import { DataSelect } from '../home/interfaces/data-select.interface'
+import { Dialog, DialogType } from '@renderer/ui/components/dialog/Dialog'
 
 const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io('/')
 
@@ -211,19 +213,24 @@ function Ajustes({ valueInicial, sendConfiguracionesAvanzadasData }: AjustesProp
     toggleOpenedState(idModal)
   }
 
-  const modalClosed = (idModal: string, acept: boolean) => {
+  const modalClosed = (idModal: string, acept: boolean): void => {
     if (acept) {
       if (!getStateModal(idModal)) toggleOpenedState(idModal)
-      if (idModal === 'configuracion-de-nodo') {
+      if (idModal === 'guardar-configuracion-nodos') {
+        cambiarIdsNodosAsync()
       }
     }
   }
 
   useEffect(() => {
+    addModal('guardar-configuracion-nodos')
+  }, [])
+
+  useEffect(() => {
     fetchNodos()
     addModal('nodos-disponibles')
     nodos.forEach((_, i) => addModal('configuracion-de-nodo' + i))
-  }, [nodos])
+  }, [])
 
   const onChangeConfiguracionesAvanzada = (
     event: ChangeEvent,
@@ -239,7 +246,7 @@ function Ajustes({ valueInicial, sendConfiguracionesAvanzadasData }: AjustesProp
       | 'corriente.limite'
       | 'sensorRPM'
       | 'electroValvula'
-  ) => {
+  ): void => {
     if (type === 'ancho' || type === 'variacionRPM')
       configuracionesAvanzadasData[type] = parseFloat(event.target.value)
     else if (type === 'sensorRPM' || type === 'electroValvula')
@@ -263,8 +270,13 @@ function Ajustes({ valueInicial, sendConfiguracionesAvanzadasData }: AjustesProp
     })
   }
 
-  const renombrar = (): void => {
-    socket.emit('renombrar', 3, 4)
+  const handleGuardarClick = (): void => {
+    openModal('guardar-configuracion-nodos')
+  }
+
+  const cambiarIdsNodosAsync = async (): Promise<void> => {
+    const nodosCambiados = await window.api.invoke.cambiarIdsNodosAsync(nodos)
+    console.info('cambiarIdsNodosAsync: %j', nodosCambiados)
   }
 
   return (
@@ -525,73 +537,237 @@ function Ajustes({ valueInicial, sendConfiguracionesAvanzadasData }: AjustesProp
               Modifica las especificaciones individuales de cada nodo
             </p>
           </div>
-          <Button type="success" maxWith={false} size="sm" onClick={escanear}>
-            Escanear
-          </Button>
-          <Button type="success" maxWith={false} size="sm" onClick={renombrar}>
-            Renombrar
-          </Button>
+          <div className="w-[180px]">
+            <Button type="success" size="md" onClick={escanear}>
+              Escanear
+            </Button>
+          </div>
           <Modal<{
-            nodosDisponibles: number[]
+            title: string
+            message: string
+            type: 'success' | 'warning' | 'error' | 'default'
+            buttons?: {
+              cancelar?: {
+                noShow: boolean
+                text: string
+                type: DialogType
+              }
+              aceptar?: {
+                noShow: boolean
+                text: string
+                type: DialogType
+              }
+            }
           }>
-            idModal={'nodos-disponibles'}
-            ModalContent={ResultadoDeEscaneoPuerto}
-            modalContentProps={{ nodosDisponibles }}
+            idModal="nodos-disponibles"
+            ModalContent={Dialog}
+            modalContentProps={{
+              title: 'Escaneo completado',
+              message: '',
+              type: 'success',
+              buttons: {
+                cancelar: {
+                  noShow: true,
+                  text: '',
+                  type: 'error'
+                }
+              }
+            }}
             closed={modalClosed}
             crossClose
             outsideClose
           />
         </div>
-        <div className="w-full h-auto rounded-[5px] border border-solid border-success p-12 flex flex-col gap-8">
-          <div className="grid grid-cols-4 gap-4">
+        <div className="w-full h-[500px] rounded-[5px] border border-solid border-success p-12 flex flex-col gap-8">
+          <div className="flex flex-col gap-4 h-[380px] flex-wrap">
             {nodos?.map((nodoData, i) => {
+              const dataSelect = nodosDisponibles
+                ? nodosDisponibles.map((n) => ({
+                    id: n,
+                    name: `Nodo ${n.toString()}`
+                  }))
+                : []
               return (
                 <div key={i}>
-                  <div className="flex gap-4">
+                  <div className="flex justify-around gap-4">
                     <p className="font-roboto text-white text-[20px]">NODO {nodoData.nombre}:</p>{' '}
-                    <span className="font-roboto text-success text-[20px]">Id: {nodoData.id}</span>
+                    <Select
+                      data={dataSelect}
+                      containsValue={nodoData.id !== 0}
+                      changeValue={(value) =>
+                        setNodos(
+                          nodos.map((n) => {
+                            if (n.nombre === nodoData.nombre) {
+                              n.id = value.id
+                            }
+                            return n
+                          })
+                        )
+                      }
+                      selectedInitial={dataSelect.find((n) => n.id === nodoData.id)}
+                    />
+                    <Button
+                      type="success-light"
+                      size="sm"
+                      maxWith={false}
+                      onClick={() => openModal('configuracion-de-nodo' + i)}
+                    >
+                      <svg
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M20.4278 0C19.5136 0 18.5993 0.348158 17.9014 1.04605L16.4212 2.52632L21.4738 7.57895L22.9541 6.09868C24.3486 4.70416 24.3486 2.44184 22.9541 1.04605C22.2562 0.348158 21.342 0 20.4278 0ZM14.5264 4.42105L0 18.9474V24H5.05267L19.5791 9.47368L14.5264 4.42105Z"
+                          fill="#32CF9C"
+                        />
+                      </svg>
+                    </Button>
+                    <Modal<{
+                      nodoData: NodoData
+                    }>
+                      idModal={'configuracion-de-nodo' + i}
+                      ModalContent={ConfiguracionDeNodo}
+                      modalContentProps={{ nodoData }}
+                      closed={modalClosed}
+                      crossClose
+                    />
                   </div>
-                  <Button
-                    type="success-light"
-                    size="sm"
-                    maxWith={false}
-                    onClick={() => openModal('configuracion-de-nodo' + i)}
-                  >
-                    Configuración
-                  </Button>
-                  <Modal<{
-                    nodoData: NodoData
-                  }>
-                    idModal={'configuracion-de-nodo' + i}
-                    ModalContent={ConfiguracionDeNodo}
-                    modalContentProps={{ nodoData }}
-                    closed={modalClosed}
-                    crossClose
-                  />
                 </div>
               )
             })}
           </div>
+          <Button
+            type="success"
+            size="md"
+            disabled={!(nodosDisponibles && nodosDisponibles.length > 0)}
+            onClick={handleGuardarClick}
+          >
+            Guardar
+          </Button>
+          <Modal<{
+            title: string
+            message: string
+            type: 'success' | 'warning' | 'error' | 'default'
+            buttons?: {
+              cancelar?: {
+                noShow?: boolean
+                text: string
+                type: DialogType
+              }
+              aceptar?: {
+                noShow?: boolean
+                text: string
+                type: DialogType
+              }
+            }
+          }>
+            idModal="guardar-configuracion-nodos"
+            ModalContent={Dialog}
+            modalContentProps={{
+              title: 'Guardar configuración de nodos',
+              message: '¿Desea guardar configuración de nodos?',
+              type: 'warning',
+              buttons: {
+                cancelar: {
+                  text: 'No',
+                  type: 'error'
+                },
+                aceptar: {
+                  text: 'Sí',
+                  type: 'success'
+                }
+              }
+            }}
+            closed={modalClosed}
+            crossClose
+            outsideClose
+          />
         </div>
       </div>
     </div>
   )
 }
 
-interface Props {
-  nodosDisponibles: number[]
+interface PropsSelect {
+  data: DataSelect[]
+  selectedInitial: DataSelect | undefined
+  containsValue: boolean
+  changeValue: (DataSelect) => void
 }
 
-function ResultadoDeEscaneoPuerto({ nodosDisponibles }: Props): JSX.Element {
+function Select({ data, selectedInitial, containsValue, changeValue }: PropsSelect): JSX.Element {
+  const [error, setError] = useState<boolean>(false)
+  const [inputValue, setInputValue] = useState('')
+  const [selected, setSelected] = useState<DataSelect>()
+  const [open, setOpen] = useState(false)
+
+  useEffect(() => {
+    if (selectedInitial) {
+      setSelected(selectedInitial)
+    }
+  }, [selectedInitial])
+
   return (
-    <>
-      {nodosDisponibles.length > 0 ? (
-        nodosDisponibles.map((n, i) => {
-          return <div key={i}>Valor: {n}</div>
-        })
-      ) : (
-        <div>No hay nodos disponibles</div>
-      )}
-    </>
+    <div
+      className={clsx('relative flex flex-col min-w-[200px]', {
+        'border-error': error,
+        'focus:border-error': error,
+        'focus-visible:border-error': error
+      })}
+    >
+      <div
+        onClick={() => setOpen(!open)}
+        className={`bg-dark w-full flex items-center justify-between rounded-[5px] mr-8 p-4 border border-solid border-[#fff] pl-[18px] text-success font-bold ${
+          !selected && 'text-gray-700'
+        }`}
+      >
+        {selected?.name
+          ? selected.name?.length > 25
+            ? selected.name?.substring(0, 25) + '...'
+            : selected.name
+          : containsValue
+            ? `No conectado`
+            : '-'}
+        <svg
+          width="16"
+          height="9"
+          viewBox="0 0 16 9"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M10.4225 7.67263L15.6677 2.29759C15.8805 2.07819 16 1.78139 16 1.47202C16 1.16265 15.8805 0.865846 15.6677 0.646438C15.5615 0.536679 15.4351 0.449561 15.2958 0.39011C15.1566 0.330658 15.0072 0.300049 14.8563 0.300049C14.7055 0.300049 14.5561 0.330658 14.4169 0.39011C14.2776 0.449561 14.1512 0.536679 14.045 0.646438L8.81122 6.03319C8.70498 6.14295 8.5786 6.23006 8.43934 6.28952C8.30009 6.34897 8.15072 6.37958 7.99987 6.37958C7.84901 6.37958 7.69965 6.34897 7.56039 6.28952C7.42114 6.23006 7.29475 6.14295 7.18852 6.03319L1.95474 0.646438C1.74107 0.425928 1.45067 0.30143 1.14743 0.300332C0.844186 0.299234 0.552936 0.421626 0.337752 0.640583C0.122569 0.85954 0.00107761 1.15713 5.671e-06 1.46788C-0.00106627 1.77862 0.118372 2.07708 0.33204 2.29759L5.57725 7.67263C6.22004 8.33052 7.09138 8.70005 7.99987 8.70005C8.90835 8.70005 9.77969 8.33052 10.4225 7.67263Z"
+            fill="white"
+          />
+        </svg>
+
+        {/* <BiChevronDown size={20} className={`${open && "rotate-180"}`} /> */}
+      </div>
+      <ul
+        className={` absolute z-30 top-[3.3rem] bg-[#172530] rounded-[5px] text-white mt-2 overflow-y-auto w-full ${open ? 'max-h-[140px]' : 'max-h-0'} `}
+      >
+        {data?.map((value) => (
+          <li
+            key={value?.name}
+            className={`p-2 text-sm border-b-[1px] border-b-success px-[30px] py-[20px] hover:bg-sky-600 hover:text-white
+        ${value?.name?.toLowerCase() === selected?.name?.toLowerCase() && 'bg-sky-600 text-white'}
+        ${value?.name?.toLowerCase().startsWith(inputValue) ? 'block' : 'hidden'}`}
+            onClick={() => {
+              if (value?.name?.toLowerCase() !== selected?.name.toLowerCase()) {
+                setSelected(value)
+                setOpen(false)
+                setInputValue('')
+                changeValue(value)
+              }
+            }}
+          >
+            {value?.name}
+          </li>
+        ))}
+      </ul>
+    </div>
   )
 }

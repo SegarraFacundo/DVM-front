@@ -25,6 +25,7 @@ export type Api = GetApiType<
     getItemsMenuAsync: () => Promise<ItemMenu[]>
     getItemsInfoAsync: () => Promise<ItemInfoData[]>
     getNodosAsync: () => Promise<Nodo[]>
+    cambiarIdsNodosAsync: (nodos: Nodo[]) => Promise<Nodo[]>
     cambiarHabilitacionNodo: (idNodo: number) => Promise<Nodo[]>
     cambiarHabilitacionAspersor: (idNodo: number, idAspersor: number, deshabilitado: boolean) => Promise<Nodo[]>
     isThemeModeDark: () => Promise<boolean>
@@ -77,6 +78,9 @@ const api: Api = {
     },
     getNodosAsync: async () => {
       return await ipcRenderer.invoke('getNodosAsync')
+    },
+    cambiarIdsNodosAsync: async (nodos: Nodo[]) => {
+      return await ipcRenderer.invoke('cambiarIdsNodosAsync', nodos)
     },
     cambiarHabilitacionNodo: async (idNodo: number) => {
       return await ipcRenderer.invoke('cambiarHabilitacionNodo', idNodo)

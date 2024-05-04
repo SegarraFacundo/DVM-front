@@ -15,7 +15,7 @@ export type DescripcionEstadoAspersorType =
   | 'Error de sensor'
   | 'RPM no alcanzada'
   | 'Error de caudalimetro'
-  
+
 export interface Aspersor {
   id: 1 | 2 | 3 | 4
   estado: EstadoAspersor
@@ -61,12 +61,28 @@ export interface Nodo {
 export const NodosStore = () => {
   let urlDataJson = path.join(APP_DATA_PATH, 'nodos.json')
   const urlDataJsonDefault = path.join(__dirname, '../../resources/data/nodos.json')
-  if (!existsSync(urlDataJson))
-    urlDataJson = urlDataJsonDefault
-  console.log("URL de los nodos: ", urlDataJson)
+  if (!existsSync(urlDataJson)) urlDataJson = urlDataJsonDefault
+  console.log('URL de los nodos: ', urlDataJson)
   return {
     all: async (): Promise<Nodo[]> =>
       JSON.parse(await readFileSync(urlDataJson).toString()) as Nodo[],
+    cambiarIdsNodosAsync: async (nodos: Nodo[]): Promise<Nodo[]> => {
+      let data = JSON.parse(readFileSync(urlDataJson).toString()) as Nodo[]
+
+      data = data.map((n) => {
+        const nodoACambiar = nodos.find((nodo) => nodo.nombre === n.nombre)
+
+        if (nodoACambiar) {
+          n.id = nodoACambiar.id
+        }
+
+        return n
+      })
+
+      await writeFileSync(urlDataJson, JSON.stringify(data))
+
+      return data
+    },
     stopAllNodos: async (): Promise<Nodo[]> => {
       let data = JSON.parse(readFileSync(urlDataJson).toString()) as Nodo[]
 
