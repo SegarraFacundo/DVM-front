@@ -1,6 +1,6 @@
 import { existsSync, readFileSync, writeFileSync } from 'fs'
 import path from 'path'
-import { APP_DATA_PATH } from '../../utils/urls'
+import { APP_DATA_PATH() } from '../../utils/urls'
 
 export interface Unidad {
   id: 1 | 2
@@ -10,7 +10,7 @@ export interface Unidad {
 }
 
 export const UnidadesStore = () => {
-  let urlDataJson = path.join(APP_DATA_PATH, 'unidades.json')
+  let urlDataJson = path.join(APP_DATA_PATH(), 'unidades.json')
   const urlDataJsonDefault = path.join(__dirname, '../../resources/data/unidades.json')
   if (!existsSync(urlDataJson))
     urlDataJson = urlDataJsonDefault

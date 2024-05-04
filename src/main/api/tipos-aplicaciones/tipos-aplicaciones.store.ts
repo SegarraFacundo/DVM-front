@@ -1,6 +1,6 @@
 import { existsSync, readFileSync, writeFileSync } from 'fs'
 import path from 'path'
-import { APP_DATA_PATH } from '../../utils/urls'
+import { APP_DATA_PATH() } from '../../utils/urls'
 
 interface Props {
   urlDataJson: string
@@ -12,7 +12,7 @@ export interface TipoAplicacion {
 }
 
 export const TiposAplicacionesStore = () => {
-  let urlDataJson = path.join(APP_DATA_PATH, 'tipos-aplicaciones.json')
+  let urlDataJson = path.join(APP_DATA_PATH(), 'tipos-aplicaciones.json')
   const urlDataJsonDefault = path.join(__dirname, '../../resources/data/tipos-aplicaciones.json')
   if (!existsSync(urlDataJson))
     urlDataJson = urlDataJsonDefault

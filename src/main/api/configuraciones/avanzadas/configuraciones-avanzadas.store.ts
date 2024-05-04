@@ -1,6 +1,6 @@
 import { existsSync, readFileSync, writeFileSync } from 'fs'
 import path from 'path'
-import { APP_DATA_PATH } from '../../../utils/urls'
+import { APP_DATA_PATH() } from '../../../utils/urls'
 
 export interface ConfiguracionesAvanzadas {
   ancho: number
@@ -23,7 +23,7 @@ export interface ConfiguracionesAvanzadas {
 
 export const ConfiguracionesAvanzadasStore = () => {
     
-  let urlDataJson = path.join(APP_DATA_PATH, 'configuraciones-avanzadas.json')
+  let urlDataJson = path.join(APP_DATA_PATH(), 'configuraciones-avanzadas.json')
   const urlDataJsonDefault = path.join(__dirname, '../../resources/data/configuraciones-avanzadas.json')
   if (!existsSync(urlDataJson))
     urlDataJson = urlDataJsonDefault
