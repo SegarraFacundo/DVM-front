@@ -100,7 +100,7 @@ try {
   })
 
   const client = new net.Socket()
-  client.connect({ port: 8080, host: 'localhost' })
+  client.connect({ port: 8080, host: '127.0.0.1' })
 
 
   const isJsonString = (value: string): boolean => {
