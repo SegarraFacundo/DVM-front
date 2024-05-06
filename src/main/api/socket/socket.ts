@@ -73,6 +73,14 @@ interface ClientToServerEvents {
   renombrar: (idNodo: number, nuevoIdNodo: number) => void
 }
 
+export interface DatosMeteorologicos {
+  humedad: number | null
+  velViento: number | null
+  dirViento: number | null
+  temperatura: number | null
+  puntoDeRocio: number | null
+}
+
 interface ServerToClientEvents {
   getStateNodo: (data: Nodo[]) => void
   getDatosMeteorologicos: (data: DatosMeteorologicos) => void
@@ -94,13 +102,6 @@ try {
   const client = new net.Socket()
   client.connect({ port: 8080, host: 'localhost' })
 
-  export interface DatosMeteorologicos {
-    humedad: number | null
-    velViento: number | null
-    dirViento: number | null
-    temperatura: number | null
-    puntoDeRocio: number | null
-  }
 
   const isJsonString = (value: string): boolean => {
     try {
