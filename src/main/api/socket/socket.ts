@@ -97,8 +97,7 @@ try {
   const httpServer = createServer(app)
   const io = new ServerSocket<ClientToServerEvents, ServerToClientEvents>(httpServer, {
     cors: {
-      origin: 'http://127.0.0.1:3000',
-      methods: ['GET', 'POST'],
+      origin: '*',
       credentials: true
     }
   })

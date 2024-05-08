@@ -61,7 +61,8 @@ function createWindow(): void {
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
       sandbox: false,
-      webSecurity: false
+      webSecurity: false,
+      allowRunningInsecureContent: true
     }
   })
 
@@ -91,17 +92,6 @@ function createWindow(): void {
 app.whenReady().then(() => {
   // Set app user model id for windows
   electronApp.setAppUserModelId('com.electron')
-  
-  session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
-    callback({
-      responseHeaders: Object.assign(
-        {
-          'Content-Security-Policy': ["default-src 'self'"]
-        },
-        details.responseHeaders
-      )
-    })
-  })
 
   // Default open or close DevTools by F12 in development
   // and ignore CommandOrControl + R in production.

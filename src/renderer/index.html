@@ -5,9 +5,15 @@
   <meta charset="UTF-8" />
   <title>Electron</title>
   <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
-  <meta http-equiv="Content-Security-Policy" content="script-src 'self';">
+  <meta http-equiv="Content-Security-Policy" content="default-src * data: mediastream: blob: filesystem: about: ws: wss: 'unsafe-eval' 'wasm-unsafe-eval' 'unsafe-inline'; 
+  script-src * data: blob: 'unsafe-inline' 'unsafe-eval'; 
+  connect-src * data: blob: 'unsafe-inline'; 
+  img-src * data: blob: 'unsafe-inline'; 
+  frame-src * data: blob: ; 
+  style-src * data: blob: 'unsafe-inline';
+  font-src * data: blob: 'unsafe-inline';
+  frame-ancestors * data: blob: 'unsafe-inline';">
   <link href="https://fonts.googleapis.com/css2?family=Roboto%20Flex&display=swap" rel="stylesheet">
-  
 </head>
 
 <body>
