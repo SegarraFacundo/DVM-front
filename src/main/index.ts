@@ -1,4 +1,12 @@
-import { app, shell, BrowserWindow, ipcMain, IpcMainInvokeEvent, nativeTheme } from 'electron'
+import {
+  app,
+  shell,
+  BrowserWindow,
+  ipcMain,
+  IpcMainInvokeEvent,
+  nativeTheme,
+  session
+} from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
@@ -38,7 +46,7 @@ function UpsertKeyValue(obj, keyToChange, value) {
 }
 
 function createWindow(): void {
-  app.commandLine.appendSwitch('disable-web-security');
+  app.commandLine.appendSwitch('disable-web-security')
 
   // Create the browser window.
   const mainWindow = new BrowserWindow({
@@ -83,6 +91,17 @@ function createWindow(): void {
 app.whenReady().then(() => {
   // Set app user model id for windows
   electronApp.setAppUserModelId('com.electron')
+  
+  session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
+    callback({
+      responseHeaders: Object.assign(
+        {
+          'Content-Security-Policy': ["default-src 'self'"]
+        },
+        details.responseHeaders
+      )
+    })
+  })
 
   // Default open or close DevTools by F12 in development
   // and ignore CommandOrControl + R in production.
