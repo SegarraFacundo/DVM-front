@@ -94,17 +94,12 @@ interface ServerToClientEvents {
 try {
   const app = express()
 
-  app.use(function (req, res, next) {
-    res.header('Access-Control-Allow-Origin', '*')
-    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept')
-    next()
-  })
-
-  app.use(cors())
   const httpServer = createServer(app)
   const io = new ServerSocket<ClientToServerEvents, ServerToClientEvents>(httpServer, {
     cors: {
-      origin: '*'
+      origin: 'http://127.0.0.1:3000',
+      methods: ['GET', 'POST'],
+      credentials: true
     }
   })
 
