@@ -25,7 +25,7 @@ export const ConfiguracionesAvanzadasStore = () => {
   let urlDataJson = path.join(APP_DATA_PATH(), 'configuraciones-avanzadas.json')
   const urlDataJsonDefault = path.join(
     __dirname,
-    '../../resources/data/configuraciones-avanzadas.json'
+    '../../../resources/data/configuraciones-avanzadas.json'
   )
   if (!existsSync(urlDataJson)) urlDataJson = urlDataJsonDefault
   console.log('URL de las configuraciones avanzadas: ', urlDataJson)
