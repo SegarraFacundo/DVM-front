@@ -1,6 +1,7 @@
 import express from 'express'
 import { createServer } from 'http'
 import { Server as ServerSocket } from 'socket.io'
+import cors from 'cors'
 
 import * as net from 'net'
 import {
@@ -92,6 +93,7 @@ interface ServerToClientEvents {
 
 try {
   const app = express()
+  app.use(cors())
   const httpServer = createServer(app)
   const io = new ServerSocket<ClientToServerEvents, ServerToClientEvents>(httpServer, {
     cors: {
