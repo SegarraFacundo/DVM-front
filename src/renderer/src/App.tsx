@@ -15,7 +15,7 @@ import {
 } from './lib/socket/interfaces/socket-client.interface'
 import { ConfiguracionesAvanzadasData, SendConfiguracionesAvanzadasData } from './app/configuracion-avanzada/interfaces/configuraciones-avanzadas-data'
 
-const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io('/')
+const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io()
 
 export function App() {
   const { setCargando } = useCarga()
