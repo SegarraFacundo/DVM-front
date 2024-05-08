@@ -59,12 +59,16 @@ function createWindow(): void {
 
   mainWindow.webContents.session.webRequest.onBeforeSendHeaders((details, callback) => {
     const { requestHeaders } = details
-    UpsertKeyValue(requestHeaders, 'Access-Control-Allow-Origin', ['*'])
+    UpsertKeyValue(requestHeaders, 'Origin', '*')
+    UpsertKeyValue(requestHeaders, 'Sec-Fetch-Mode', 'no-cors')
+    UpsertKeyValue(requestHeaders, 'Sec-Fetch-Site', 'none')
+    UpsertKeyValue(requestHeaders, 'Sec-Fetch-Dest', 'document')
     callback({ requestHeaders })
   })
 
   mainWindow.webContents.session.webRequest.onHeadersReceived((details, callback) => {
     const { responseHeaders } = details
+    UpsertKeyValue(responseHeaders, 'Origin', '*')
     UpsertKeyValue(responseHeaders, 'Access-Control-Allow-Origin', ['*'])
     UpsertKeyValue(responseHeaders, 'Access-Control-Allow-Headers', ['*'])
     callback({
@@ -89,9 +93,6 @@ function createWindow(): void {
     mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
   }
 }
-
-app.commandLine.appendSwitch('disable-features', 'OutOfBlinkCors')
-app.commandLine.appendSwitch('disable-site-isolation-trials')
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
