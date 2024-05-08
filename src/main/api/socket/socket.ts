@@ -1,7 +1,6 @@
 import express from 'express'
 import { createServer } from 'http'
 import { Server as ServerSocket } from 'socket.io'
-import cors from 'cors'
 
 import * as net from 'net'
 import {

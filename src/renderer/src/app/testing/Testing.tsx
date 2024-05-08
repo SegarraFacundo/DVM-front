@@ -12,7 +12,7 @@ import {
   ServerToClientEvents
 } from '@renderer/lib/socket/interfaces/socket-client.interface'
 
-const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io()
+const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io('http://127.0.0.1:3000')
 
 export function Testing(): JSX.Element {
   const { setTitle } = useTitle()

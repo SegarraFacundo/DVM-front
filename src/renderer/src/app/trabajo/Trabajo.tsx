@@ -19,7 +19,7 @@ import { PanelLateralIzquierdo } from './components/PanelLateralIzquierdo'
 import { ConfiguracionesAvanzadasData } from '../configuracion-avanzada/interfaces/configuraciones-avanzadas-data'
 import PreparacionBomba from '@renderer/ui/components/preparacion-bomba/PreparacionBomba'
 
-const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io()
+const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io('http://127.0.0.1:3000')
 
 export function Trabajo(): JSX.Element {
   const { setTitle } = useTitle()
