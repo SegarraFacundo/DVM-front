@@ -38,6 +38,8 @@ function UpsertKeyValue(obj, keyToChange, value) {
 }
 
 function createWindow(): void {
+  app.commandLine.appendSwitch('disable-web-security');
+
   // Create the browser window.
   const mainWindow = new BrowserWindow({
     width: 1280,
@@ -56,25 +58,6 @@ function createWindow(): void {
   })
 
   mainWindow.webContents.openDevTools()
-
-  mainWindow.webContents.session.webRequest.onBeforeSendHeaders((details, callback) => {
-    const { requestHeaders } = details
-    UpsertKeyValue(requestHeaders, 'Origin', '*')
-    UpsertKeyValue(requestHeaders, 'Sec-Fetch-Mode', 'no-cors')
-    UpsertKeyValue(requestHeaders, 'Sec-Fetch-Site', 'none')
-    UpsertKeyValue(requestHeaders, 'Sec-Fetch-Dest', 'document')
-    callback({ requestHeaders })
-  })
-
-  mainWindow.webContents.session.webRequest.onHeadersReceived((details, callback) => {
-    const { responseHeaders } = details
-    UpsertKeyValue(responseHeaders, 'Origin', '*')
-    UpsertKeyValue(responseHeaders, 'Access-Control-Allow-Origin', ['*'])
-    UpsertKeyValue(responseHeaders, 'Access-Control-Allow-Headers', ['*'])
-    callback({
-      responseHeaders
-    })
-  })
 
   mainWindow.on('ready-to-show', () => {
     mainWindow.show()
