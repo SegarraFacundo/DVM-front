@@ -9,7 +9,7 @@ import {
 import { DatosMeteorologicos } from '@renderer/app/home/interfaces/datos-meteorologicos.interface'
 import { DataUnidad } from '@renderer/app/home/interfaces/data-unidad.interface'
 
-const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io('/')
+const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io('http://localhost:3000')
 
 export function PanelLateralDerecha() {
   const { getStateToggle, addToggle, toggleOpenedState } = useToggle()
