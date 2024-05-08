@@ -29,11 +29,13 @@ function createWindow(): void {
     show: false,
     frame: true,
     fullscreen: false,
+    
     autoHideMenuBar: true,
     ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
-      sandbox: false
+      sandbox: false,
+      webSecurity: false
     }
   })
 
