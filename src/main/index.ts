@@ -3,7 +3,6 @@ import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 
-
 import { OperariosStore } from './api/operarios/operarios.store'
 import { TiposAplicacionesStore } from './api/tipos-aplicaciones/tipos-aplicaciones.store'
 import { ItemsMenuStore } from './api/menu/items-menu.store'
@@ -16,10 +15,27 @@ import { Configuraciones } from './api/configuraciones/configuraciones'
 import { UnidadesStore } from './api/unidades/unidades.store'
 import { ConfiguracionLogger } from './logs/configuracion-logger'
 import log from 'electron-log/main'
-import { ConfiguracionesAvanzadas, ConfiguracionesAvanzadasStore } from './api/configuraciones/avanzadas/configuraciones-avanzadas.store'
+import {
+  ConfiguracionesAvanzadas,
+  ConfiguracionesAvanzadasStore
+} from './api/configuraciones/avanzadas/configuraciones-avanzadas.store'
 
 log.initialize()
 ConfiguracionLogger()
+
+function UpsertKeyValue(obj, keyToChange, value) {
+  const keyToChangeLower = keyToChange.toLowerCase()
+  for (const key of Object.keys(obj)) {
+    if (key.toLowerCase() === keyToChangeLower) {
+      // Reassign old key
+      obj[key] = value
+      // Done
+      return
+    }
+  }
+  // Insert at end instead
+  obj[keyToChange] = value
+}
 
 function createWindow(): void {
   // Create the browser window.
@@ -29,7 +45,7 @@ function createWindow(): void {
     show: false,
     frame: true,
     fullscreen: false,
-    
+
     autoHideMenuBar: true,
     ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
@@ -40,6 +56,21 @@ function createWindow(): void {
   })
 
   mainWindow.webContents.openDevTools()
+
+  mainWindow.webContents.session.webRequest.onBeforeSendHeaders((details, callback) => {
+    const { requestHeaders } = details
+    UpsertKeyValue(requestHeaders, 'Access-Control-Allow-Origin', ['*'])
+    callback({ requestHeaders })
+  })
+
+  mainWindow.webContents.session.webRequest.onHeadersReceived((details, callback) => {
+    const { responseHeaders } = details
+    UpsertKeyValue(responseHeaders, 'Access-Control-Allow-Origin', ['*'])
+    UpsertKeyValue(responseHeaders, 'Access-Control-Allow-Headers', ['*'])
+    callback({
+      responseHeaders
+    })
+  })
 
   mainWindow.on('ready-to-show', () => {
     mainWindow.show()
@@ -189,15 +220,27 @@ ipcMain.handle('cambiarIdsNodosAsync', async (_: IpcMainInvokeEvent, nodos: Nodo
 
 ipcMain.handle('cambiarHabilitacionNodo', async (_: IpcMainInvokeEvent, idNodo: number) => {
   const nodoCambiado = await nodosStore.cambiarHabilitacionNodo(idNodo)
-  log.info('Cambiar habilitacion del nodo: %j', nodoCambiado.find(n => n.id === idNodo))
+  log.info(
+    'Cambiar habilitacion del nodo: %j',
+    nodoCambiado.find((n) => n.id === idNodo)
+  )
   return nodoCambiado
 })
 
 ipcMain.handle(
   'cambiarHabilitacionAspersor',
   async (_: IpcMainInvokeEvent, idNodo: number, idAspersor: number, deshabilitado: boolean) => {
-    const nodoConElAspersorCambiado = await nodosStore.cambiarHabilitacionAspersor(idNodo, idAspersor, deshabilitado)
-    log.info('Cambiar habilitacion del aspersor: %j', nodoConElAspersorCambiado.find(n => n.id === idNodo)?.aspersores.find(a => a.id === idAspersor))
+    const nodoConElAspersorCambiado = await nodosStore.cambiarHabilitacionAspersor(
+      idNodo,
+      idAspersor,
+      deshabilitado
+    )
+    log.info(
+      'Cambiar habilitacion del aspersor: %j',
+      nodoConElAspersorCambiado
+        .find((n) => n.id === idNodo)
+        ?.aspersores.find((a) => a.id === idAspersor)
+    )
     return nodoConElAspersorCambiado
   }
 )
@@ -228,31 +271,34 @@ ipcMain.handle('getBrilloActual', async () => {
 const unidadesStore = UnidadesStore()
 
 ipcMain.handle('getUnidadesAsync', async () => {
-  const unidades =  await unidadesStore.all()
+  const unidades = await unidadesStore.all()
   log.info('Unidades: %s', unidades)
   return unidades
 })
 
 ipcMain.handle('cambiarUnidadVelocidad', async (_: IpcMainInvokeEvent, id: 1 | 2) => {
-  log.info('Cambiando unidad de velocidad: %s', id == 1? 'Km/h': 'mi/h')
+  log.info('Cambiando unidad de velocidad: %s', id == 1 ? 'Km/h' : 'mi/h')
   return await unidadesStore.cambiarUnidadVelocidad(id)
 })
 
 ipcMain.handle('cambiarUnidadTemperatura', async (_: IpcMainInvokeEvent, id: 1 | 2) => {
-  log.info('Cambiando unidad de temperatura: %s', id == 1? '°C': '°F')
+  log.info('Cambiando unidad de temperatura: %s', id == 1 ? '°C' : '°F')
   return await unidadesStore.cambiarUnidadTemperatura(id)
 })
 
 const configuracionesAvanzadasStore = ConfiguracionesAvanzadasStore()
 
 ipcMain.handle('getConfiguracionesAvanzadasAsync', async () => {
-  const configuracionesAvanzadas =  await configuracionesAvanzadasStore.get()
+  const configuracionesAvanzadas = await configuracionesAvanzadasStore.get()
   log.info('Obteniendo configuraciones Avanzadas: %s', configuracionesAvanzadas)
   return configuracionesAvanzadas
 })
 
-ipcMain.handle('editConfiguracionesAvanzadasAsync', async (_: IpcMainInvokeEvent, value: ConfiguracionesAvanzadas) => {
-  const configuracionesAvanzadasEdit =  await configuracionesAvanzadasStore.edit(value)
-  log.info('Editando Configuraciones Avanzadas: %s', configuracionesAvanzadasEdit)
-  return configuracionesAvanzadasEdit
-})
+ipcMain.handle(
+  'editConfiguracionesAvanzadasAsync',
+  async (_: IpcMainInvokeEvent, value: ConfiguracionesAvanzadas) => {
+    const configuracionesAvanzadasEdit = await configuracionesAvanzadasStore.edit(value)
+    log.info('Editando Configuraciones Avanzadas: %s', configuracionesAvanzadasEdit)
+    return configuracionesAvanzadasEdit
+  }
+)
