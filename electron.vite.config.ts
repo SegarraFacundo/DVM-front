@@ -19,7 +19,7 @@ export default defineConfig({
     server: {
       proxy: {
         '/socket.io': {
-          target: 'http://[::1]:3000',
+          target: 'ws://localhost:3000',
           ws: true
         }
       }
