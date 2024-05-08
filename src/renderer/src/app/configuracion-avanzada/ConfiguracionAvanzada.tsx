@@ -18,7 +18,7 @@ import {
 import { DataSelect } from '../home/interfaces/data-select.interface'
 import { Dialog, DialogType } from '@renderer/ui/components/dialog/Dialog'
 
-const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io('http://localhost:3000')
+const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io('http://127.0.0.1:3000')
 
 export default function ConfiguracionAvanzada(): JSX.Element {
   const { setTitle } = useTitle()

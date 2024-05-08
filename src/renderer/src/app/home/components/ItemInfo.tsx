@@ -13,7 +13,7 @@ interface Props {
   data: ItemInfoData
 }
 
-const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io('http://localhost:3000')
+const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io('http://127.0.0.1:3000')
 
 export function ItemInfo({ data }: Props): JSX.Element {
   const [datosMeteorologicos, setDatosMeteorologicos] = useState<DatosMeteorologicos>()

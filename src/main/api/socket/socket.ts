@@ -93,6 +93,13 @@ interface ServerToClientEvents {
 
 try {
   const app = express()
+
+  app.use(function (req, res, next) {
+    res.header('Access-Control-Allow-Origin', '*')
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept')
+    next()
+  })
+
   app.use(cors())
   const httpServer = createServer(app)
   const io = new ServerSocket<ClientToServerEvents, ServerToClientEvents>(httpServer, {
@@ -102,8 +109,7 @@ try {
   })
 
   const client = new net.Socket()
-  client.connect({ port: 8080, host: 'localhost' })
-
+  client.connect({ port: 8080, host: '127.0.0.1' })
 
   const isJsonString = (value: string): boolean => {
     try {
