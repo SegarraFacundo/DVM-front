@@ -21,6 +21,7 @@ import { Dialog, DialogType } from '@renderer/ui/components/dialog/Dialog'
 const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io('http://127.0.0.1:3000')
 
 export default function ConfiguracionAvanzada(): JSX.Element {
+  const { getStateModal, addModal, toggleOpenedState } = useModal()
   const { setTitle } = useTitle()
   const [passwordType, setPasswordType] = useState(true)
   const [error, setError] = useState<boolean>(false)
@@ -58,6 +59,11 @@ export default function ConfiguracionAvanzada(): JSX.Element {
     }
   }, [])
 
+  const openModal = (idModal: string): void => {
+    if (getStateModal(idModal)) return
+    toggleOpenedState(idModal)
+  }
+
   const onKeyPress = (button: string): void => {
     if (button === '{enter}') {
       setShowKeyboard(false)
@@ -73,30 +79,31 @@ export default function ConfiguracionAvanzada(): JSX.Element {
   const fetchConfiguracionesAvanzadas = async () => {
     const configuracionesAvanzadasData: ConfiguracionesAvanzadasData =
       await window.api.invoke.getConfiguracionesAvanzadasAsync()
-    console.info('fetchConfiguracionesAvanzadas: %j', configuracionesAvanzadasData)
     setConfiguracionesAvanzadasData(configuracionesAvanzadasData)
   }
 
   useEffect(() => {
     fetchConfiguracionesAvanzadas()
     setTitle('Configuración Avanzada')
+    addModal('guardo-configuracion')
   }, [])
 
   const editConfiguracionesAvanzadas = async (): void => {
     const configuracionesAvanzadasEditData =
       await window.api.invoke.editConfiguracionesAvanzadasAsync(configuracionesAvanzadasData)
-    console.info('fetchConfiguracionesAvanzadas: %j', configuracionesAvanzadasEditData)
     setConfiguracionesAvanzadasData(configuracionesAvanzadasEditData)
+    openModal('guardo-configuracion')
   }
 
   const handleGuardarClick = (): void => {
-    if (inputRef.current && configuracionesAvanzadasData.password === inputRef.current.value) {
-      setError(false)
-      setEstaHabilitado(true)
-      editConfiguracionesAvanzadas()
-    } else {
-      setError(true)
-      setEstaHabilitado(false)
+    if (estaHabilitado) editConfiguracionesAvanzadas()
+
+    if (!estaHabilitado) {
+      const habilitado = !!(
+        inputRef.current && configuracionesAvanzadasData.password === inputRef.current.value
+      )
+      setError(!habilitado)
+      setEstaHabilitado(habilitado)
     }
   }
 
@@ -111,6 +118,12 @@ export default function ConfiguracionAvanzada(): JSX.Element {
     '{tab}': 'Tab',
     '{lock}': 'Lock',
     '{shift}': 'Shift'
+  }
+
+  const modalClosed = (idModal: string, acept: boolean): void => {
+    if (acept) {
+      if (!getStateModal(idModal)) toggleOpenedState(idModal)
+    }
   }
 
   return (
@@ -185,6 +198,41 @@ export default function ConfiguracionAvanzada(): JSX.Element {
           {estaHabilitado ? 'Guardar' : 'Ingresar'}
         </Button>
       </div>
+      <Modal<{
+        title: string
+        message: string
+        type: 'success' | 'warning' | 'error' | 'default'
+        buttons?: {
+          cancelar?: {
+            noShow: boolean
+            text: string
+            type: DialogType
+          }
+          aceptar?: {
+            noShow: boolean
+            text: string
+            type: DialogType
+          }
+        }
+      }>
+        idModal="guardo-configuracion"
+        ModalContent={Dialog}
+        modalContentProps={{
+          title: 'Exito',
+          message: 'Se guardo satisfactoriamente la configuración',
+          type: 'success',
+          buttons: {
+            cancelar: {
+              noShow: true,
+              text: '',
+              type: 'error'
+            }
+          }
+        }}
+        closed={modalClosed}
+        crossClose
+        outsideClose
+      />
     </article>
   )
 }
@@ -204,7 +252,6 @@ function Ajustes({ valueInicial, sendConfiguracionesAvanzadasData }: AjustesProp
 
   const fetchNodos = async () => {
     const nodos = await window.api.invoke.getNodosAsync()
-    console.info('fetchNodos: %j', nodos)
     setNodos(nodos)
   }
 
@@ -219,11 +266,15 @@ function Ajustes({ valueInicial, sendConfiguracionesAvanzadasData }: AjustesProp
       if (idModal === 'guardar-configuracion-nodos') {
         cambiarIdsNodosAsync()
       }
+      if (idModal === 'buscar-nodos-disponibles') {
+        escanear()
+      }
     }
   }
 
   useEffect(() => {
     addModal('guardar-configuracion-nodos')
+    addModal('buscar-nodos-disponibles')
   }, [])
 
   useEffect(() => {
@@ -275,8 +326,8 @@ function Ajustes({ valueInicial, sendConfiguracionesAvanzadasData }: AjustesProp
   }
 
   const cambiarIdsNodosAsync = async (): Promise<void> => {
-    const nodosCambiados = await window.api.invoke.cambiarIdsNodosAsync(nodos)
-    console.info('cambiarIdsNodosAsync: %j', nodosCambiados)
+    await window.api.invoke.cambiarIdsNodosAsync(nodos)
+    openModal('guardo-configuracion')
   }
 
   return (
@@ -538,7 +589,7 @@ function Ajustes({ valueInicial, sendConfiguracionesAvanzadasData }: AjustesProp
             </p>
           </div>
           <div className="w-[180px]">
-            <Button type="success" size="md" onClick={escanear}>
+            <Button type="success" size="md" onClick={() => openModal('buscar-nodos-disponibles')}>
               Escanear
             </Button>
           </div>
@@ -572,6 +623,34 @@ function Ajustes({ valueInicial, sendConfiguracionesAvanzadasData }: AjustesProp
                   type: 'error'
                 }
               }
+            }}
+            closed={modalClosed}
+            crossClose
+            outsideClose
+          />
+          <Modal<{
+            title: string
+            message: string
+            type: 'success' | 'warning' | 'error' | 'default'
+            buttons?: {
+              cancelar?: {
+                noShow: boolean
+                text: string
+                type: DialogType
+              }
+              aceptar?: {
+                noShow: boolean
+                text: string
+                type: DialogType
+              }
+            }
+          }>
+            idModal="buscar-nodos-disponibles"
+            ModalContent={Dialog}
+            modalContentProps={{
+              title: 'Escanear',
+              message: '¿Desea escanear para encontrar los nodos disponibles?',
+              type: 'success'
             }}
             closed={modalClosed}
             crossClose
@@ -678,6 +757,41 @@ function Ajustes({ valueInicial, sendConfiguracionesAvanzadasData }: AjustesProp
                 aceptar: {
                   text: 'Sí',
                   type: 'success'
+                }
+              }
+            }}
+            closed={modalClosed}
+            crossClose
+            outsideClose
+          />
+          <Modal<{
+            title: string
+            message: string
+            type: 'success' | 'warning' | 'error' | 'default'
+            buttons?: {
+              cancelar?: {
+                noShow: boolean
+                text: string
+                type: DialogType
+              }
+              aceptar?: {
+                noShow: boolean
+                text: string
+                type: DialogType
+              }
+            }
+          }>
+            idModal="guardo-configuracion"
+            ModalContent={Dialog}
+            modalContentProps={{
+              title: 'Exito',
+              message: 'Se guardo sactifactoriamente la configuración',
+              type: 'success',
+              buttons: {
+                cancelar: {
+                  noShow: true,
+                  text: '',
+                  type: 'error'
                 }
               }
             }}

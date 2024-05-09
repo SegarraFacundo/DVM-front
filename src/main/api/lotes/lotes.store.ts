@@ -12,7 +12,6 @@ export const LotesStore = () => {
   const urlDataJsonDefault = path.join(__dirname, '../../resources/data/lotes.json')
   if (!existsSync(urlDataJson))
     urlDataJson = urlDataJsonDefault
-  console.log("URL de los lotes: ", urlDataJson)
   return {
     all: async () => JSON.parse(await readFileSync(urlDataJson).toString()) as Lote[],
     get: async (id: number) =>

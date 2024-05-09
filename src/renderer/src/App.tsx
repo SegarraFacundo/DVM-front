@@ -33,7 +33,7 @@ export function App() {
   }, [])
 
   const escuchoDesconeccion = (): void => {
-    socket.on('desconectado', () => alert('Se desconecto'))
+    socket.on('desconectado', () => alert('Se desconecto, reintente reiniciar la aplicación'))
     //socket.on('error', (err) => alert(JSON.stringify(err)))
   }
 

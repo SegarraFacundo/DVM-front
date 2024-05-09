@@ -16,7 +16,6 @@ export const TiposAplicacionesStore = () => {
   const urlDataJsonDefault = path.join(__dirname, '../../resources/data/tipos-aplicaciones.json')
   if (!existsSync(urlDataJson))
     urlDataJson = urlDataJsonDefault
-  console.log("URL de los tipos de aplicaciones: ", urlDataJson)
   return {
     all: async () => JSON.parse(await readFileSync(urlDataJson).toString()) as TipoAplicacion[],
     get: async (id: number) =>

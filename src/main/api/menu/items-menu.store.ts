@@ -13,7 +13,6 @@ export const ItemsMenuStore = () => {
   const urlDataJsonDefault = path.join(__dirname, '../../resources/data/items-menu.json')
   if (!existsSync(urlDataJson))
     urlDataJson = urlDataJsonDefault
-  console.log("URL de los items menu: ", urlDataJson)
   return {
     all: async () => JSON.parse(await readFileSync(urlDataJson).toString()) as ItemMenu[],
   }

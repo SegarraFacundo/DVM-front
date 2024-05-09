@@ -6,6 +6,7 @@ import { useModal } from '../modal/hooks/UseModal'
 import { useFormInitial } from '@renderer/app/home/components/form-initial/hooks/UseFormInitial'
 import { Modal } from '../modal/Modal'
 import Agregar from '@renderer/app/home/components/agregar/Agregar'
+import log  from 'electron-log/renderer'
 
 interface Props {
   label: string
@@ -38,9 +39,11 @@ const InputDropdown = ({ label, name, data, errors, withAdd = false }: Props): J
         tipoAplicacion
       }
       switch (name) {
-        case 'operario':
+        case 'operario': {
           nuevoEstado.operario = { id: selected?.id, name: selected?.name }
+          log.info(`Nuevo operario: ${selected?.name ?? ''}`)
           break
+        }
         case 'tipoAplicacion':
           nuevoEstado.tipoAplicacion = { id: selected?.id, name: selected?.name }
           break

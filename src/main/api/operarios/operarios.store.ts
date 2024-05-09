@@ -5,6 +5,7 @@ import { APP_DATA_PATH } from '../../utils/urls'
 export interface Operario {
   id: number
   name: string
+  seleccionado?: boolean
 }
 
 export const OperariosStore = () => {
@@ -12,7 +13,6 @@ export const OperariosStore = () => {
   const urlDataJsonDefault = path.join(__dirname, '../../resources/data/operarios.json')
   if (!existsSync(urlDataJson))
     urlDataJson = urlDataJsonDefault
-  console.log("URL de los operarios: ", urlDataJson)
   return {
     all: async () => JSON.parse(await readFileSync(urlDataJson).toString()) as Operario[],
     get: async (id: number) =>

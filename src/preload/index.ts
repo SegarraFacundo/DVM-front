@@ -7,7 +7,7 @@ import { ItemInfoData } from '../main/api/info/items-info.store'
 import { Lote } from '../main/api/lotes/lotes.store'
 import { Nodo } from '../main/api/nodos/nodos.store'
 import { Unidad } from '../main/api/unidades/unidades.store'
-import { ConfiguracionesAvanzadas } from '../main/api/configuraciones/avanzadas/configuraciones-avanzadas.store'
+import { ConfiguracionesAvanzadas } from '../main/api/configuraciones/configuraciones-avanzadas.store'
 
 const ipcRenderer = createIpcRenderer<Api>()
 

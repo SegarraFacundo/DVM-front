@@ -18,6 +18,7 @@ import { PanelLateralDerecha } from './components/PanelLateralDerecha'
 import { PanelLateralIzquierdo } from './components/PanelLateralIzquierdo'
 import { ConfiguracionesAvanzadasData } from '../configuracion-avanzada/interfaces/configuraciones-avanzadas-data'
 import PreparacionBomba from '@renderer/ui/components/preparacion-bomba/PreparacionBomba'
+import log from 'electron-log/renderer'
 
 const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io('http://127.0.0.1:3000')
 
@@ -35,7 +36,6 @@ export function Trabajo(): JSX.Element {
 
   const fetchConfiguracionesAvanzadas = async () => {
     const configuracionesAvanzadasData = await window.api.invoke.getConfiguracionesAvanzadasAsync()
-    console.info('fetchConfiguracionesAvanzadas: %j', configuracionesAvanzadasData)
     setConfiguracionesAvanzadasData(configuracionesAvanzadasData)
   }
 
@@ -65,6 +65,7 @@ export function Trabajo(): JSX.Element {
         toggleOpenedState('preparacion-bomba')
       }
       if (idModal === 'end-job') {
+        log.info('trabajo finalizado')
         finalizarTrabajoClick()
       }
       if (idModal === 'preparacion-bomba') {
@@ -83,16 +84,23 @@ export function Trabajo(): JSX.Element {
     toggleOpenedState(idModal)
   }
 
-  const getRPMDeseado = (tipoGotaSeleccionada: TipoGotaType | undefined): number => {
+  const getRPMDeseado = async (tipoGotaSeleccionada: TipoGotaType | undefined): Promise<number> => {
     let rpmDeseado: number = 3500
     if (configuracionesAvanzadasData && tipoGotaSeleccionada)
       rpmDeseado = configuracionesAvanzadasData.gota[tipoGotaSeleccionada.toLowerCase()]
-    console.log('RPM Deseado para el trabajo:', rpmDeseado)
+    if (tipoGotaSeleccionada && configuracionesAvanzadasData) {
+      configuracionesAvanzadasData.gota.seleccionada = tipoGotaSeleccionada
+      const configuracionesAvanzadasEditData =
+        await window.api.invoke.editConfiguracionesAvanzadasAsync(configuracionesAvanzadasData)
+      setConfiguracionesAvanzadasData(configuracionesAvanzadasEditData)
+    }
+
     return rpmDeseado
   }
-  const iniciarOPausarTrabajoClick = () => {
-    if (runningJob) {
 
+  const iniciarOPausarTrabajoClick = async (): Promise<void> => {
+    if (runningJob) {
+      log.info('trabajo pausado')
       socket.emit('stopJob')
       setNodos(
         nodos.map((nodo, i) => {
@@ -100,7 +108,7 @@ export function Trabajo(): JSX.Element {
         })
       )
     } else {
-      socket.emit('startJob', getRPMDeseado(tipoGotaseleccionada))
+      socket.emit('startJob', await getRPMDeseado(tipoGotaseleccionada))
       socket.on('getStateNodo', (nodos) => {
         if (nodos) {
           setNodos(

@@ -1,11 +1,6 @@
 import path from 'path'
 import log from 'electron-log/main'
-import { app } from 'electron'
-
-const LOGS_PATH: string =
-  process.platform === 'darwin'
-    ? path.resolve(app.getPath('logs'), `../${app.name}`)
-    : path.resolve(app.getPath('userData'), 'logs')
+import { APP_DATA_PATH } from '../utils/urls'
 
 function fixedStringLength(n: number | string, p?: number, r = '0'): string {
   let str = String(n)
@@ -27,7 +22,7 @@ function fixedStringLength(n: number | string, p?: number, r = '0'): string {
   return str
 }
 
-function formatDate(format = 'YYYY-MM-DD H:I:S.MS') {
+function formatDate(format = 'YYYY-MM-DD H:I:S.MS'): string {
   const date = new Date()
 
   const obj = {
@@ -45,13 +40,12 @@ function formatDate(format = 'YYYY-MM-DD H:I:S.MS') {
   })
 }
 
-export const ConfiguracionLogger = () => {
-  const logFileName = `${formatDate('YYYY-MM-DD')}.log`
+export const ConfiguracionLogger = (): void => {
+  const logFileName = `${formatDate('YYYY-MM-DD')}.csv`
 
-  log.transports.file.resolvePathFn = () => path.join(LOGS_PATH, logFileName)
+  log.transports.file.resolvePathFn = (): string => path.join(APP_DATA_PATH(), 'logs', logFileName)
 
-  const env = process.env.NODE_ENV ?? ''
-  log.transports.file.format = `[{y}-{m}-{d} {h}:{i}:{s}.{ms}] [${env}] [{processType}] [{level}] {text}`
+  log.transports.file.format = `{y}-{m}-{d} {h}:{i}:{s}.{ms},{level},{text}`
   log.transports.console.format = '[{processType}] [{level}] {text}'
 
   Object.assign(console, log.functions)

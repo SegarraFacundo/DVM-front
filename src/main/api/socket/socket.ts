@@ -11,6 +11,7 @@ import {
   NodosStore,
   DescripcionEstadoAspersorType
 } from '../nodos/nodos.store'
+import { ConfiguracionesAvanzadasStore } from '../configuraciones/configuraciones-avanzadas.store'
 
 //Interfaces de API
 // Protocolo de testing:
@@ -133,6 +134,7 @@ try {
   // }
 
   const startJob = (nodo: Nodo): boolean => {
+    if (nodo.id === 0) return false
     const send = {
       command: 'normal',
       nodo: nodo.id,
@@ -154,7 +156,7 @@ try {
           : nodo.aspersores[3].rpmDeseado ?? 0
     }
 
-    console.info('Comenzo el trabajo: %j', send)
+    console.info(`Comenzo el trabajo ${JSON.stringify(send).replace(/"/g, '""')}`)
 
     return client.write(Buffer.from(JSON.stringify(send)))
   }
@@ -163,8 +165,6 @@ try {
     const send = {
       command: 'scan'
     }
-
-    console.info('Comenzo el escaneo de nodos: %j', send)
 
     return client.write(Buffer.from(JSON.stringify(send)))
   }
@@ -210,7 +210,6 @@ try {
   }
 
   const startTestingAsync = async (socket): Promise<void> => {
-    console.info('Iniciando el testing...')
     const nodosStore = NodosStore()
     const nodos = await nodosStore.all()
     const send = {
@@ -273,7 +272,7 @@ try {
       })
       socket.emit('getStateNodo', datos)
     } else {
-      console.info('Comenzo el testing: %j', send)
+      console.info(`Comenzo el testing ${JSON.stringify(send).replace(/"/g, '""')}}`)
       client.write(Buffer.from(JSON.stringify(send)))
     }
   }
@@ -288,6 +287,8 @@ try {
     io.emit('desconectado')
   })
 
+  const configuracionesAvanzadasStore = ConfiguracionesAvanzadasStore()
+
   io.on('connection', async (socket) => {
     console.info('Socket conectado...')
     let runningJob = false
@@ -297,7 +298,6 @@ try {
     })
 
     socket.on('startJob', (rpmDeseado: number) => {
-      console.info('Comenzo el trabajo con RPM deseado:', rpmDeseado)
       runningJob = true
       listenJob()
       nodosStore.startAllNodo(rpmDeseado).then(() => {
@@ -317,8 +317,6 @@ try {
         nodo: idNodo,
         nodoNombreNuevo: nuevoIdNodo
       }
-
-      console.info(`Renombramos el nodo id ${send.nodo} a ${send.nodoNombreNuevo}`)
 
       return client.write(Buffer.from(JSON.stringify(send)))
     })
@@ -344,8 +342,6 @@ try {
             electrovalvula: value.electrovalvula ? 1 : 0
           }))
         }
-
-        console.info(`Nueva configuracion: ${JSON.stringify(send)}`)
 
         return client.write(Buffer.from(JSON.stringify(send)))
       }
@@ -510,7 +506,6 @@ try {
                 }
               })
 
-              console.info('Emitiendo estado del nodo: %j', datos)
               socket.emit('getStateNodo', datos)
             }
           }
@@ -538,7 +533,11 @@ try {
             const datos: DatosMeteorologicos = {
               ...(infoDataJson as DatosMeteorologicos)
             }
-            console.info('Emitiendo datos meteorologicos: %j', datos)
+
+            const configuracion = await configuracionesAvanzadasStore.get()
+            console.info(
+              `,${datos.temperatura},${datos.humedad},${datos.velViento},${datos.dirViento},${datos.puntoDeRocio},${configuracion.gota.seleccionada}`
+            )
             socket.emit('getDatosMeteorologicos', datos)
           }
           if (infoDataJson && infoDataJson.command === 'estadoGeneralNodos') {
@@ -595,12 +594,10 @@ try {
               }
             })
 
-            console.info('Emitiendo estado del nodo: %j', datos)
             socket.emit('getStateNodo', datos)
           }
           if (infoDataJson && infoDataJson.command === 'rtaScan' && infoDataJson['nodos']) {
             const datos: number[] = infoDataJson.nodos
-            console.info('Emitiendo datos escaneo: %j', datos)
             socket.emit('rtaScan', datos)
           }
         }

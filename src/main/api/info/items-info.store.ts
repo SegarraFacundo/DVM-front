@@ -15,7 +15,6 @@ export const ItemsInfoStore = () => {
   const urlDataJsonDefault = path.join(__dirname, '../../resources/data/items-info.json')
   if (!existsSync(urlDataJson))
     urlDataJson = urlDataJsonDefault
-  console.log("URL de los items info: ", urlDataJson)
   return {
     all: async () => JSON.parse(await readFileSync(urlDataJson).toString()) as ItemInfoData[],
   }

@@ -1,3 +1,5 @@
+export type TipoGotaType = 'FINA' | 'MEDIA' | 'GRUESA' | 'CUSTOM'
+
 export interface ConfiguracionesAvanzadasData {
   ancho: number
   gota: {
@@ -5,6 +7,7 @@ export interface ConfiguracionesAvanzadasData {
     media: number
     gruesa: number
     custom: number
+    seleccionada: TipoGotaType
   }
   variacionRPM: number
   corriente: {

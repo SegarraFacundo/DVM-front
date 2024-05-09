@@ -14,7 +14,6 @@ export const UnidadesStore = () => {
   const urlDataJsonDefault = path.join(__dirname, '../../resources/data/unidades.json')
   if (!existsSync(urlDataJson))
     urlDataJson = urlDataJsonDefault
-  console.log("URL de las unidades: ", urlDataJson)
   return {
     all: async () => JSON.parse(await readFileSync(urlDataJson).toString()) as Unidad[],
     cambiarUnidadVelocidad: async (id: 1 | 2) => {

@@ -23,7 +23,6 @@ function Home() {
 
   const fetchData = async () => {
     const result = await window.api.invoke.getItemsInfoAsync()
-    log.info('item', result)
     setData(result)
   }
 
