@@ -65,11 +65,19 @@ export function Trabajo(): JSX.Element {
         toggleOpenedState('preparacion-bomba')
       }
       if (idModal === 'end-job') {
-        log.info('trabajo finalizado')
+        log.info('Trabajo finalizado')
         finalizarTrabajoClick()
       }
       if (idModal === 'preparacion-bomba') {
         iniciarOPausarTrabajoClick()
+      }
+      if (idModal === 'tipo-gota') {
+        log.info(`Cambio tipo de gota: ${tipoGotaseleccionada}`)
+        if (tipoGotaseleccionada && runningJob) {
+          getRPMDeseado(tipoGotaseleccionada).then((rpmDeseado) =>
+            socket.emit('startJob', rpmDeseado)
+          )
+        }
       }
     }
   }
@@ -100,7 +108,7 @@ export function Trabajo(): JSX.Element {
 
   const iniciarOPausarTrabajoClick = async (): Promise<void> => {
     if (runningJob) {
-      log.info('trabajo pausado')
+      log.info('Trabajo pausado')
       socket.emit('stopJob')
       setNodos(
         nodos.map((nodo, i) => {
@@ -108,6 +116,7 @@ export function Trabajo(): JSX.Element {
         })
       )
     } else {
+      log.info('Inicio el trabajo')
       socket.emit('startJob', await getRPMDeseado(tipoGotaseleccionada))
       socket.on('getStateNodo', (nodos) => {
         if (nodos) {

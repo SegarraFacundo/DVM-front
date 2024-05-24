@@ -32,7 +32,7 @@ export function Layout({ children }: Props) {
         })}
       />
       {!cargando ? (
-        <main hidden={cargando} className="w-[1280px] h-[800px] relative bg-[#172530] pt-[64px]">
+        <main hidden={cargando} className="w-[1280px] h-[800px] relative   bg-light dark:bg-[#172530] pt-[64px]">
           {children}
         </main>
       ) : (

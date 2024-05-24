@@ -35,7 +35,7 @@ export default function ConfiguracionGeneral(): JSX.Element {
   const handleClickDown = (): void => {
     const porcentaje = percentageLoading === 0 ? 0 : percentageLoading - 10
     setPercentageLoading(porcentaje)
-    window.api.invoke.setBrillo(porcentaje)
+    window.api.invoke.setBrillo(porcentaje + 10)
   }
 
   const handleClickDropdown = (input: 'velocidad' | 'temperatura'): void => {

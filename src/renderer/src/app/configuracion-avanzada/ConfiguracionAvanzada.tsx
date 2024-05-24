@@ -17,6 +17,7 @@ import {
 } from '@renderer/lib/socket/interfaces/socket-client.interface'
 import { DataSelect } from '../home/interfaces/data-select.interface'
 import { Dialog, DialogType } from '@renderer/ui/components/dialog/Dialog'
+import { InputNumber } from '@renderer/ui/components/input-number/InputNumber'
 
 const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io('http://127.0.0.1:3000')
 
@@ -112,8 +113,8 @@ export default function ConfiguracionAvanzada(): JSX.Element {
   }
 
   const display = {
-    '{bksp}': 'Retroceso',
-    '{enter}': 'Enter',
+    '{bksp}': 'Borrar',
+    '{enter}': 'Entrar',
     '{space}': 'Espacio',
     '{tab}': 'Tab',
     '{lock}': 'Lock',
@@ -250,6 +251,47 @@ function Ajustes({ valueInicial, sendConfiguracionesAvanzadasData }: AjustesProp
     useState<ConfiguracionesAvanzadasData>(valueInicial)
   const [nodosDisponibles, setNodosDisponibles] = useState<number[]>([])
 
+  const inputRef = useRef<HTMLInputElement>(null)
+  const [value, setValue] = useState<string>('')
+  const divRef = useRef<HTMLDivElement>(null)
+  const [theme, setTheme] = useState<string>('hg-theme-default')
+  const keyboardRef = useRef<any>(null)
+  const [showKeyboard, setShowKeyboard] = useState<boolean>(false)
+
+  const setThemeKeyboard = async (): Promise<void> => {
+    const result = await window.api.invoke.isThemeModeDark()
+    setTheme(result ? 'hg-theme-dark' : 'hg-theme-default')
+  }
+
+  useEffect(() => {
+    setThemeKeyboard()
+
+    const handleClickOutside = (event): void => {
+      if (
+        inputRef.current &&
+        !inputRef.current.contains(event.target) &&
+        divRef.current &&
+        !divRef.current.contains(event.target)
+      ) {
+        setShowKeyboard(false)
+      }
+    }
+    document.addEventListener('click', handleClickOutside, true)
+    return () => {
+      document.removeEventListener('click', handleClickOutside, true)
+    }
+  }, [])
+
+  const display = {
+    '{bksp}': 'Borrar',
+    '{enter}': 'Entrar',
+    '{space}': 'Espacio',
+    '{tab}': 'Tab',
+    '{lock}': 'Lock',
+    '{clear}': 'Limpiar',
+    '{shift}': 'Shift'
+  }
+
   const fetchNodos = async () => {
     const nodos = await window.api.invoke.getNodosAsync()
     setNodos(nodos)
@@ -281,7 +323,7 @@ function Ajustes({ valueInicial, sendConfiguracionesAvanzadasData }: AjustesProp
     fetchNodos()
     addModal('nodos-disponibles')
     nodos.forEach((_, i) => addModal('configuracion-de-nodo' + i))
-  }, [])
+  }, [nodos])
 
   const onChangeConfiguracionesAvanzada = (
     event: ChangeEvent,
@@ -330,8 +372,20 @@ function Ajustes({ valueInicial, sendConfiguracionesAvanzadasData }: AjustesProp
     openModal('guardo-configuracion')
   }
 
+  const onFocusInput = (): void => {
+    setShowKeyboard(true)
+    keyboardRef.current.setInput(value)
+  }
+
+  const onKeyPress = (button: string): void => {
+    if (button === '{enter}') {
+      setShowKeyboard(false)
+    }
+    if (button === '{clear}') setValue('')
+  }
+
   return (
-    <div className="bg-dark rounded-[5px] w-full h-[528px] overflow-y-scroll flex flex-col gap-8 p-20">
+    <div className="bg-dark rounded-[5px] w-full h-[528px] overflow-y-scroll touch-auto flex flex-col gap-8 p-20">
       <p className="font-roboto text-white text-[20px]">
         Ajuste de los valores por defecto para el trabajo
       </p>
@@ -342,23 +396,13 @@ function Ajustes({ valueInicial, sendConfiguracionesAvanzadasData }: AjustesProp
               Dimensiones del trabajo
             </h4>
             <div className="flex flex-col">
-              <label className="font-roboto text-white text-[20px]">Ancho</label>
-              <div className="flex gap-4 items-center">
-                <input
-                  value={configuracionesAvanzadasData.ancho}
-                  onChange={($e) => onChangeConfiguracionesAvanzada($e, 'ancho')}
-                  className={clsx(
-                    'h-[60px] w-[150px] rounded-[5px] bg-[#172530] border border-solid border-[#fff] pl-[18px] text-white p-4',
-                    {
-                      'border-error': error,
-                      'focus:border-error': error,
-                      'focus-visible:border-error': error
-                    }
-                  )}
-                  type="number"
-                />
-                <small className="font-roboto text-white text-[20px]">cm</small>
-              </div>
+              <InputNumber
+                label="Ancho"
+                valueInitial={configuracionesAvanzadasData.ancho}
+                unidad="cm"
+                required={true}
+                onChange={($e) => onChangeConfiguracionesAvanzada($e, 'ancho')}
+              />
             </div>
           </div>
           <div className="flex flex-col gap-4">
@@ -370,80 +414,40 @@ function Ajustes({ valueInicial, sendConfiguracionesAvanzadasData }: AjustesProp
             </p>
             <div className="grid grid-cols-4 gap-4">
               <div className="flex flex-col">
-                <label className="font-roboto text-white text-[20px]">Fina</label>
-                <div className="flex gap-4 items-center">
-                  <input
-                    value={configuracionesAvanzadasData.gota.fina}
-                    onChange={($e) => onChangeConfiguracionesAvanzada($e, 'gota.fina')}
-                    className={clsx(
-                      'h-[60px] w-[150px] rounded-[5px] bg-[#172530] border border-solid border-[#fff] pl-[18px] text-white p-4',
-                      {
-                        'border-error': error,
-                        'focus:border-error': error,
-                        'focus-visible:border-error': error
-                      }
-                    )}
-                    type="number"
-                  />
-                  <small className="font-roboto text-white text-[20px]">RPM</small>
-                </div>
+                <InputNumber
+                  label="Fina"
+                  valueInitial={configuracionesAvanzadasData.gota.fina}
+                  unidad="RPM"
+                  required={true}
+                  onChange={($e) => onChangeConfiguracionesAvanzada($e, 'gota.fina')}
+                />
               </div>
               <div className="flex flex-col">
-                <label className="font-roboto text-white text-[20px]">Media</label>
-                <div className="flex gap-4 items-center">
-                  <input
-                    value={configuracionesAvanzadasData.gota.media}
-                    onChange={($e) => onChangeConfiguracionesAvanzada($e, 'gota.media')}
-                    className={clsx(
-                      'h-[60px] w-[150px] rounded-[5px] bg-[#172530] border border-solid border-[#fff] pl-[18px] text-white p-4',
-                      {
-                        'border-error': error,
-                        'focus:border-error': error,
-                        'focus-visible:border-error': error
-                      }
-                    )}
-                    type="number"
-                  />
-                  <small className="font-roboto text-white text-[20px]">RPM</small>
-                </div>
+                <InputNumber
+                  label="Media"
+                  valueInitial={configuracionesAvanzadasData.gota.media}
+                  unidad="RPM"
+                  required={true}
+                  onChange={($e) => onChangeConfiguracionesAvanzada($e, 'gota.media')}
+                />
               </div>
               <div className="flex flex-col">
-                <label className="font-roboto text-white text-[20px]">Gruesa</label>
-                <div className="flex gap-4 items-center">
-                  <input
-                    value={configuracionesAvanzadasData.gota.gruesa}
-                    onChange={($e) => onChangeConfiguracionesAvanzada($e, 'gota.gruesa')}
-                    className={clsx(
-                      'h-[60px] w-[150px] rounded-[5px] bg-[#172530] border border-solid border-[#fff] pl-[18px] text-white p-4',
-                      {
-                        'border-error': error,
-                        'focus:border-error': error,
-                        'focus-visible:border-error': error
-                      }
-                    )}
-                    type="number"
-                  />
-                  <small className="font-roboto text-white text-[20px]">RPM</small>
-                </div>
+                <InputNumber
+                  label="Gruesa"
+                  valueInitial={configuracionesAvanzadasData.gota.gruesa}
+                  unidad="RPM"
+                  required={true}
+                  onChange={($e) => onChangeConfiguracionesAvanzada($e, 'gota.gruesa')}
+                />
               </div>
               <div className="flex flex-col">
-                <label className="font-roboto text-white text-[20px]">Custom</label>
-                <div className="flex gap-4 items-center">
-                  <input
-                    value={configuracionesAvanzadasData.gota.custom}
-                    onChange={($e) => onChangeConfiguracionesAvanzada($e, 'gota.custom')}
-                    className={clsx(
-                      'h-[60px] w-[150px] rounded-[5px] bg-[#172530] border border-solid border-[#fff] pl-[18px] text-white p-4',
-                      {
-                        'border-error': error,
-                        'focus:border-error': error,
-                        'focus-visible:border-error': error
-                      }
-                    )}
-                    type="number"
-                  />
-                  <small className="font-roboto text-white text-[20px]">RPM</small>
-                </div>
+                <InputNumber
+                  label="Custom"
+                  valueInitial={configuracionesAvanzadasData.gota.custom}
+                  unidad="RPM"
+                  required={true}
+                  onChange={($e) => onChangeConfiguracionesAvanzada($e, 'gota.custom')}
+                />
               </div>
             </div>
           </div>
@@ -455,23 +459,13 @@ function Ajustes({ valueInicial, sendConfiguracionesAvanzadasData }: AjustesProp
               Ajuste de la variabilidad en el funcionamiento de los aspersores
             </p>
             <div className="flex flex-col">
-              <label className="font-roboto text-white text-[20px]">Variación +/-</label>
-              <div className="flex gap-4 items-center">
-                <input
-                  value={configuracionesAvanzadasData.variacionRPM}
-                  onChange={($e) => onChangeConfiguracionesAvanzada($e, 'variacionRPM')}
-                  className={clsx(
-                    'h-[60px] w-[150px] rounded-[5px] bg-[#172530] border border-solid border-[#fff] pl-[18px] text-white p-4',
-                    {
-                      'border-error': error,
-                      'focus:border-error': error,
-                      'focus-visible:border-error': error
-                    }
-                  )}
-                  type="number"
-                />
-                <small className="font-roboto text-white text-[20px]">%</small>
-              </div>
+              <InputNumber
+                label="Variación +/-"
+                valueInitial={configuracionesAvanzadasData.variacionRPM}
+                unidad="%"
+                required={true}
+                onChange={($e) => onChangeConfiguracionesAvanzada($e, 'variacionRPM')}
+              />
             </div>
           </div>
           <div className=" flex flex-col gap-4">
@@ -484,61 +478,31 @@ function Ajustes({ valueInicial, sendConfiguracionesAvanzadasData }: AjustesProp
             </p>
             <div className="grid grid-cols-4 gap-4">
               <div className="flex flex-col">
-                <label className="font-roboto text-white text-[20px]">Máximo</label>
-                <div className="flex gap-4 items-center">
-                  <input
-                    value={configuracionesAvanzadasData.corriente.maximo}
-                    onChange={($e) => onChangeConfiguracionesAvanzada($e, 'corriente.maximo')}
-                    className={clsx(
-                      'h-[60px] w-[150px] rounded-[5px] bg-[#172530] border border-solid border-[#fff] pl-[18px] text-white p-4',
-                      {
-                        'border-error': error,
-                        'focus:border-error': error,
-                        'focus-visible:border-error': error
-                      }
-                    )}
-                    type="number"
-                  />
-                  <small className="font-roboto text-white text-[20px]">A</small>
-                </div>
+                <InputNumber
+                  label="Máximo"
+                  valueInitial={configuracionesAvanzadasData.corriente.maximo}
+                  unidad="A"
+                  required={true}
+                  onChange={($e) => onChangeConfiguracionesAvanzada($e, 'corriente.maximo')}
+                />
               </div>
               <div className="flex flex-col">
-                <label className="font-roboto text-white text-[20px]">Mínimo</label>
-                <div className="flex gap-4 items-center">
-                  <input
-                    value={configuracionesAvanzadasData.corriente.minimo}
-                    onChange={($e) => onChangeConfiguracionesAvanzada($e, 'corriente.minimo')}
-                    className={clsx(
-                      'h-[60px] w-[150px] rounded-[5px] bg-[#172530] border border-solid border-[#fff] pl-[18px] text-white p-4',
-                      {
-                        'border-error': error,
-                        'focus:border-error': error,
-                        'focus-visible:border-error': error
-                      }
-                    )}
-                    type="number"
-                  />
-                  <small className="font-roboto text-white text-[20px]">A</small>
-                </div>
+                <InputNumber
+                  label="Mínimo"
+                  valueInitial={configuracionesAvanzadasData.corriente.minimo}
+                  unidad="A"
+                  required={true}
+                  onChange={($e) => onChangeConfiguracionesAvanzada($e, 'corriente.minimo')}
+                />
               </div>
               <div className="flex flex-col">
-                <label className="font-roboto text-white text-[20px]">Límite</label>
-                <div className="flex gap-4 items-center">
-                  <input
-                    value={configuracionesAvanzadasData.corriente.limite}
-                    onChange={($e) => onChangeConfiguracionesAvanzada($e, 'corriente.limite')}
-                    className={clsx(
-                      'h-[60px] w-[150px] rounded-[5px] bg-[#172530] border border-solid border-[#fff] pl-[18px] text-white p-4',
-                      {
-                        'border-error': error,
-                        'focus:border-error': error,
-                        'focus-visible:border-error': error
-                      }
-                    )}
-                    type="number"
-                  />
-                  <small className="font-roboto text-white text-[20px]">A</small>
-                </div>
+                <InputNumber
+                  label="Límite"
+                  valueInitial={configuracionesAvanzadasData.corriente.limite}
+                  unidad="A"
+                  required={true}
+                  onChange={($e) => onChangeConfiguracionesAvanzada($e, 'corriente.limite')}
+                />
               </div>
             </div>
             <div className="grid grid-cols-4 gap-4 pt-4">
@@ -799,12 +763,32 @@ function Ajustes({ valueInicial, sendConfiguracionesAvanzadasData }: AjustesProp
             crossClose
             outsideClose
           />
+          <div
+            ref={divRef}
+            className={clsx('fixed inset-x-0 bottom-0 z-50', {
+              hidden: !showKeyboard
+            })}
+          >
+            <Keyboard
+              keyboardRef={(r) => (keyboardRef.current = r)}
+              theme={theme}
+              layout={{
+                default: ['1 2 3', '4 5 6', '7 8 9', '{bksp} 0 {enter}']
+              }}
+              mergeDisplay
+              display={display}
+              onChange={setValue}
+              onKeyPress={onKeyPress}
+              onKeyReleased={() => {
+                if (inputRef && inputRef.current) inputRef.current.value = value
+              }}
+            />
+          </div>
         </div>
       </div>
     </div>
   )
 }
-
 interface PropsSelect {
   data: DataSelect[]
   selectedInitial: DataSelect | undefined
@@ -861,7 +845,7 @@ function Select({ data, selectedInitial, containsValue, changeValue }: PropsSele
         {/* <BiChevronDown size={20} className={`${open && "rotate-180"}`} /> */}
       </div>
       <ul
-        className={` absolute z-30 top-[3.3rem] bg-[#172530] rounded-[5px] text-white mt-2 overflow-y-auto w-full ${open ? 'max-h-[140px]' : 'max-h-0'} `}
+        className={` absolute z-30 top-[3.3rem] bg-[#172530] rounded-[5px] text-white mt-2 overflow-y-auto touch-auto w-full ${open ? 'max-h-[140px]' : 'max-h-0'} `}
       >
         {data?.map((value) => (
           <li

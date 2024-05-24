@@ -9,14 +9,15 @@ import { Dialog } from '../../ui/components/dialog/Dialog'
 import { useNavigate } from 'react-router-dom'
 import { useFormInitial } from './components/form-initial/hooks/UseFormInitial'
 import { Button } from '@renderer/ui/components/Button'
-import log from 'electron-log/renderer';
+import log from 'electron-log/renderer'
+import { useOperario } from '@renderer/lib/hooks/UseOperario'
 
 function Home() {
   const navigate = useNavigate()
   const { setTitle } = useTitle()
   const [data, setData] = useState<ItemInfoData[]>()
   const { getStateModal, addModal, toggleOpenedState } = useModal()
-
+  const { operario } = useOperario()
   const { isValid } = useFormInitial()
 
   useEffect(() => {}, [])
@@ -45,7 +46,7 @@ function Home() {
 
   const modalClosed = (idModal: string, acept: boolean): void => {
     if (acept) {
-      
+      log.info(`Operario ${operario.name} inicio testing`)
       navigate('/testing')
     }
   }
@@ -59,7 +60,7 @@ function Home() {
         </section>
       </section>
       <section className="self-end">
-        <Button onClick={handleClick} type='success' size='lg' disabled={!isValid}>
+        <Button onClick={handleClick} type="success" size="lg" disabled={!isValid}>
           Iniciar Testing
         </Button>
         <Modal<{
@@ -71,7 +72,8 @@ function Home() {
           ModalContent={Dialog}
           modalContentProps={{
             title: 'Importante',
-            message: 'Las condiciones meteorológicas actuales no son <br /> las adecuadas para continuar con el trabajo <br /><br /> Al aceptar se iniciará el testeo de los aspersores',
+            message:
+              'Las condiciones meteorológicas actuales no son <br /> las adecuadas para continuar con el trabajo <br /><br /> Al aceptar se iniciará el testeo de los aspersores',
             type: 'warning'
           }}
           closed={modalClosed}

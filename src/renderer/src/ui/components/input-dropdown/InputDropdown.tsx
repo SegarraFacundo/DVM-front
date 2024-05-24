@@ -6,7 +6,8 @@ import { useModal } from '../modal/hooks/UseModal'
 import { useFormInitial } from '@renderer/app/home/components/form-initial/hooks/UseFormInitial'
 import { Modal } from '../modal/Modal'
 import Agregar from '@renderer/app/home/components/agregar/Agregar'
-import log  from 'electron-log/renderer'
+import log from 'electron-log/renderer'
+import { useOperario } from '@renderer/lib/hooks/UseOperario'
 
 interface Props {
   label: string
@@ -24,6 +25,7 @@ const InputDropdown = ({ label, name, data, errors, withAdd = false }: Props): J
   const [open, setOpen] = useState(false)
   const [items, setItems] = useState<JSX.Element[]>([])
   const [dataSelect, setDataSelect] = useState<DataSelect[]>([])
+  const { setOperario } = useOperario()
 
   const { setFormInitial, isValid, operario, lote, tipoAplicacion } = useFormInitial()
 
@@ -41,14 +43,17 @@ const InputDropdown = ({ label, name, data, errors, withAdd = false }: Props): J
       switch (name) {
         case 'operario': {
           nuevoEstado.operario = { id: selected?.id, name: selected?.name }
-          log.info(`Nuevo operario: ${selected?.name ?? ''}`)
+          log.info(`Operario seleccionado ${selected?.name ?? ''}`)
+          setOperario(nuevoEstado.operario)
           break
         }
         case 'tipoAplicacion':
           nuevoEstado.tipoAplicacion = { id: selected?.id, name: selected?.name }
+          log.info(`Tipo de aplicación seleccionado ${selected?.name ?? ''}`)
           break
         case 'lote':
           nuevoEstado.lote = { id: selected?.id, name: selected?.name }
+          log.info(`Lote seleccionado ${selected?.name ?? ''}`)
           break
       }
 

@@ -207,6 +207,10 @@ ipcMain.handle('isThemeModeDark', () => {
   return nativeTheme.shouldUseDarkColors
 })
 
+ipcMain.handle('changeModeTheme', () => {
+  nativeTheme.themeSource = nativeTheme.shouldUseDarkColors ? 'light' : 'dark'
+})
+
 const configuraciones = Configuraciones()
 
 ipcMain.handle('setBrillo', async (_: IpcMainInvokeEvent, porcentaje: number) => {

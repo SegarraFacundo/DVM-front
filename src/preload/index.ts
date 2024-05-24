@@ -29,7 +29,8 @@ export type Api = GetApiType<
     cambiarHabilitacionNodo: (idNodo: number) => Promise<Nodo[]>
     cambiarHabilitacionAspersor: (idNodo: number, idAspersor: number, deshabilitado: boolean) => Promise<Nodo[]>
     isThemeModeDark: () => Promise<boolean>
-    apagarDispositivo: () => void
+    changeModeTheme: () => Promise<void>
+    apagarDispositivo: () => Promise<void>
     setBrillo: (porcentaje: number) => Promise<void>
     getBrilloActual: () => Promise<number>,
     getUnidadesAsync: () => Promise<Unidad[]>,
@@ -91,8 +92,11 @@ const api: Api = {
     isThemeModeDark: async () => {
       return await ipcRenderer.invoke('isThemeModeDark')
     },
-    apagarDispositivo: () => {
-      ipcRenderer.invoke('apagarDispositivo')
+    changeModeTheme: async () => {
+      await ipcRenderer.invoke('changeModeTheme')
+    },
+    apagarDispositivo: async () => {
+      await ipcRenderer.invoke('apagarDispositivo')
     },
     setBrillo: async (porcentaje: number) => ipcRenderer.invoke('setBrillo', porcentaje),
     getBrilloActual: async () => ipcRenderer.invoke('getBrilloActual'),
