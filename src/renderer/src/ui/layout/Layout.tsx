@@ -6,6 +6,7 @@ import { useToggle } from '../hooks/useToggle'
 import { useCarga } from './hooks/useCarga'
 import { InfoLogin } from './InfoLogin'
 import { useFormInitial } from '@renderer/app/home/components/form-initial/hooks/UseFormInitial'
+import { useNavigate } from 'react-router-dom'
 
 interface Props {
   children: ReactNode
@@ -16,9 +17,11 @@ export function Layout({ children }: Props) {
   const { cargando } = useCarga()
   const [opendToggle, setOpendToggle] = useState<boolean>()
   const { isValid } = useFormInitial()
+  const navigate = useNavigate()
 
   useEffect(() => {
     setOpendToggle(toggles.filter((t) => t.isOpen).length > 0)
+    navigate('/')
   }, [])
 
   return (
