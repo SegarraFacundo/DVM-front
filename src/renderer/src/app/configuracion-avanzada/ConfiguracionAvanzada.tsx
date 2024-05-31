@@ -311,6 +311,17 @@ function Ajustes({ valueInicial, sendConfiguracionesAvanzadasData }: AjustesProp
       if (idModal === 'buscar-nodos-disponibles') {
         escanear()
       }
+    } else {
+      if (idModal.startsWith('configuracion-de-nodo')) {
+        nodos[idModal.charAt(idModal.length - 1)].aspersores?.forEach((v) => {
+          window.api.invoke.cambiarUbicacionAspersor(
+            nodos[idModal.charAt(idModal.length - 1)].id,
+            v.id,
+            v.ubicacion ?? { id: 6, name: 'Sin asignar' }
+          )
+        })
+        fetchNodos()
+      }
     }
   }
 

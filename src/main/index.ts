@@ -10,7 +10,7 @@ import { ItemsInfoStore } from './api/info/items-info.store'
 import { LotesStore } from './api/lotes/lotes.store'
 import * as shutdown from 'electron-shutdown-command'
 import './api/socket/socket'
-import { Nodo, NodosStore } from './api/nodos/nodos.store'
+import { Nodo, NodosStore, UbicacionAspersorType } from './api/nodos/nodos.store'
 import { Configuraciones } from './api/configuraciones/configuraciones'
 import { UnidadesStore } from './api/unidades/unidades.store'
 import { ConfiguracionLogger } from './logs/configuracion-logger'
@@ -193,6 +193,18 @@ ipcMain.handle(
       idNodo,
       idAspersor,
       deshabilitado
+    )
+    return nodoConElAspersorCambiado
+  }
+)
+
+ipcMain.handle(
+  'cambiarUbicacionAspersor',
+  async (_: IpcMainInvokeEvent, idNodo: number, idAspersor: number, ubicacion: UbicacionAspersorType) => {
+    const nodoConElAspersorCambiado = await nodosStore.cambiarUbicacionAspersor(
+      idNodo,
+      idAspersor,
+      ubicacion
     )
     return nodoConElAspersorCambiado
   }

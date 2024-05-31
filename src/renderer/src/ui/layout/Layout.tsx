@@ -30,7 +30,7 @@ export function Layout({ children }: Props) {
       <Aside />
       {isValid && <InfoLogin />}
       <div
-        className={clsx('w-full opacity-50  f ixed top-0 left-0 z-10 bg-black', {
+        className={clsx('w-full h-full opacity-50 fixed top-0 left-0 z-10 bg-black', {
           hidden: !opendToggle
         })}
       />

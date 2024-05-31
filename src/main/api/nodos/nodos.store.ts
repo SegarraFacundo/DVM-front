@@ -16,9 +16,36 @@ export type DescripcionEstadoAspersorType =
   | 'RPM no alcanzada'
   | 'Error de caudalimetro'
 
+export type UbicacionAspersorType =
+  | {
+      id: 1
+      name: 'Ruedas'
+    }
+  | {
+      id: 2
+      name: 'No conectado'
+    }
+  | {
+      id: 3
+      name: 'Izquierda'
+    }
+  | {
+      id: 4
+      name: 'Derecha'
+    }
+  | {
+      id: 5
+      name: 'Centro'
+    }
+  | {
+      id: 6
+      name: 'Sin asignar'
+    }
 export interface Aspersor {
   id: 1 | 2 | 3 | 4
   estado: EstadoAspersor
+  ubicacion?: UbicacionAspersorType
+
   deshabilitado?: boolean
   rpm?: number
   rpmDeseado?: number
@@ -189,6 +216,27 @@ export const NodosStore = () => {
             aspersores: n.aspersores.map((a) => {
               if (a.id == idAspersor) a.deshabilitado = deshabilitado
               a.rpmDeseado = deshabilitado ? 0 : a.rpmDeseado
+              return a
+            })
+          }
+        return n
+      })
+      await writeFileSync(urlDataJson, JSON.stringify(data))
+
+      return data
+    },
+    cambiarUbicacionAspersor: async (
+      idNodo: number,
+      idAspersor: number,
+      ubicacion: UbicacionAspersorType
+    ): Promise<Nodo[]> => {
+      let data = JSON.parse(readFileSync(urlDataJson).toString()) as Nodo[]
+      data = data.map((n) => {
+        if (n.id == idNodo)
+          n = {
+            ...n,
+            aspersores: n.aspersores.map((a) => {
+              if (a.id == idAspersor) a.ubicacion = ubicacion
               return a
             })
           }

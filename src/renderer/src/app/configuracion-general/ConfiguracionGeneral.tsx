@@ -9,7 +9,6 @@ export default function ConfiguracionGeneral(): JSX.Element {
 
   const [mostrarDropDownVelocidad, setMostrarDropDownVelocidad] = useState<boolean>(false)
   const [mostrarDropDownTemperatura, setMostrarDropDownTemperatura] = useState<boolean>(false)
-  const [unidadVelocidadSeleccionada, setUnidadVelocidadSeleccionada] = useState<DataUnidad>()
   const [unidades, setUnidades] = useState<DataUnidad[]>([])
 
   const fetchBrilloActual = async (): Promise<void> => {

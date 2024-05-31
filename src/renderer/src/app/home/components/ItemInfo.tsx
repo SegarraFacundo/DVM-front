@@ -35,28 +35,56 @@ export function ItemInfo({ data }: Props): JSX.Element {
             ? { valor: datosMeteorologicos?.humedad?.toString() ?? '', unidad: data.unidad }
             : { valor: '-', unidad: '' }
         break
-      case 'Viento':
+      case 'Viento': {
+        const unidadVelocidad =
+          unidades.find((u) => u.estaSeleccionada && u.tipo === 'velocidad')?.unidad ?? ''
         resp =
-          datosMeteorologicos?.velViento !== undefined
+          datosMeteorologicos?.velViento !== undefined && datosMeteorologicos?.velViento != null
             ? {
-                valor: datosMeteorologicos?.velViento?.toString() ?? '',
+                valor:
+                  (
+                    datosMeteorologicos.velViento *
+                    3.6 *
+                    (unidadVelocidad === 'mi/h' ? 0.621371 : 1)
+                  )?.toFixed(0) ?? '', // Constante para pasar de m/s a Km/h
                 unidad:
                   unidades.find((u) => u.estaSeleccionada && u.tipo === 'velocidad')?.unidad ?? ''
               }
             : { valor: '-', unidad: '' }
         break
-      case 'Temperatura':
+      }
+      case 'Temperatura': {
+        const unidadTemperatura =
+          unidades.find((u) => u.estaSeleccionada && u.tipo === 'temperatura')?.unidad ?? ''
         resp =
           datosMeteorologicos?.temperatura !== undefined
-            ? { valor: datosMeteorologicos?.temperatura?.toString() ?? '', unidad: '°' + unidad }
+            ? {
+                valor:
+                  (unidadTemperatura === 'F'
+                    ? (datosMeteorologicos.temperatura ?? (1 * 9) / 5) + 32
+                    : datosMeteorologicos.temperatura
+                  )?.toString() ?? '',
+                unidad: '°' + unidad
+              }
             : { valor: '-', unidad: '' }
         break
-      case 'Rocío':
+      }
+      case 'Rocío': {
+        const unidadTemperatura =
+          unidades.find((u) => u.estaSeleccionada && u.tipo === 'temperatura')?.unidad ?? ''
         resp =
           datosMeteorologicos?.puntoDeRocio !== undefined
-            ? { valor: datosMeteorologicos?.puntoDeRocio?.toString() ?? '', unidad: '°' + unidad }
+            ? {
+                valor:
+                  (unidadTemperatura === 'F'
+                    ? (datosMeteorologicos.puntoDeRocio ?? (1 * 9) / 5) + 32
+                    : datosMeteorologicos.puntoDeRocio
+                  )?.toString() ?? '',
+                unidad: '°' + unidad
+              }
             : { valor: '-', unidad: '' }
         break
+      }
     }
     return resp
   }

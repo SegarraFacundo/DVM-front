@@ -10,19 +10,20 @@ body {
 
 /* width */
 ::-webkit-scrollbar {
-  width: 10px;
+  width: 30px;
 }
 
 /* Track */
 ::-webkit-scrollbar-track {
   background: #888;
-  border-radius: 5px;
+  border: 10px solid #1C2E3D;
+  border-radius: 25px;
 }
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
   background: #f1f1f1;
-  border-radius: 5px;
+  border-radius: 25px;
 }
 
 /* Handle on hover */

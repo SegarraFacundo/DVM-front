@@ -1,14 +1,13 @@
-import { DataSelect } from '@renderer/app/home/interfaces/data-select.interface'
 import { Button } from '@renderer/ui/components/Button'
 import { Dialog } from '@renderer/ui/components/dialog/Dialog'
 import { Modal } from '@renderer/ui/components/modal/Modal'
 import { useModal } from '@renderer/ui/components/modal/hooks/UseModal'
-import { NodoData } from '@renderer/ui/components/nodo/interfaces/nodo-data'
+import { NodoData, UbicacionAspersorType } from '@renderer/ui/components/nodo/interfaces/nodo-data'
 import clsx from 'clsx'
 import { useEffect, useRef, useState } from 'react'
 import Keyboard from 'react-simple-keyboard'
 
-const dataSelect: DataSelect[] = [
+const dataSelect: UbicacionAspersorType[] = [
   {
     id: 1,
     name: 'Ruedas'
@@ -123,7 +122,9 @@ export function ConfiguracionDeNodo({ close, acept, nodoData }: Props): JSX.Elem
         <label className="font-roboto font-bold text-success text-[20px] tracking-[0] leading-[normal] whitespace-nowrap">
           Identificación:
         </label>
-        <p className="font-roboto font-bold text-white text-[20px] tracking-[0] leading-[normal] whitespace-nowrap">Sin asignar</p>
+        <p className="font-roboto font-bold text-white text-[20px] tracking-[0] leading-[normal] whitespace-nowrap">
+          {nodoData.id ?? 'Sin asignar'}
+        </p>
       </div>
       <div className="grid grid-cols-[min-content_minmax(100px,_1fr)_min-content_minmax(100px,_1fr)] gap-4 items-center">
         {nodoData?.aspersores.map((a) => (
@@ -131,7 +132,12 @@ export function ConfiguracionDeNodo({ close, acept, nodoData }: Props): JSX.Elem
             <label className="font-roboto font-bold text-white text-[20px] whitespace-nowrap">
               {nodoData?.nombre} - {a.id}
             </label>
-            <Select data={dataSelect} />
+            <Select
+              idNodo={nodoData.id}
+              idAspersor={a.id}
+              data={dataSelect}
+              initValue={a.ubicacion}
+            />
           </>
         ))}
       </div>
@@ -189,14 +195,29 @@ export function ConfiguracionDeNodo({ close, acept, nodoData }: Props): JSX.Elem
 }
 
 interface PropsSelect {
-  data: DataSelect[]
+  idNodo: number
+  idAspersor: number
+  data: UbicacionAspersorType[]
+  initValue?: UbicacionAspersorType | undefined
 }
 
-function Select({ data }: PropsSelect): JSX.Element {
+function Select({ idNodo, idAspersor, data, initValue }: PropsSelect): JSX.Element {
   const [error, setError] = useState<boolean>(false)
-  const [inputValue, setInputValue] = useState('')
-  const [selected, setSelected] = useState<DataSelect>()
+  const [inputValue, setInputValue] = useState(initValue?.name ?? 'Sin asignar')
+  const [selected, setSelected] = useState<UbicacionAspersorType>(
+    initValue ?? {
+      id: 6,
+      name: 'Sin asignar'
+    }
+  )
   const [open, setOpen] = useState(false)
+
+  const onClickHandle = (value: UbicacionAspersorType): void => {
+    setSelected(value)
+    setOpen(false)
+    setInputValue(value.name)
+    window.api.invoke.cambiarUbicacionAspersor(idNodo, idAspersor, value)
+  }
 
   return (
     <div
@@ -235,19 +256,12 @@ function Select({ data }: PropsSelect): JSX.Element {
       <ul
         className={` absolute z-30 top-[3.3rem] bg-[#172530] rounded-[5px] text-white mt-2 overflow-y-auto w-full ${open ? 'max-h-[140px]' : 'max-h-0'} `}
       >
-        {data?.map((value) => (
+        {data?.map((value, i) => (
           <li
-            key={value?.name}
+            key={i}
             className={`p-2 text-sm border-b-[1px] border-b-success px-[30px] py-[20px] hover:bg-sky-600 hover:text-white
-        ${value?.name?.toLowerCase() === selected?.name?.toLowerCase() && 'bg-sky-600 text-white'}
-        ${value?.name?.toLowerCase().startsWith(inputValue) ? 'block' : 'hidden'}`}
-            onClick={() => {
-              if (value?.name?.toLowerCase() !== selected?.name.toLowerCase()) {
-                setSelected(value)
-                setOpen(false)
-                setInputValue('')
-              }
-            }}
+            ${value?.name?.toLowerCase() === selected?.name?.toLowerCase() && 'bg-sky-600 text-white'}`}
+            onClick={() => onClickHandle(value)}
           >
             {value?.name}
           </li>

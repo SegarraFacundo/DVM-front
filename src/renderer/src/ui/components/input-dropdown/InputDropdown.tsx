@@ -121,7 +121,7 @@ const InputDropdown = ({ label, name, data, errors, withAdd = false }: Props): J
           ? selected.name?.length > 25
             ? selected.name?.substring(0, 25) + '...'
             : selected.name
-          : `Selecciona ${name}`}
+          : `Selecciona ${name !== 'tipoAplicacion' ? name : 'tipo de aplicación'}`}
         <svg
           width="16"
           height="9"

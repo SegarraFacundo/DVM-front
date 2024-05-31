@@ -11,11 +11,38 @@ export type DescripcionEstadoAspersorType =
   | 'Error de sensor'
   | 'RPM no alcanzada'
   | 'Error de caudalimetro'
-  
+
+  export type UbicacionAspersorType =
+  | {
+      id: 1
+      name: 'Ruedas'
+    }
+  | {
+      id: 2
+      name: 'No conectado'
+    }
+  | {
+      id: 3
+      name: 'Izquierda'
+    }
+  | {
+      id: 4
+      name: 'Derecha'
+    }
+  | {
+      id: 5
+      name: 'Centro'
+    }
+  | {
+      id: 6
+      name: 'Sin asignar'
+    }
+
 export interface AspersorData {
   id: 1 | 2 | 3 | 4
   deshabilitado?: boolean
   estado?: EstadoAspersor
+  ubicacion?: UbicacionAspersorType
   rpm?: number
   rpmDeseado?: number
 }

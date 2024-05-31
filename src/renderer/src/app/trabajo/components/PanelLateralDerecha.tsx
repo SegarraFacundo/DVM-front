@@ -50,6 +50,79 @@ export function PanelLateralDerecha() {
     toggleOpenedState('panel-lateral-derecha')
   }
 
+  const getData = (
+    tipo: 'Humedad' | 'Viento' | 'Temperatura' | 'Rocío'
+  ): {
+    valor: string
+    unidad: string
+  } => {
+    let resp = {
+      valor: '',
+      unidad: ''
+    }
+    const unidad =
+      unidades.find((u) => u.estaSeleccionada && u.tipo === 'temperatura')?.unidad ?? ''
+    switch (tipo) {
+      case 'Humedad':
+        resp =
+          datosMeteorologicos?.humedad !== undefined
+            ? { valor: datosMeteorologicos?.humedad?.toString() ?? '', unidad: data.unidad }
+            : { valor: '-', unidad: '' }
+        break
+      case 'Viento': {
+        const unidadVelocidad =
+          unidades.find((u) => u.estaSeleccionada && u.tipo === 'velocidad')?.unidad ?? ''
+        resp =
+          datosMeteorologicos?.velViento !== undefined && datosMeteorologicos?.velViento != null
+            ? {
+                valor:
+                  (
+                    datosMeteorologicos.velViento *
+                    3.6 *
+                    (unidadVelocidad === 'mi/h' ? 0.621371 : 1)
+                  )?.toFixed(0) ?? '', // Constante para pasar de m/s a Km/h
+                unidad:
+                  unidades.find((u) => u.estaSeleccionada && u.tipo === 'velocidad')?.unidad ?? ''
+              }
+            : { valor: '-', unidad: '' }
+        break
+      }
+      case 'Temperatura': {
+        const unidadTemperatura =
+          unidades.find((u) => u.estaSeleccionada && u.tipo === 'temperatura')?.unidad ?? ''
+        resp =
+          datosMeteorologicos?.temperatura !== undefined
+            ? {
+                valor:
+                  (unidadTemperatura === 'F'
+                    ? (datosMeteorologicos.temperatura ?? (1 * 9) / 5) + 32
+                    : datosMeteorologicos.temperatura
+                  )?.toString() ?? '',
+                unidad: unidad
+              }
+            : { valor: '-', unidad: '' }
+        break
+      }
+      case 'Rocío': {
+        const unidadTemperatura =
+          unidades.find((u) => u.estaSeleccionada && u.tipo === 'temperatura')?.unidad ?? ''
+        resp =
+          datosMeteorologicos?.puntoDeRocio !== undefined
+            ? {
+                valor:
+                  (unidadTemperatura === 'F'
+                    ? (datosMeteorologicos.puntoDeRocio ?? (1 * 9) / 5) + 32
+                    : datosMeteorologicos.puntoDeRocio
+                  )?.toString() ?? '',
+                unidad: unidad
+              }
+            : { valor: '-', unidad: '' }
+        break
+      }
+    }
+    return resp
+  }
+
   return (
     <>
       {getStateToggle('panel-lateral-derecha') && (
@@ -119,10 +192,8 @@ export function PanelLateralDerecha() {
             </svg>
 
             <h1 className="text-[48px]">
-              {datosMeteorologicos?.temperatura !== undefined
-                ? datosMeteorologicos?.temperatura
-                : '-'}
-              °<span className="text-[20px]">{unidades.find(u => u.estaSeleccionada && u.tipo === 'temperatura' )?.unidad}</span>
+              {getData('Temperatura').valor}
+              <span className="text-[20px]">°{getData('Temperatura').unidad}</span>
             </h1>
           </div>
         </div>
@@ -131,10 +202,8 @@ export function PanelLateralDerecha() {
             <p className="text-success text-[16px] font-bold">Rocío</p>
             <div className="text-white font-bold flex justify-center align-baseline">
               <h1 className="text-[48px]">
-                {datosMeteorologicos?.puntoDeRocio !== undefined
-                  ? datosMeteorologicos?.puntoDeRocio
-                  : '-'}
-                  °<span className="text-[20px]">{unidades.find(u => u.estaSeleccionada && u.tipo === 'temperatura' )?.unidad}</span>
+                {getData('Rocío').valor}
+                <span className="text-[20px]">°{getData('Rocío').unidad}</span>
               </h1>
             </div>
           </div>
@@ -142,10 +211,8 @@ export function PanelLateralDerecha() {
             <p className="text-success text-[16px] font-bold">Viento</p>
             <div className="text-white font-bold flex justify-center align-baseline">
               <h1 className="text-[48px]">
-                {datosMeteorologicos?.velViento !== undefined
-                  ? datosMeteorologicos?.velViento
-                  : '-'}
-                <span className="text-[20px]">Km/h</span>
+                {getData('Viento').valor}
+                <span className="text-[20px]">{getData('Viento').unidad}</span>
               </h1>
             </div>
           </div>

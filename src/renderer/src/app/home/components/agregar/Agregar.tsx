@@ -56,7 +56,12 @@ export default function Agregar({ added, name, close }: Props): JSX.Element {
         <Button type="error" onClick={close} maxWith={false}>
           Cancelar
         </Button>
-        <Button type="success" onClick={submit} maxWith={false}>
+        <Button
+          type="success"
+          onClick={submit}
+          maxWith={false}
+          disabled={!(value && value?.length > 2)}
+        >
           Agregar
         </Button>
       </div>

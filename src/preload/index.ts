@@ -5,7 +5,7 @@ import { TipoAplicacion } from '../main/api/tipos-aplicaciones/tipos-aplicacione
 import { ItemMenu } from '../main/api/menu/items-menu.store'
 import { ItemInfoData } from '../main/api/info/items-info.store'
 import { Lote } from '../main/api/lotes/lotes.store'
-import { Nodo } from '../main/api/nodos/nodos.store'
+import { Nodo, UbicacionAspersorType } from '../main/api/nodos/nodos.store'
 import { Unidad } from '../main/api/unidades/unidades.store'
 import { ConfiguracionesAvanzadas } from '../main/api/configuraciones/configuraciones-avanzadas.store'
 
@@ -28,6 +28,7 @@ export type Api = GetApiType<
     cambiarIdsNodosAsync: (nodos: Nodo[]) => Promise<Nodo[]>
     cambiarHabilitacionNodo: (idNodo: number) => Promise<Nodo[]>
     cambiarHabilitacionAspersor: (idNodo: number, idAspersor: number, deshabilitado: boolean) => Promise<Nodo[]>
+    cambiarUbicacionAspersor: (idNodo: number, idAspersor: number, ubicacion: UbicacionAspersorType) => Promise<Nodo[]>
     isThemeModeDark: () => Promise<boolean>
     changeModeTheme: () => Promise<void>
     apagarDispositivo: () => Promise<void>
@@ -88,6 +89,9 @@ const api: Api = {
     },
     cambiarHabilitacionAspersor: async (idNodo: number, idAspersor: number, deshabilitado: boolean) => {
       return await ipcRenderer.invoke('cambiarHabilitacionAspersor', idNodo, idAspersor, deshabilitado)
+    },
+    cambiarUbicacionAspersor: async (idNodo: number, idAspersor: number, ubicacion: UbicacionAspersorType) => {
+      return await ipcRenderer.invoke('cambiarUbicacionAspersor', idNodo, idAspersor, ubicacion)
     },
     isThemeModeDark: async () => {
       return await ipcRenderer.invoke('isThemeModeDark')
