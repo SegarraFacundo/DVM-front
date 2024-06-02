@@ -7,13 +7,13 @@ import { Modal } from '../components/modal/Modal'
 import { Dialog, DialogType } from '../components/dialog/Dialog'
 import { useModal } from '../components/modal/hooks/UseModal'
 
-export function Aside() {
+export function Aside(): JSX.Element {
   const { getStateToggle } = useToggle()
   const { getStateModal, addModal, toggleOpenedState } = useModal()
 
   const [data, setData] = useState<ItemMenu[]>()
 
-  const fetchData = async () => {
+  const fetchData = async (): Promise<void> => {
     const result = await window.api.invoke.getItemsMenuAsync()
     setData(result)
   }
@@ -45,10 +45,6 @@ export function Aside() {
     }
   }
 
-  const changeModoTheme = async (): Promise<void> => {
-    await window.api.changeModeTheme()
-  }
-
   return (
     <>
       <aside
@@ -61,18 +57,6 @@ export function Aside() {
       >
         <div className="mt-[50px] ml-[15px] mr-[21px] h-[680px] flex flex-col">
           <ul className="flex flex-col pb-6 mb-28">{items}</ul>
-          <div key={-1} className="border-t-gray-800 border-t-2 pt-6">
-            <label
-              onClick={changeModoTheme}
-              className="inline-flex items-stretch justify-stretch cursor-pointer"
-            >
-              <span className=" text-dark text-center font-roboto text-[16px] not-italic leading-[normal] pl-[18px]">
-                Modo oscuro
-              </span>
-              <input type="checkbox" value="" className=" sr-only peer" />
-              <div className="ml-2 relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-[#bbbbbb] rounded-full peer dark:bg-gray-500 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-[#1C2E3D]"></div>
-            </label>
-          </div>
           <div
             key={-2}
             onClick={() => openModal('apagar')}

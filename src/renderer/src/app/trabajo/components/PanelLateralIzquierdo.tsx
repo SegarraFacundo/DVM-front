@@ -45,31 +45,31 @@ export function PanelLateralIzquierdo() {
       <div
         ref={divContenidoRef}
         className={clsx(
-          'w-[294px] h-[489px] fixed z-40 left-0 top-[50%] translate-y-[-50%] bg-dark rounded-r-lg flex items-center justify-center flex-col gap-4 transition-transform',
+          'w-[294px] h-[489px] fixed z-40 left-0 top-[50%] translate-y-[-50%] bg-light dark:bg-dark rounded-r-lg flex items-center justify-center flex-col gap-4 transition-transform',
           {
             '-translate-x-[294px]': !getStateToggle('panel-lateral-izquierdo')
           }
         )}
       >
-        <div className="border-[1px] border-white w-[197px] h-[122px] rounded-lg p-3 flex flex-col">
+        <div className="border-[1px] border-dark dark:border-light w-[197px] h-[122px] rounded-lg p-3 flex flex-col">
           <p className="text-success text-[16px] font-bold">Superficie</p>
-          <div className="text-white font-bold flex justify-center align-baseline">
+          <div className="text-dark dark:text-light font-bold flex justify-center align-baseline">
             <h1 className="text-[48px]">
               00<span className="text-[20px]">Has</span>
             </h1>
           </div>
         </div>
-        <div className="border-[1px] border-white w-[197px] h-[122px] rounded-lg p-3 flex flex-col">
+        <div className="border-[1px] border-dark dark:border-light w-[197px] h-[122px] rounded-lg p-3 flex flex-col">
           <p className="text-success text-[16px] font-bold">Volúmen x área</p>
-          <div className="text-white font-bold flex justify-center align-baseline">
+          <div className="text-dark dark:text-light font-bold flex justify-center align-baseline">
             <h1 className="text-[48px]">
               00<span className="text-[20px]">Has</span>
             </h1>
           </div>
         </div>
-        <div className="border-[1px] border-white w-[197px] h-[122px] rounded-lg p-3 flex flex-col">
+        <div className="border-[1px] border-dark dark:border-light w-[197px] h-[122px] rounded-lg p-3 flex flex-col">
           <p className="text-success text-[16px] font-bold">Velocidad</p>
-          <div className="text-white font-bold flex justify-center align-baseline">
+          <div className="text-dark dark:text-light font-bold flex justify-center align-baseline">
             <h1 className="text-[48px]">
               00<span className="text-[20px]">Has</span>
             </h1>

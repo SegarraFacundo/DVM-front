@@ -65,11 +65,11 @@ export function FormEditar({ close, acept }: Props): JSX.Element {
 
   return (
     <form
-      className="flex flex-col justify-between w-auto boder border-white p-[28px] bg-dark"
+      className="flex flex-col justify-between w-auto boder border-white p-[28px] bg-light dark:bg-dark"
       onChange={handleChange}
     >
       <div className="flex items-center">
-        <h3 className=" text-3xl not-italic font-bold text-white">Editar campos</h3>
+        <h3 className=" text-3xl not-italic font-bold text-dark dark:text-light">Editar campos</h3>
       </div>
       <div className="flex flex-col gap-4 mt-8">
         <div className="flex gap-4">

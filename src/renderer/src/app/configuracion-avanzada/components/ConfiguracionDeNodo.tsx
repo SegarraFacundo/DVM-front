@@ -122,14 +122,14 @@ export function ConfiguracionDeNodo({ close, acept, nodoData }: Props): JSX.Elem
         <label className="font-roboto font-bold text-success text-[20px] tracking-[0] leading-[normal] whitespace-nowrap">
           Identificación:
         </label>
-        <p className="font-roboto font-bold text-white text-[20px] tracking-[0] leading-[normal] whitespace-nowrap">
+        <p className="font-roboto font-bold text-dark dark:text-light text-[20px] tracking-[0] leading-[normal] whitespace-nowrap">
           {nodoData.id ?? 'Sin asignar'}
         </p>
       </div>
       <div className="grid grid-cols-[min-content_minmax(100px,_1fr)_min-content_minmax(100px,_1fr)] gap-4 items-center">
         {nodoData?.aspersores.map((a) => (
           <>
-            <label className="font-roboto font-bold text-white text-[20px] whitespace-nowrap">
+            <label className="font-roboto font-bold text-dark dark:text-light text-[20px] whitespace-nowrap">
               {nodoData?.nombre} - {a.id}
             </label>
             <Select
@@ -229,7 +229,7 @@ function Select({ idNodo, idAspersor, data, initValue }: PropsSelect): JSX.Eleme
     >
       <div
         onClick={() => setOpen(!open)}
-        className={`bg-dark w-full flex items-center justify-between rounded-[5px] mr-8 p-4 border border-solid border-[#fff] pl-[18px] text-white ${
+        className={`bg-light dark:bg-dark w-full flex items-center justify-between rounded-[5px] mr-8 p-4 border border-solid border-dark dark:border-light pl-[18px] text-dark dark:text-light ${
           !selected && 'text-gray-700'
         }`}
       >
@@ -242,25 +242,22 @@ function Select({ idNodo, idAspersor, data, initValue }: PropsSelect): JSX.Eleme
           width="16"
           height="9"
           viewBox="0 0 16 9"
-          fill="none"
+          className="fill-current text-dark dark:text-light"
           xmlns="http://www.w3.org/2000/svg"
         >
-          <path
-            d="M10.4225 7.67263L15.6677 2.29759C15.8805 2.07819 16 1.78139 16 1.47202C16 1.16265 15.8805 0.865846 15.6677 0.646438C15.5615 0.536679 15.4351 0.449561 15.2958 0.39011C15.1566 0.330658 15.0072 0.300049 14.8563 0.300049C14.7055 0.300049 14.5561 0.330658 14.4169 0.39011C14.2776 0.449561 14.1512 0.536679 14.045 0.646438L8.81122 6.03319C8.70498 6.14295 8.5786 6.23006 8.43934 6.28952C8.30009 6.34897 8.15072 6.37958 7.99987 6.37958C7.84901 6.37958 7.69965 6.34897 7.56039 6.28952C7.42114 6.23006 7.29475 6.14295 7.18852 6.03319L1.95474 0.646438C1.74107 0.425928 1.45067 0.30143 1.14743 0.300332C0.844186 0.299234 0.552936 0.421626 0.337752 0.640583C0.122569 0.85954 0.00107761 1.15713 5.671e-06 1.46788C-0.00106627 1.77862 0.118372 2.07708 0.33204 2.29759L5.57725 7.67263C6.22004 8.33052 7.09138 8.70005 7.99987 8.70005C8.90835 8.70005 9.77969 8.33052 10.4225 7.67263Z"
-            fill="white"
-          />
+          <path d="M10.4225 7.67263L15.6677 2.29759C15.8805 2.07819 16 1.78139 16 1.47202C16 1.16265 15.8805 0.865846 15.6677 0.646438C15.5615 0.536679 15.4351 0.449561 15.2958 0.39011C15.1566 0.330658 15.0072 0.300049 14.8563 0.300049C14.7055 0.300049 14.5561 0.330658 14.4169 0.39011C14.2776 0.449561 14.1512 0.536679 14.045 0.646438L8.81122 6.03319C8.70498 6.14295 8.5786 6.23006 8.43934 6.28952C8.30009 6.34897 8.15072 6.37958 7.99987 6.37958C7.84901 6.37958 7.69965 6.34897 7.56039 6.28952C7.42114 6.23006 7.29475 6.14295 7.18852 6.03319L1.95474 0.646438C1.74107 0.425928 1.45067 0.30143 1.14743 0.300332C0.844186 0.299234 0.552936 0.421626 0.337752 0.640583C0.122569 0.85954 0.00107761 1.15713 5.671e-06 1.46788C-0.00106627 1.77862 0.118372 2.07708 0.33204 2.29759L5.57725 7.67263C6.22004 8.33052 7.09138 8.70005 7.99987 8.70005C8.90835 8.70005 9.77969 8.33052 10.4225 7.67263Z" />
         </svg>
 
         {/* <BiChevronDown size={20} className={`${open && "rotate-180"}`} /> */}
       </div>
       <ul
-        className={` absolute z-30 top-[3.3rem] bg-[#172530] rounded-[5px] text-white mt-2 overflow-y-auto w-full ${open ? 'max-h-[140px]' : 'max-h-0'} `}
+        className={` absolute z-30 top-[3.3rem] bg-white dark:bg-dark rounded-[5px] text-dark dark:text-light mt-2 overflow-y-auto w-full ${open ? 'max-h-[140px] border-[1px] border-dark dark:border-light' : 'max-h-0'} `}
       >
         {data?.map((value, i) => (
           <li
             key={i}
-            className={`p-2 text-sm border-b-[1px] border-b-success px-[30px] py-[20px] hover:bg-sky-600 hover:text-white
-            ${value?.name?.toLowerCase() === selected?.name?.toLowerCase() && 'bg-sky-600 text-white'}`}
+            className={`p-2 text-sm border-b-[1px] border-b-success px-[30px] py-[20px] hover:bg-sky-300 hover:dark:bg-sky-600 hover:text-dark dark:text-light
+            ${value?.name?.toLowerCase() === selected?.name?.toLowerCase() && 'bg-sky-300 hover:dark:bg-sky-600 text-dark dark:text-light'}`}
             onClick={() => onClickHandle(value)}
           >
             {value?.name}

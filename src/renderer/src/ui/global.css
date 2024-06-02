@@ -16,17 +16,43 @@ body {
 /* Track */
 ::-webkit-scrollbar-track {
   background: #888;
-  border: 10px solid #1C2E3D;
+  border: 10px solid #EBE9E9;
   border-radius: 25px;
 }
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-  background: #f1f1f1;
+  background: #1c2e3d;
   border-radius: 25px;
 }
 
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
   background: #555;
+}
+@media (prefers-color-scheme: dark) {
+  /* Track */
+  ::-webkit-scrollbar-track {
+    border-color: #1c2e3d;
+  }
+
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: #f1f1f1;
+  }
+}
+
+:not(input):not(textarea),
+:not(input):not(textarea)::after,
+:not(input):not(textarea)::before {
+  -webkit-user-select: none;
+  user-select: none;
+  cursor: default;
+}
+
+input,
+button,
+textarea,
+:focus {
+  outline: none;
 }

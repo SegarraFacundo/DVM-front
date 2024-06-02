@@ -3,7 +3,7 @@ import { ModalProps } from '../../../../ui/components/modal/Modal'
 
 export function InfoInitTesting ({ close, acept }: ModalProps<undefined>) {
   return (
-    <div className='flex flex-col justify-between  w-[591px] h-[362px] bg-dark boder border-white p-[28px]'>
+    <div className='flex flex-col justify-between  w-[591px] h-[362px] bg-light dark:bg-dark boder border-white p-[28px]'>
 
       <div className='flex items-center'>
         <div className='mr-[14px]'>
@@ -16,12 +16,12 @@ export function InfoInitTesting ({ close, acept }: ModalProps<undefined>) {
         <h3 className='text-warning text-3xl not-italic font-bold'>Importante</h3>
       </div>
       <div>
-        <small className='text-xs not-italic font-normal text-white'>(Variables del mensaje según estén dadas las condiciones climáticas)</small>
+        <small className='text-xs not-italic font-normal text-dark dark:text-light'>(Variables del mensaje según estén dadas las condiciones climáticas)</small>
         <br />
         <br />
-        <p className='text-2xl not-italic font-normal text-white'>Las condiciones meteorológicas actuales no son las adecuadas para continuar con el trabajo</p>
+        <p className='text-2xl not-italic font-normal text-dark dark:text-light'>Las condiciones meteorológicas actuales no son las adecuadas para continuar con el trabajo.</p>
         <br />
-        <p className='text-2xl not-italic font-normal text-white'>Al aceptar se iniciará el testeo de los aspersores</p>
+        <p className='text-2xl not-italic font-normal text-dark dark:text-light'>Al aceptar se iniciará el testeo de los aspersores.</p>
       </div>
       <div className='w-full flex flex-row gap-4 justify-end'>
         <Button type='error' onClick={close}>

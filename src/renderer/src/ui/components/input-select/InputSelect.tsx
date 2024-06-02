@@ -40,7 +40,7 @@ export function InputSelect({
       </label>
       <select
         className={clsx(
-          'relative h-[64px] w-[366px] rounded-[5px] bg-[#172530] border border-solid border-[#fff] pl-[18px] text-white bg-[url("../../resources/arrow-down.svg")] appearance-none bg-no-repeat mr-8 p-4 bg-[94%]',
+          'relative h-[64px] w-[366px] rounded-[5px] bg-[#172530] border border-solid border-[#fff] pl-[18px] text-dark dark:text-light bg-[url("../../resources/arrow-down.svg")] appearance-none bg-no-repeat mr-8 p-4 bg-[94%]',
           {
             'border-error': errors && errors[name],
             'focus:border-error': errors && errors[name],

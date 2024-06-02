@@ -54,7 +54,7 @@ export function DetailNodo({ data: initialData, nodoChange }: Props): JSX.Elemen
               'opacity-50': nodo.deshabilitado || nodo.aspersores[0].estado?.id != 0
             })}
           >
-            <p className="text-[24px] font-bold text-white">
+            <p className="text-[24px] font-bold text-dark dark:text-light">
               {nodo.nombre}
               {nodo.aspersores[0].id}
             </p>
@@ -115,7 +115,7 @@ export function DetailNodo({ data: initialData, nodoChange }: Props): JSX.Elemen
               'opacity-50': nodo.deshabilitado || nodo.aspersores[1].estado?.id != 0
             })}
           >
-            <p className="text-[24px] font-bold text-white">
+            <p className="text-[24px] font-bold text-dark dark:text-light">
               {nodo.nombre}
               {nodo.aspersores[1].id}
             </p>
@@ -176,7 +176,7 @@ export function DetailNodo({ data: initialData, nodoChange }: Props): JSX.Elemen
               'opacity-50': nodo.deshabilitado || nodo.aspersores[2].estado?.id != 0
             })}
           >
-            <p className="text-[24px] font-bold text-white">
+            <p className="text-[24px] font-bold text-dark dark:text-light">
               {nodo.nombre}
               {nodo.aspersores[2].id}
             </p>
@@ -237,7 +237,7 @@ export function DetailNodo({ data: initialData, nodoChange }: Props): JSX.Elemen
               'opacity-50': nodo.deshabilitado || nodo.aspersores[3].estado?.id != 0
             })}
           >
-            <p className="text-[24px] font-bold text-white">
+            <p className="text-[24px] font-bold text-dark dark:text-light">
               {nodo.nombre}
               {nodo.aspersores[3].id}
             </p>

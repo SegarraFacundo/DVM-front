@@ -41,11 +41,11 @@ export default function Agregar({ added, name, close }: Props): JSX.Element {
 
   return (
     <form
-      className="flex flex-col justify-between w-auto h-auto bg-dark boder border-white p-[28px]"
+      className="flex flex-col justify-between w-auto h-auto bg-light dark:bg-dark boder border-white p-[28px]"
       onSubmit={submit}
     >
       <div className="flex items-center">
-        <h3 className=" text-3xl not-italic font-bold text-white">
+        <h3 className=" text-3xl not-italic font-bold text-dark dark:text-light">
           Agregar {name.charAt(0).toUpperCase() + name.slice(1)}
         </h3>
       </div>

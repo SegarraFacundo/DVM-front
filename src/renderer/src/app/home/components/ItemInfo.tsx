@@ -106,12 +106,12 @@ export function ItemInfo({ data }: Props): JSX.Element {
         src={`data:image/svg+xml;utf8,${encodeURIComponent(data.icon)}`}
       />
       <div className="w-full">
-        <h3 className="text-white text-[32px] font-roboto font-bold">{data.title}</h3>
+        <h3 className="text-dark dark:text-light text-[32px] font-roboto font-bold">{data.title}</h3>
         <span className="text-success font-roboto text-[13px]">{data.info}</span>
       </div>
       <div className="flex items-baseline gap-2">
-        <h1 className="text-white text-[48px] font-bold">{getData().valor}</h1>
-        <p className="text-white text-[34px] font-light">{getData().unidad}</p>
+        <h1 className="text-dark dark:text-light text-[48px] font-bold">{getData().valor}</h1>
+        <p className="text-dark dark:text-light text-[34px] font-light">{getData().unidad}</p>
       </div>
     </div>
   )

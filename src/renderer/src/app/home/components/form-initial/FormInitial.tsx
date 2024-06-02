@@ -67,13 +67,13 @@ export function FormInitial({ close, acept, props }: Props): JSX.Element {
   return (
     <form
       className={clsx('flex flex-col justify-between w-auto h-auto boder border-white p-[28px]', {
-        'bg-dark': props?.openedModal
+        'bg-light dark:bg-dark': props?.openedModal
       })}
       onChange={handleChange}
     >
       {props?.openedModal && (
         <div className="flex items-center">
-          <h3 className=" text-3xl not-italic font-bold text-white">Agregar Operario</h3>
+          <h3 className=" text-3xl not-italic font-bold text-dark dark:text-light">Agregar Operario</h3>
         </div>
       )}
       <div className="flex flex-col gap-4">

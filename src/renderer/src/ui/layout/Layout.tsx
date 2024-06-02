@@ -12,7 +12,7 @@ interface Props {
   children: ReactNode
 }
 
-export function Layout({ children }: Props) {
+export function Layout({ children }: Props): JSX.Element {
   const { toggles } = useToggle()
   const { cargando } = useCarga()
   const [opendToggle, setOpendToggle] = useState<boolean>()
@@ -35,11 +35,11 @@ export function Layout({ children }: Props) {
         })}
       />
       {!cargando ? (
-        <main hidden={cargando} className="w-[1280px] h-[800px] relative   bg-light dark:bg-[#172530] pt-[64px]">
+        <main hidden={cargando} className="w-[1280px] h-[800px] relative bg-light dark:bg-[#172530] pt-[64px]">
           {children}
         </main>
       ) : (
-        <div className="flex flex-col gap-2 bg-[#172530] w-[1280px] h-[800px] items-center justify-center">
+        <div className="flex flex-col gap-2 bg-[#EBEBEB] dark:bg-[#172530] w-[1280px] h-[800px] items-center justify-center">
           <svg
             width="41"
             height="44"
@@ -60,7 +60,7 @@ export function Layout({ children }: Props) {
               d="M39.8749 30.4749C38.8789 31.9862 37.8797 33.4943 36.8838 35.0056C36.6647 35.3364 36.1866 35.385 35.9045 35.1061L30.6195 29.9236C29.9389 29.2555 28.8302 29.0058 27.8641 29.3074C26.523 29.7225 26.0018 31.0619 25.8125 31.8241L23.8805 39.1697C23.8805 39.1697 23.8738 39.1924 23.8738 39.2022C23.741 39.8832 23.3327 41.3685 21.9982 42.4226C20.6504 43.4895 19.0602 43.5641 17.8618 43.6193C17.2576 43.6485 16.7198 43.6193 16.2683 43.5706C15.8766 43.5285 15.621 43.1458 15.7372 42.7761L20.169 28.4707L20.1856 28.4026C20.3416 27.7378 21.311 24.313 24.8299 22.7466C27.5653 21.5304 30.8087 21.8937 33.3184 23.6936C33.3417 23.7098 33.3649 23.7293 33.3881 23.7487L39.7819 29.6869C40.001 29.8912 40.0442 30.2187 39.8782 30.4685"
             />
           </svg>
-          <p className="text-white">cargando...</p>
+          <p className="text-black dark:text-dark dark:text-light">cargando...</p>
         </div>
       )}
     </>

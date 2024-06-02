@@ -37,16 +37,16 @@ export function InfoLogin(): JSX.Element {
         )}
       >
         <div className="">
-          <small className="text-[10px] text-dark">Usuario</small>
-          <p className="font-medium text-dark">{operario.name}</p>
+          <small className="text-[10px] text-dark dark:text-light">Usuario</small>
+          <p className="font-medium text-dark dark:text-light">{operario.name}</p>
         </div>
         <div>
-          <small className="text-[10px] text-dark">Ident. Lote</small>
-          <p className="font-medium text-dark">{lote.name}</p>
+          <small className="text-[10px] text-dark dark:text-light">Ident. Lote</small>
+          <p className="font-medium text-dark dark:text-light">{lote.name}</p>
         </div>
         <div>
-          <small className="text-[10px] text-dark">Tipo de Aplicación</small>
-          <p className="font-medium text-dark">{tipoAplicacion.name}</p>
+          <small className="text-[10px] text-dark dark:text-light">Tipo de Aplicación</small>
+          <p className="font-medium text-dark dark:text-light">{tipoAplicacion.name}</p>
         </div>
         <div className="w-full mt-4">
           <Button type="success-dark" size="sm" onClick={handleEditClick}>

@@ -77,7 +77,7 @@ export function InputNumber({ label, required, valueInitial, onChange, unidad }:
   return (
     <>
       <div className="flex flex-col">
-        <label className="font-roboto text-white text-[20px]">{label}</label>
+        <label className="font-roboto text-dark dark:text-light text-[20px]">{label}</label>
         <div className="flex gap-4 items-center">
           <input
             onClick={onFocusInput}
@@ -85,7 +85,7 @@ export function InputNumber({ label, required, valueInitial, onChange, unidad }:
             value={value}
             onChange={onChange}
             className={clsx(
-              'h-[60px] w-[150px] rounded-[5px] bg-[#172530] border border-solid border-[#fff] pl-[18px] text-white p-4',
+              'h-[60px] w-[150px] rounded-[5px] bg-white dark:bg-dark border border-solid border-dark dark:border-light pl-[18px] text-dark dark:text-light p-4',
               {
                 'border-error': required && inputRef && inputRef.current && !inputRef.current.value,
                 'focus:border-error':
@@ -96,7 +96,7 @@ export function InputNumber({ label, required, valueInitial, onChange, unidad }:
             )}
             type="number"
           />
-          <small className="font-roboto text-white text-[20px]">{unidad}</small>
+          <small className="font-roboto text-dark dark:text-light text-[20px]">{unidad}</small>
         </div>
       </div>
       <div

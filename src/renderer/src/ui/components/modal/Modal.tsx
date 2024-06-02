@@ -79,7 +79,7 @@ export function ModalContainer({ children, onClickOutside }: PropsModalContainer
       aria-hidden="true"
       className="fixed top-0 left-0 right-0 bottom-0 z-40 w-full p-4 grid place-content-center bg-gray-950/90"
     >
-      <div className="relative border-white/30 border-[0.3px] bg-dark  rounded-md shadow-zinc-950 shadow-lg">
+      <div className="relative border-white/30 border-[0.3px] bg-light dark:bg-dark  rounded-md shadow-zinc-950 shadow-lg">
         {children}
       </div>
     </div>

@@ -169,15 +169,15 @@ export function PanelLateralDerecha() {
       <div
         ref={divContenidoRef}
         className={clsx(
-          'w-[412px] h-[489px] fixed z-40 right-0 top-[50%] translate-y-[-50%] bg-dark rounded-l-lg flex  justify-center flex-col gap-4 p-8 transition-transform',
+          'w-[412px] h-[489px] fixed z-40 right-0 top-[50%] translate-y-[-50%] bg-light dark:bg-dark rounded-l-lg flex  justify-center flex-col gap-4 p-8 transition-transform',
           {
             'translate-x-[412px]': !getStateToggle('panel-lateral-derecha')
           }
         )}
       >
-        <div className="border-[1px] border-white w-full h-[122px] rounded-lg p-3 flex flex-col">
+        <div className="border-[1px] border-dark dark:border-light w-full h-[122px] rounded-lg p-3 flex flex-col">
           <p className="text-success text-[16px] font-bold">Temperatura</p>
-          <div className="text-white font-bold flex justify-center align-baseline gap-8 items-end">
+          <div className="text-dark dark:text-light font-bold flex justify-center align-baseline gap-8 items-end">
             <svg
               width="58"
               height="58"
@@ -198,18 +198,18 @@ export function PanelLateralDerecha() {
           </div>
         </div>
         <div className="flex gap-4">
-          <div className="border-[1px] border-white w-full h-[122px] rounded-lg p-3 flex flex-col">
+          <div className="border-[1px] border-dark dark:border-light w-full h-[122px] rounded-lg p-3 flex flex-col">
             <p className="text-success text-[16px] font-bold">Rocío</p>
-            <div className="text-white font-bold flex justify-center align-baseline">
+            <div className="text-dark dark:text-light font-bold flex justify-center align-baseline">
               <h1 className="text-[48px]">
                 {getData('Rocío').valor}
                 <span className="text-[20px]">°{getData('Rocío').unidad}</span>
               </h1>
             </div>
           </div>
-          <div className="border-[1px] border-white w-full h-[122px] rounded-lg p-3 flex flex-col">
+          <div className="border-[1px] border-dark dark:border-light w-full h-[122px] rounded-lg p-3 flex flex-col">
             <p className="text-success text-[16px] font-bold">Viento</p>
-            <div className="text-white font-bold flex justify-center align-baseline">
+            <div className="text-dark dark:text-light font-bold flex justify-center align-baseline">
               <h1 className="text-[48px]">
                 {getData('Viento').valor}
                 <span className="text-[20px]">{getData('Viento').unidad}</span>
@@ -218,18 +218,18 @@ export function PanelLateralDerecha() {
           </div>
         </div>
         <div className="flex gap-4">
-          <div className="border-[1px] border-white w-full h-[122px] rounded-lg p-3 flex flex-col">
+          <div className="border-[1px] border-dark dark:border-light w-full h-[122px] rounded-lg p-3 flex flex-col">
             <p className="text-success text-[16px] font-bold">Humedad</p>
-            <div className="text-white font-bold flex justify-center align-baseline">
+            <div className="text-dark dark:text-light font-bold flex justify-center align-baseline">
               <h1 className="text-[48px]">
                 {datosMeteorologicos?.humedad !== undefined ? datosMeteorologicos?.humedad : '-'}
                 <span className="text-[20px]">%</span>
               </h1>
             </div>
           </div>
-          <div className="border-[1px] border-white w-full h-[122px] rounded-lg p-3 flex flex-col">
+          <div className="border-[1px] border-dark dark:border-light w-full h-[122px] rounded-lg p-3 flex flex-col">
             <p className="text-success text-[16px] font-bold">Presión</p>
-            <div className="text-white font-bold flex justify-center align-baseline">
+            <div className="text-dark dark:text-light font-bold flex justify-center align-baseline">
               <h1 className="text-[48px]">
                 00<span className="text-[20px]">hPa</span>
               </h1>

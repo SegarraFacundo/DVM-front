@@ -24,7 +24,7 @@ export function Reportes(): JSX.Element {
 
   return (
     <article className="w-full grid grid-cols-1 gap-10 h-[100%] px-20 py-16">
-      <section className="grid grid-cols-3 gap-4 w-full text-white">Reportes</section>
+      <section className="grid grid-cols-3 gap-4 w-full text-dark dark:text-light">Reportes</section>
       <Modal<{
         title: string
         message: string

@@ -21,7 +21,7 @@ export function InputPassword({label, error, setPassword}: Props): JSX.Element {
       </label>
       <input
         className={clsx(
-          'h-[64px] w-[366px] rounded-[5px] bg-[#172530] border border-solid border-[#fff] pl-[18px] text-white p-4',
+          'h-[64px] w-[366px] rounded-[5px] bg-[#172530] border border-solid border-[#fff] pl-[18px] text-dark dark:text-light p-4',
           {
             'border-error': error,
             'focus:border-error': error,

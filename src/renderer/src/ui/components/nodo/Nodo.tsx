@@ -74,7 +74,7 @@ export function Nodo({ data, animacion = false }: Props): JSX.Element {
       />
       <section
         className={clsx(
-          'flex gap-8 bg-dark border-[1px] rounded-md border-[#A1A1A1] h-[140px] p-6 text-white shadow-2xl',
+          'flex gap-8 bg-light dark:bg-dark border-[1px] rounded-md border-[#A1A1A1] h-[140px] p-6 text-dark dark:text-light shadow-2xl',
           {
             'bg-opacity-5': nodoData.deshabilitado,
             'text-gray-600': nodoData.deshabilitado
