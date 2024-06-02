@@ -85,7 +85,7 @@ export function InputNumber({ label, required, valueInitial, onChange, unidad }:
             value={value}
             onChange={onChange}
             className={clsx(
-              'h-[60px] w-[150px] rounded-[5px] bg-white dark:bg-dark border border-solid border-dark dark:border-light pl-[18px] text-dark dark:text-light p-4',
+              'h-[60px] w-[150px] text-2xl rounded-[5px] bg-white dark:bg-dark border border-solid border-dark dark:border-light pl-[18px] text-dark dark:text-light p-4',
               {
                 'border-error': required && inputRef && inputRef.current && !inputRef.current.value,
                 'focus:border-error':

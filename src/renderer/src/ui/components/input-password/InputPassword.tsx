@@ -9,37 +9,44 @@ interface Props {
   error: boolean
   setPassword
 }
-export function InputPassword({label, error, setPassword}: Props): JSX.Element {
-
+export function InputPassword({ label, error, setPassword }: Props): JSX.Element {
   const [passwordType, setPasswordType] = useState(true)
 
   return (
     <>
-    <div className="flex flex-col mt-[46px] relative">
-      <label className="font-roboto font-bold text-success text-[20px] tracking-[0] leading-[normal] whitespace-nowrap mb-[13px]">
-        {label}
-      </label>
-      <input
-        className={clsx(
-          'h-[64px] w-[366px] rounded-[5px] bg-[#172530] border border-solid border-[#fff] pl-[18px] text-dark dark:text-light p-4',
-          {
-            'border-error': error,
-            'focus:border-error': error,
-            'focus-visible:border-error': error
-          }
-        )}
-        type={passwordType ? 'password' : 'text'}
-        onChange={(e) => setPassword(e.target.value)}
-      />
-      <div onClick={() => setPasswordType((prev) => !prev)}>
-        {passwordType ? (
-          <img className='absolute cursor-pointer top-[60%] right-[5px] -translate-x-2/4' src={showPassword} alt="Hide" />
-        ) : (
-          <img className='absolute cursor-pointer top-[55%] right-[5px] -translate-x-2/4' src={hidePasword} alt="Show" />
-        )}
+      <div className="flex flex-col mt-[46px] relative">
+        <label className="font-roboto font-bold text-success text-[20px] tracking-[0] leading-[normal] whitespace-nowrap mb-[13px]">
+          {label}
+        </label>
+        <input
+          className={clsx(
+            'h-[64px] w-[366px] text-2xl rounded-[5px] bg-[#172530] border border-solid border-[#fff] pl-[18px] text-dark dark:text-light p-4',
+            {
+              'border-error': error,
+              'focus:border-error': error,
+              'focus-visible:border-error': error
+            }
+          )}
+          type={passwordType ? 'password' : 'text'}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+        <div onClick={() => setPasswordType((prev) => !prev)}>
+          {passwordType ? (
+            <img
+              className="absolute cursor-pointer top-[60%] right-[5px] -translate-x-2/4"
+              src={showPassword}
+              alt="Hide"
+            />
+          ) : (
+            <img
+              className="absolute cursor-pointer top-[55%] right-[5px] -translate-x-2/4"
+              src={hidePasword}
+              alt="Show"
+            />
+          )}
+        </div>
       </div>
-    </div>
-  </>
+    </>
     // <div className="form__controls">
     //   <input
     //     id="password"

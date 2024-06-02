@@ -136,7 +136,7 @@ export default function ConfiguracionAvanzada(): JSX.Element {
           </label>
           <input
             className={clsx(
-              'h-[64px] w-[366px] rounded-[5px] bg-white dark:bg-dark border border-solid border-[#fff] pl-[18px] text-dark dark:text-light p-4',
+              'h-[64px] w-[366px] text-2xl rounded-[5px] bg-white dark:bg-dark border border-solid border-[#fff] pl-[18px] text-dark dark:text-light p-4',
               {
                 'border-error': error,
                 'focus:border-error': error,
@@ -539,7 +539,7 @@ function Ajustes({ valueInicial, sendConfiguracionesAvanzadasData }: AjustesProp
                   checked={configuracionesAvanzadasData.sensorRPM}
                   onChange={($e) => onChangeConfiguracionesAvanzada($e, 'sensorRPM')}
                   className={clsx(
-                    'h-[33px] w-[33px] appearance-none rounded-[5px] checked:appearance-auto accent-success bg-transparent border border-solid border-dark dark:border-light',
+                    'h-[33px] w-[33px] text-2xl appearance-none rounded-[5px] checked:appearance-auto accent-success bg-transparent border border-solid border-dark dark:border-light',
                     {
                       'border-error': error,
                       'focus:border-error': error,
@@ -557,7 +557,7 @@ function Ajustes({ valueInicial, sendConfiguracionesAvanzadasData }: AjustesProp
                   checked={configuracionesAvanzadasData.electroValvula}
                   onChange={($e) => onChangeConfiguracionesAvanzada($e, 'electroValvula')}
                   className={clsx(
-                    'h-[33px] w-[33px] appearance-none rounded-[5px] checked:appearance-auto accent-success bg-transparent border border-solid border-dark dark:border-light',
+                    'h-[33px] w-[33px] text-2xl appearance-none rounded-[5px] checked:appearance-auto accent-success bg-transparent border border-solid border-dark dark:border-light',
                     {
                       'border-error': error,
                       'focus:border-error': error,

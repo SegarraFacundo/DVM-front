@@ -72,7 +72,7 @@ export function InputText({ label, required, onChange }: Props): JSX.Element {
         </label>
         <input
           className={clsx(
-            'h-[64px] w-[366px] rounded-[5px] bg-[#172530] border border-solid border-[#fff] pl-[18px] text-dark dark:text-light p-4',
+            'h-[64px] w-[366px] rounded-[5px] text-2xl bg-white dark:bg-dark border border-solid border-dark dark:border-light pl-[18px] text-dark dark:text-light p-4',
             {
               'border-error': required && inputRef && inputRef.current && !inputRef.current.value,
               'focus:border-error':
