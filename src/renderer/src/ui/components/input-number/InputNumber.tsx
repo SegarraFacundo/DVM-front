@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
 import clsx from 'clsx'
-import './keyboard.css'
 import Keyboard from 'react-simple-keyboard'
 
 interface Props {
@@ -11,29 +10,21 @@ interface Props {
   valueInitial: number
 }
 
-export function InputNumber({ label, required, valueInitial, onChange, unidad }: Props): JSX.Element {
+export function InputNumber({
+  label,
+  required,
+  valueInitial,
+  onChange,
+  unidad
+}: Props): JSX.Element {
   const [showKeyboard, setShowKeyboard] = useState<boolean>(false)
 
   const inputRef = useRef<HTMLInputElement>(null)
-  const [value, setValue] = useState<string>(valueInitial.toString()?? '')
+  const [value, setValue] = useState<string>(valueInitial.toString() ?? '')
   const divRef = useRef<HTMLDivElement>(null)
-
-  const [theme, setTheme] = useState<string>('hg-theme-default')
-
-  const keyboardRef = useRef<any>(null)
-
-  const setThemeKeyboard = async (): Promise<void> => {
-    const result = await window.api.invoke.isThemeModeDark()
-    setTheme(
-      result
-        ? 'hg-theme-dark hg-theme-numeric-dark hg-layout-numeric-dark numeric-theme-dark'
-        : 'hg-theme-default hg-theme-numeric hg-layout-numeric numeric-theme'
-    )
-  }
+  const keyboardRef = useRef(null)
 
   useEffect(() => {
-    setThemeKeyboard()
-
     const handleClickOutside = (event): void => {
       if (
         inputRef.current &&
@@ -107,7 +98,7 @@ export function InputNumber({ label, required, valueInitial, onChange, unidad }:
       >
         <Keyboard
           keyboardRef={(r) => (keyboardRef.current = r)}
-          theme={theme}
+          theme="hg-theme-default hg-theme-numeric hg-layout-numeric numeric-theme"
           layout={layout}
           mergeDisplay
           display={display}

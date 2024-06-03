@@ -137,7 +137,6 @@ const InputDropdown = ({ label, name, data, errors, withAdd = false }: Props): J
       <ul
         className={` absolute z-30 top-[5.5rem] bg-light dark:bg-dark rounded-[5px] text-dark dark:text-light  border-dark dark:border-light mt-2 overflow-y-auto w-full ${open ? 'max-h-[140px] border-[1px] shadow-lg' : 'max-h-0'} `}
       >
-        {items}
         {withAdd && (
           <OpcionNuevo
             name={name}
@@ -148,6 +147,7 @@ const InputDropdown = ({ label, name, data, errors, withAdd = false }: Props): J
             }}
           />
         )}
+        {items}
       </ul>
     </div>
   )
@@ -173,7 +173,7 @@ function OpcionNuevo({ added, name }: PropsOpcionNuevo): JSX.Element {
 
   return (
     <li className="flex justify-between items-center text-sm border-b-[1px] border-b-success px-[30px] h-[80px] hover:bg-sky-300 hover:dark:bg-sky-600 text-success font-bold">
-      Agregar {name.charAt(0).toUpperCase() + name.slice(1)}
+      Agregar {name !== 'tipoAplicacion' ? name : 'tipo de aplicación'}
       <div className="">
         <button
           onClick={handleClick}

@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
 import clsx from 'clsx'
-import './keyboard.css'
 import Keyboard from 'react-simple-keyboard'
 
 interface Props {
@@ -15,19 +14,9 @@ export function InputText({ label, required, onChange }: Props): JSX.Element {
   const inputRef = useRef<HTMLInputElement>(null)
   const [value, setValue] = useState<string>('')
   const divRef = useRef<HTMLDivElement>(null)
-
-  const [theme, setTheme] = useState<string>('hg-theme-default')
-
-  const keyboardRef = useRef<any>(null)
-
-  const setThemeKeyboard = async (): Promise<void> => {
-    const result = await window.api.invoke.isThemeModeDark()
-    setTheme(result ? 'hg-theme-dark' : 'hg-theme-default')
-  }
+  const keyboardRef = useRef(null)
 
   useEffect(() => {
-    setThemeKeyboard()
-
     const handleClickOutside = (event): void => {
       if (
         inputRef.current &&
@@ -99,7 +88,7 @@ export function InputText({ label, required, onChange }: Props): JSX.Element {
           onChange={setValue}
           onKeyPress={onKeyPress}
           onKeyReleased={() => onChange(value)}
-          theme={theme}
+          theme="hg-theme-default"
         />
       </div>
     </>

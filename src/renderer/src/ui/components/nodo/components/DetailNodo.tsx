@@ -48,7 +48,7 @@ export function DetailNodo({ data: initialData, nodoChange }: Props): JSX.Elemen
           'opacity-50': nodo.deshabilitado
         })}
       >
-        <div className="flex items-center justify-between p-4 bg-[#1E3243]">
+        <div className="flex items-center justify-between p-4 bg-white dark:bg-dark">
           <div
             className={clsx('flex justify-center items-center gap-4', {
               'opacity-50': nodo.deshabilitado || nodo.aspersores[0].estado?.id != 0
@@ -109,7 +109,7 @@ export function DetailNodo({ data: initialData, nodoChange }: Props): JSX.Elemen
             {nodo.aspersores[0].deshabilitado ? 'Habilitar' : 'Deshabilitar'}
           </Button>
         </div>
-        <div className="flex items-center justify-between p-4 bg-[#1E3243]">
+        <div className="flex items-center justify-between p-4 bg-white dark:bg-dark">
           <div
             className={clsx('flex justify-center items-center gap-4', {
               'opacity-50': nodo.deshabilitado || nodo.aspersores[1].estado?.id != 0
@@ -170,7 +170,7 @@ export function DetailNodo({ data: initialData, nodoChange }: Props): JSX.Elemen
             {nodo.aspersores[1].deshabilitado ? 'Habilitar' : 'Deshabilitar'}
           </Button>
         </div>
-        <div className="flex items-center justify-between p-4 bg-[#1E3243]">
+        <div className="flex items-center justify-between p-4 bg-white dark:bg-dark">
           <div
             className={clsx('flex justify-center items-center gap-4', {
               'opacity-50': nodo.deshabilitado || nodo.aspersores[2].estado?.id != 0
@@ -231,7 +231,7 @@ export function DetailNodo({ data: initialData, nodoChange }: Props): JSX.Elemen
             {nodo.aspersores[2].deshabilitado ? 'Habilitar' : 'Deshabilitar'}
           </Button>
         </div>
-        <div className="flex items-center justify-between p-4 bg-[#1E3243]">
+        <div className="flex items-center justify-between p-4 bg-white dark:bg-dark">
           <div
             className={clsx('flex justify-center items-center gap-4', {
               'opacity-50': nodo.deshabilitado || nodo.aspersores[3].estado?.id != 0

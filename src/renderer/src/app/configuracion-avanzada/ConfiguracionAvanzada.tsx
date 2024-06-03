@@ -2,8 +2,6 @@ import { useTitle } from '@renderer/lib/hooks/UseTitle'
 import { Button } from '@renderer/ui/components/Button'
 import { ChangeEvent, useEffect, useRef, useState } from 'react'
 import clsx from 'clsx'
-import showPassword from './icons/eye.svg'
-import hidePasword from './icons/hidden.svg'
 import { Modal } from '@renderer/ui/components/modal/Modal'
 import { ConfiguracionDeNodo } from './components/ConfiguracionDeNodo'
 import { useModal } from '@renderer/ui/components/modal/hooks/UseModal'
@@ -32,18 +30,10 @@ export default function ConfiguracionAvanzada(): JSX.Element {
     useState<ConfiguracionesAvanzadasData>(null)
   const [value, setValue] = useState<string>('')
   const divRef = useRef<HTMLDivElement>(null)
-  const [theme, setTheme] = useState<string>('hg-theme-default')
-  const keyboardRef = useRef<any>(null)
+  const keyboardRef = useRef(null)
   const [showKeyboard, setShowKeyboard] = useState<boolean>(false)
 
-  const setThemeKeyboard = async (): Promise<void> => {
-    const result = await window.api.invoke.isThemeModeDark()
-    setTheme(result ? 'hg-theme-dark' : 'hg-theme-default')
-  }
-
   useEffect(() => {
-    setThemeKeyboard()
-
     const handleClickOutside = (event): void => {
       if (
         inputRef.current &&
@@ -136,7 +126,7 @@ export default function ConfiguracionAvanzada(): JSX.Element {
           </label>
           <input
             className={clsx(
-              'h-[64px] w-[366px] text-2xl rounded-[5px] bg-white dark:bg-dark border border-solid border-[#fff] pl-[18px] text-dark dark:text-light p-4',
+              'h-[64px] w-[366px] text-2xl rounded-[5px] bg-white dark:bg-dark border border-solid border-dark dark:border-light pl-[18px] text-dark dark:text-light p-4',
               {
                 'border-error': error,
                 'focus:border-error': error,
@@ -197,7 +187,7 @@ export default function ConfiguracionAvanzada(): JSX.Element {
               onKeyReleased={() => {
                 if (inputRef && inputRef.current) inputRef.current.value = value
               }}
-              theme={theme}
+              theme="hg-theme-default"
             />
           </div>
         </div>
@@ -264,22 +254,13 @@ function Ajustes({ valueInicial, sendConfiguracionesAvanzadasData }: AjustesProp
   const [configuracionesAvanzadasData, setConfiguracionesAvanzadasData] =
     useState<ConfiguracionesAvanzadasData>(valueInicial)
   const [nodosDisponibles, setNodosDisponibles] = useState<number[]>([])
-
   const inputRef = useRef<HTMLInputElement>(null)
   const [value, setValue] = useState<string>('')
   const divRef = useRef<HTMLDivElement>(null)
-  const [theme, setTheme] = useState<string>('hg-theme-default')
-  const keyboardRef = useRef<any>(null)
+  const keyboardRef = useRef(null)
   const [showKeyboard, setShowKeyboard] = useState<boolean>(false)
 
-  const setThemeKeyboard = async (): Promise<void> => {
-    const result = await window.api.invoke.isThemeModeDark()
-    setTheme(result ? 'hg-theme-dark' : 'hg-theme-default')
-  }
-
   useEffect(() => {
-    setThemeKeyboard()
-
     const handleClickOutside = (event): void => {
       if (
         inputRef.current &&
@@ -306,7 +287,7 @@ function Ajustes({ valueInicial, sendConfiguracionesAvanzadasData }: AjustesProp
     '{shift}': 'Shift'
   }
 
-  const fetchNodos = async () => {
+  const fetchNodos = async (): Promise<void> => {
     const nodos = await window.api.invoke.getNodosAsync()
     setNodos(nodos)
   }
@@ -395,11 +376,6 @@ function Ajustes({ valueInicial, sendConfiguracionesAvanzadasData }: AjustesProp
   const cambiarIdsNodosAsync = async (): Promise<void> => {
     await window.api.invoke.cambiarIdsNodosAsync(nodos)
     openModal('guardo-configuracion')
-  }
-
-  const onFocusInput = (): void => {
-    setShowKeyboard(true)
-    keyboardRef.current.setInput(value)
   }
 
   const onKeyPress = (button: string): void => {
@@ -802,7 +778,7 @@ function Ajustes({ valueInicial, sendConfiguracionesAvanzadasData }: AjustesProp
           >
             <Keyboard
               keyboardRef={(r) => (keyboardRef.current = r)}
-              theme={theme}
+              theme="hg-theme-default"
               layout={{
                 default: ['1 2 3', '4 5 6', '7 8 9', '{bksp} 0 {enter}']
               }}

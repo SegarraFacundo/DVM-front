@@ -41,27 +41,14 @@ interface Props {
 }
 export function ConfiguracionDeNodo({ close, acept, nodoData }: Props): JSX.Element {
   const { getStateModal, addModal, toggleOpenedState } = useModal()
-  const [error, setError] = useState<boolean>(false)
 
-  const keyboardRef = useRef<any>(null)
+  const keyboardRef = useRef(null)
   const inputRef = useRef<HTMLInputElement>(null)
   const divRef = useRef<HTMLDivElement>(null)
   const [value, setValue] = useState<string>(nodoData?.id.toString() ?? '')
-  const [theme, setTheme] = useState<string>('hg-theme-default')
   const [showKeyboard, setShowKeyboard] = useState<boolean>(false)
 
-  const setThemeKeyboard = async (): Promise<void> => {
-    const result = await window.api.invoke.isThemeModeDark()
-    setTheme(
-      result
-        ? 'hg-theme-dark hg-theme-numeric-dark hg-layout-numeric-dark numeric-theme-dark'
-        : 'hg-theme-default hg-theme-numeric hg-layout-numeric numeric-theme'
-    )
-  }
-
   useEffect(() => {
-    setThemeKeyboard()
-
     const handleClickOutside = (event): void => {
       if (
         inputRef.current &&
@@ -83,7 +70,7 @@ export function ConfiguracionDeNodo({ close, acept, nodoData }: Props): JSX.Elem
     toggleOpenedState(idModal)
   }
 
-  const modalClosed = (idModal: string, acept: boolean) => {
+  const modalClosed = (idModal: string, acept: boolean): void => {
     if (acept) {
       if (!getStateModal(idModal)) toggleOpenedState(idModal)
     }
@@ -98,11 +85,6 @@ export function ConfiguracionDeNodo({ close, acept, nodoData }: Props): JSX.Elem
       setShowKeyboard(false)
     }
     if (button === '{clear}') setValue('')
-  }
-
-  const onFocusInput = (): void => {
-    setShowKeyboard(true)
-    keyboardRef.current.setInput(value)
   }
 
   const display = {
@@ -177,7 +159,7 @@ export function ConfiguracionDeNodo({ close, acept, nodoData }: Props): JSX.Elem
       >
         <Keyboard
           keyboardRef={(r) => (keyboardRef.current = r)}
-          theme={theme}
+          theme="hg-theme-default hg-theme-numeric hg-layout-numeric numeric-theme"
           layout={{
             default: ['1 2 3', '4 5 6', '7 8 9', '{clear} 0 {bksp}']
           }}

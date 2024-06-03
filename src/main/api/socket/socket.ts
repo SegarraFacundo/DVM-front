@@ -133,27 +133,22 @@ try {
   //     rpm4 : 0,
   // }
 
-  const startJob = (nodo: Nodo): boolean => {
-    if (nodo.id === 0) return false
+  const startJob = (nodos: Nodo[]): boolean => {
     const send = {
       command: 'normal',
-      nodo: nodo.id,
-      rpm1:
-        nodo.deshabilitado || nodo.aspersores[0].deshabilitado
-          ? 0
-          : nodo.aspersores[0].rpmDeseado ?? 0,
-      rpm2:
-        nodo.deshabilitado || nodo.aspersores[1].deshabilitado
-          ? 0
-          : nodo.aspersores[1].rpmDeseado ?? 0,
-      rpm3:
-        nodo.deshabilitado || nodo.aspersores[2].deshabilitado
-          ? 0
-          : nodo.aspersores[2].rpmDeseado ?? 0,
-      rpm4:
-        nodo.deshabilitado || nodo.aspersores[3].deshabilitado
-          ? 0
-          : nodo.aspersores[3].rpmDeseado ?? 0
+      nodos: nodos
+        .filter((n) => n.id != 0)
+        .map((n) => ({
+          nodo: n.id,
+          rpm1:
+            n.deshabilitado || n.aspersores[0].deshabilitado ? 0 : n.aspersores[0].rpmDeseado ?? 0,
+          rpm2:
+            n.deshabilitado || n.aspersores[1].deshabilitado ? 0 : n.aspersores[1].rpmDeseado ?? 0,
+          rpm3:
+            n.deshabilitado || n.aspersores[2].deshabilitado ? 0 : n.aspersores[2].rpmDeseado ?? 0,
+          rpm4:
+            n.deshabilitado || n.aspersores[3].deshabilitado ? 0 : n.aspersores[3].rpmDeseado ?? 0
+        }))
     }
 
     console.info(`Comenzo el trabajo ${JSON.stringify(send).replace(/"/g, '""')}`)
@@ -301,9 +296,7 @@ try {
       runningJob = true
       listenJob()
       nodosStore.startAllNodo(rpmDeseado).then(() => {
-        nodosStore
-          .all()
-          .then((nodos) => nodos.forEach((n, i) => setTimeout(() => startJob(n), i * 1000)))
+        nodosStore.all().then((nodos) => startJob(nodos))
       })
     })
 

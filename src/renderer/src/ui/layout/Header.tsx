@@ -118,22 +118,13 @@ export function Header(): JSX.Element {
 }
 
 function ThemeToggle(): JSX.Element {
-  const [theme, setTheme] = useState<'light' | 'dark'>(
-    window.api.invoke.isThemeModeDark() ? 'dark' : 'light'
-  )
   return (
     <div className="flex flex-col justify-center ml-3  cursor-pointer">
       <input
         type="checkbox"
         name="light-switch"
         className="light-switch sr-only cursor-pointer"
-        checked={theme === 'light'}
-        onChange={() => {
-          if (theme === 'dark') {
-            return setTheme('light')
-          }
-          return setTheme('dark')
-        }}
+        checked={!window.api.invoke.isThemeModeDark()}
       />
       <label
         className="relative p-2 cursor-pointer"

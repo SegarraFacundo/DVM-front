@@ -7,5 +7,5 @@ interface UseTitle {
 
 export const useTitle = create<UseTitle>((set) => ({
   title: 'Inicio Aplicación',
-  setTitle: (newTitle: string) => set({ title: newTitle })
+  setTitle: (newTitle: string): void => set({ title: newTitle })
 }))

@@ -46,7 +46,7 @@ export default function Agregar({ added, name, close }: Props): JSX.Element {
     >
       <div className="flex items-center">
         <h3 className=" text-3xl not-italic font-bold text-dark dark:text-light">
-          Agregar {name.charAt(0).toUpperCase() + name.slice(1)}
+          Agregar {name !== 'tipoAplicacion' ? name : 'tipo de aplicación'}
         </h3>
       </div>
       <div>
