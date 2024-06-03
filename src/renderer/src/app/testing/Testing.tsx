@@ -69,11 +69,16 @@ export function Testing(): JSX.Element {
       <section className="grid grid-cols-3 gap-4">{nodos}</section>
       <section className="flex flex-col gap-2 content-center items-center justify-between">
         <div className="w-full border-2 border-dark dark:border-light bg-transparent p-1 rounded-md">
-          <div className="bg-dark dark:bg-light h-2 rounded-sm" style={{ width: percentageLoading + '%' }} />
+          <div
+            className="bg-dark dark:bg-light h-2 rounded-sm"
+            style={{ width: percentageLoading + '%' }}
+          />
         </div>
 
         <div className="w-full flex justify-end">
-          <p className="text-[20px] text-dark dark:text-light font-medium">TESTING {percentageLoading}%</p>
+          <p className="text-[20px] text-dark dark:text-light font-medium">
+            TESTING {percentageLoading}%
+          </p>
         </div>
       </section>
       <section className="flex justify-between gap-4">
@@ -168,7 +173,11 @@ export function Testing(): JSX.Element {
             crossClose
             outsideClose
           />
-          <Button type="success" onClick={handleIniciarTrabajoClick}>
+          <Button
+            type="success"
+            onClick={handleIniciarTrabajoClick}
+            disabled={percentageLoading < 100}
+          >
             Iniciar Trabajo
           </Button>
         </div>

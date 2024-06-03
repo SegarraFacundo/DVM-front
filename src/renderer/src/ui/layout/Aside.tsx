@@ -49,7 +49,7 @@ export function Aside(): JSX.Element {
     <>
       <aside
         className={clsx(
-          'fixed top-0 left-0 z-50 mt-[80px] w-[277px] h-screen transition-transform  bg-success rounded-r-lg dark:bg-success flex flex-col justify-between',
+          'fixed top-0 left-0 z-50 mt-[80px] w-[277px] h-screen transition-transform bg-success rounded-r-lg dark:bg-success flex flex-col justify-between',
           {
             '-translate-x-full': !getStateToggle('menu-lateral')
           }

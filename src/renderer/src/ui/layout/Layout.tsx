@@ -20,9 +20,12 @@ export function Layout({ children }: Props): JSX.Element {
   const navigate = useNavigate()
 
   useEffect(() => {
-    setOpendToggle(toggles.filter((t) => t.isOpen).length > 0)
     navigate('/')
   }, [])
+
+  useEffect(() => {
+    setOpendToggle(toggles.filter((t) => t.isOpen).length > 0)
+  }, [toggles])
 
   return (
     <>
