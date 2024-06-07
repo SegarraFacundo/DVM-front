@@ -532,9 +532,9 @@ try {
             }
 
             const configuracion = await configuracionesAvanzadasStore.get()
-            // console.info(
-            //   `,${datos.temperatura},${datos.humedad},${datos.velViento},${datos.dirViento},${datos.puntoDeRocio},${datos.presionAtmosferica},${configuracion.gota.seleccionada}`
-            // )
+            console.info(
+              `,${datos.temperatura},${datos.humedad},${datos.velViento},${datos.dirViento},${datos.puntoDeRocio},${datos.presionAtmosferica},${configuracion.gota.seleccionada}`
+            )
             socket.emit('getDatosMeteorologicos', datos)
           }
           if (infoDataJson && infoDataJson.command === 'estadoGeneralNodos') {

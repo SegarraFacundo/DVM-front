@@ -50,47 +50,7 @@ export default function Agregar({ added, name, close }: Props): JSX.Element {
           Agregar {name !== 'tipoAplicacion' ? name : 'tipo de aplicación'}
         </h3>
       </div>
-      <div className="grid grid-cols-2 gap-4">
-        <div className="flex flex-col">
-          <InputText label="Identificador" required={true} onChange={setValue} />
-        </div>
-        <div className=" flex flex-col gap-4">
-          <div className="flex flex-col">
-            <InputNumber
-              label="Superficie"
-              valueInitial={0}
-              unidad="Has"
-              required={true}
-              onChange={($e) => {}}
-            />
-          </div>
-        </div>
-        <div className="flex flex-col">
-          <InputText label="Ubicación" required={true} onChange={setValue} />
-        </div>
-        <div className=" flex flex-col gap-4">
-          <div className="flex flex-col">
-            <InputNumber
-              label=""
-              valueInitial={0}
-              unidad="Lat"
-              required={true}
-              onChange={($e) => {}}
-            />
-          </div>
-        </div>
-        <div className=" flex flex-col gap-4">
-          <div className="flex flex-col">
-            <InputNumber
-              label=""
-              valueInitial={0}
-              unidad="Long"
-              required={true}
-              onChange={($e) => {}}
-            />
-          </div>
-        </div>
-      </div>
+      <InputText label="Identificador" required={true} onChange={setValue} />
       <div className="w-full flex flex-row mt-8 gap-4 justify-end">
         <Button type="error" onClick={close} maxWith={false}>
           Cancelar
