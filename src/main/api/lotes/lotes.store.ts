@@ -10,8 +10,7 @@ export interface Lote {
 export const LotesStore = () => {
   let urlDataJson = path.join(APP_DATA_PATH(), 'lotes.json')
   const urlDataJsonDefault = path.join(__dirname, '../../resources/data/lotes.json')
-  if (!existsSync(urlDataJson))
-    urlDataJson = urlDataJsonDefault
+  if (!existsSync(urlDataJson)) urlDataJson = urlDataJsonDefault
   return {
     all: async () => JSON.parse(await readFileSync(urlDataJson).toString()) as Lote[],
     get: async (id: number) =>
@@ -20,10 +19,9 @@ export const LotesStore = () => {
       })) ?? null,
     add: async (value: { name: string }) => {
       const data = JSON.parse(readFileSync(urlDataJson).toString()) as Lote[]
-      const id =
-        data.reduce((accumulator, current) => {
-          return accumulator.id > current.id ? accumulator : current
-        }).id++
+      const id = data.reduce((accumulator, current) => {
+        return accumulator.id > current.id ? accumulator : current
+      }).id++
       const nuevoLote = { name: value.name, id }
 
       data.push(nuevoLote)

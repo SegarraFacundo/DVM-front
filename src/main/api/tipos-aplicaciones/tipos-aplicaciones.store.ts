@@ -14,8 +14,7 @@ export interface TipoAplicacion {
 export const TiposAplicacionesStore = () => {
   let urlDataJson = path.join(APP_DATA_PATH(), 'tipos-aplicaciones.json')
   const urlDataJsonDefault = path.join(__dirname, '../../resources/data/tipos-aplicaciones.json')
-  if (!existsSync(urlDataJson))
-    urlDataJson = urlDataJsonDefault
+  if (!existsSync(urlDataJson)) urlDataJson = urlDataJsonDefault
   return {
     all: async () => JSON.parse(await readFileSync(urlDataJson).toString()) as TipoAplicacion[],
     get: async (id: number) =>
@@ -24,10 +23,9 @@ export const TiposAplicacionesStore = () => {
       })) ?? null,
     add: async (value: { name: string }) => {
       const data = JSON.parse(readFileSync(urlDataJson).toString()) as TipoAplicacion[]
-      const id =
-        data.reduce((accumulator, current) => {
-          return accumulator.id > current.id ? accumulator : current
-        }).id++
+      const id = data.reduce((accumulator, current) => {
+        return accumulator.id > current.id ? accumulator : current
+      }).id++
       const nuevoTipoAplicacion = { name: value.name, id }
 
       data.push(nuevoTipoAplicacion)

@@ -11,8 +11,7 @@ export interface Operario {
 export const OperariosStore = () => {
   let urlDataJson = path.join(APP_DATA_PATH(), 'operarios.json')
   const urlDataJsonDefault = path.join(__dirname, '../../resources/data/operarios.json')
-  if (!existsSync(urlDataJson))
-    urlDataJson = urlDataJsonDefault
+  if (!existsSync(urlDataJson)) urlDataJson = urlDataJsonDefault
   return {
     all: async () => JSON.parse(await readFileSync(urlDataJson).toString()) as Operario[],
     get: async (id: number) =>
@@ -21,10 +20,9 @@ export const OperariosStore = () => {
       })) ?? null,
     add: async (value: { name: string }) => {
       const data = JSON.parse(readFileSync(urlDataJson).toString()) as Operario[]
-      const id =
-        data.reduce((accumulator, current) => {
-          return accumulator.id > current.id ? accumulator : current
-        }).id++
+      const id = data.reduce((accumulator, current) => {
+        return accumulator.id > current.id ? accumulator : current
+      }).id++
       const nuevoOperario = { name: value.name, id }
 
       data.push(nuevoOperario)
