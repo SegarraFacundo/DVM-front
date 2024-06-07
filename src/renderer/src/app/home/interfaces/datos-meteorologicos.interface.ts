@@ -4,4 +4,6 @@ export interface DatosMeteorologicos {
   dirViento: number | null
   temperatura: number | null
   puntoDeRocio: number | null
+  presionAtmosferica: number | null
+  version: number | null
 }

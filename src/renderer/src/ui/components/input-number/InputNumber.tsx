@@ -5,7 +5,7 @@ import Keyboard from 'react-simple-keyboard'
 interface Props {
   label: string
   required?: boolean
-  onChange: (value: React.ChangeEvent) => void
+  onChange: (value: string) => void
   unidad: string
   valueInitial: number
 }
@@ -41,6 +41,12 @@ export function InputNumber({
     }
   }, [])
 
+  useEffect(() => {
+    if (inputRef.current && inputRef.current.value) {
+      inputRef.current.value = value
+    }
+  }, [value])
+
   const onKeyPress = (button: string): void => {
     if (button === '{enter}') {
       setShowKeyboard(false)
@@ -74,7 +80,6 @@ export function InputNumber({
             onClick={onFocusInput}
             ref={inputRef}
             value={value}
-            onChange={onChange}
             className={clsx(
               'h-[60px] w-[150px] text-2xl rounded-[5px] bg-white dark:bg-dark border border-solid border-dark dark:border-light pl-[18px] text-dark dark:text-light p-4',
               {
@@ -85,7 +90,7 @@ export function InputNumber({
                   required && inputRef && inputRef.current && !inputRef.current.value
               }
             )}
-            type="number"
+            type="text"
           />
           <small className="font-roboto text-dark dark:text-light text-[20px]">{unidad}</small>
         </div>
@@ -104,9 +109,7 @@ export function InputNumber({
           display={display}
           onChange={setValue}
           onKeyPress={onKeyPress}
-          onKeyReleased={() => {
-            if (inputRef && inputRef.current) inputRef.current.value = value
-          }}
+          onKeyReleased={() => onChange(value)}
         />
       </div>
     </>

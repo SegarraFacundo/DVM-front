@@ -4,6 +4,7 @@ import { ModalProps } from '../../../../ui/components/modal/Modal'
 import { useModal } from '../../../../ui/components/modal/hooks/UseModal'
 import { useState } from 'react'
 import { DataSelect } from '../../interfaces/data-select.interface'
+import { InputNumber } from '@renderer/ui/components/input-number/InputNumber'
 
 interface Props extends ModalProps<undefined> {
   added: (data: DataSelect) => void
@@ -49,8 +50,46 @@ export default function Agregar({ added, name, close }: Props): JSX.Element {
           Agregar {name !== 'tipoAplicacion' ? name : 'tipo de aplicación'}
         </h3>
       </div>
-      <div>
-        <InputText label="Identificador" required={true} onChange={setValue} />
+      <div className="grid grid-cols-2 gap-4">
+        <div className="flex flex-col">
+          <InputText label="Identificador" required={true} onChange={setValue} />
+        </div>
+        <div className=" flex flex-col gap-4">
+          <div className="flex flex-col">
+            <InputNumber
+              label="Superficie"
+              valueInitial={0}
+              unidad="Has"
+              required={true}
+              onChange={($e) => {}}
+            />
+          </div>
+        </div>
+        <div className="flex flex-col">
+          <InputText label="Ubicación" required={true} onChange={setValue} />
+        </div>
+        <div className=" flex flex-col gap-4">
+          <div className="flex flex-col">
+            <InputNumber
+              label=""
+              valueInitial={0}
+              unidad="Lat"
+              required={true}
+              onChange={($e) => {}}
+            />
+          </div>
+        </div>
+        <div className=" flex flex-col gap-4">
+          <div className="flex flex-col">
+            <InputNumber
+              label=""
+              valueInitial={0}
+              unidad="Long"
+              required={true}
+              onChange={($e) => {}}
+            />
+          </div>
+        </div>
       </div>
       <div className="w-full flex flex-row mt-8 gap-4 justify-end">
         <Button type="error" onClick={close} maxWith={false}>

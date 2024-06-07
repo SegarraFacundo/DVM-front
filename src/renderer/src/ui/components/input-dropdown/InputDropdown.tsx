@@ -101,7 +101,7 @@ const InputDropdown = ({ label, name, data, errors, withAdd = false }: Props): J
 
   return (
     <div
-      className={clsx('relative flex flex-col min-w-[500px]', {
+      className={clsx('relative flex flex-col min-w-[400px]', {
         'border-error': errors && errors[name],
         'focus:border-error': errors && errors[name],
         'focus-visible:border-error': errors && errors[name]

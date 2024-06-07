@@ -16,7 +16,7 @@ interface ModalsState {
 export const useModal = create<ModalsState>((set, get) => ({
   // initial state
   modals: [],
-  getStateModal: (id: string) => {
+  getStateModal: (id: string): boolean => {
     const state = get().modals.find(m => m.id === id)
     if (!state) return false
     return state.isOpen

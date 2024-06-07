@@ -200,7 +200,12 @@ ipcMain.handle(
 
 ipcMain.handle(
   'cambiarUbicacionAspersor',
-  async (_: IpcMainInvokeEvent, idNodo: number, idAspersor: number, ubicacion: UbicacionAspersorType) => {
+  async (
+    _: IpcMainInvokeEvent,
+    idNodo: number,
+    idAspersor: number,
+    ubicacion: UbicacionAspersorType
+  ) => {
     const nodoConElAspersorCambiado = await nodosStore.cambiarUbicacionAspersor(
       idNodo,
       idAspersor,
@@ -241,13 +246,19 @@ ipcMain.handle('getUnidadesAsync', async () => {
   return unidades
 })
 
-ipcMain.handle('cambiarUnidadVelocidad', async (_: IpcMainInvokeEvent, id: 1 | 2) => {
-  return await unidadesStore.cambiarUnidadVelocidad(id)
-})
+ipcMain.handle(
+  'cambiarUnidadVelocidad',
+  async (_: IpcMainInvokeEvent, id: 1 | 2): Promise<boolean> => {
+    return await unidadesStore.cambiarUnidadVelocidad(id)
+  }
+)
 
-ipcMain.handle('cambiarUnidadTemperatura', async (_: IpcMainInvokeEvent, id: 1 | 2) => {
-  return await unidadesStore.cambiarUnidadTemperatura(id)
-})
+ipcMain.handle(
+  'cambiarUnidadTemperatura',
+  async (_: IpcMainInvokeEvent, id: 1 | 2): Promise<boolean> => {
+    return await unidadesStore.cambiarUnidadTemperatura(id)
+  }
+)
 
 const configuracionesAvanzadasStore = ConfiguracionesAvanzadasStore()
 

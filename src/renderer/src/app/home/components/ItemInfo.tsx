@@ -33,7 +33,7 @@ export function ItemInfo({ data }: Props): JSX.Element {
         resp =
           datosMeteorologicos?.humedad !== undefined
             ? { valor: datosMeteorologicos?.humedad?.toString() ?? '', unidad: data.unidad }
-            : { valor: '-', unidad: '' }
+            : { valor: '-- --', unidad: '' }
         break
       case 'Viento': {
         const unidadVelocidad =
@@ -50,7 +50,7 @@ export function ItemInfo({ data }: Props): JSX.Element {
                 unidad:
                   unidades.find((u) => u.estaSeleccionada && u.tipo === 'velocidad')?.unidad ?? ''
               }
-            : { valor: '-', unidad: '' }
+            : { valor: '-- --', unidad: '' }
         break
       }
       case 'Temperatura': {
@@ -66,10 +66,10 @@ export function ItemInfo({ data }: Props): JSX.Element {
                   )?.toString() ?? '',
                 unidad: '°' + unidad
               }
-            : { valor: '-', unidad: '' }
+            : { valor: '-- --', unidad: '' }
         break
       }
-      case 'Rocío': {
+      case 'Punto de Rocío': {
         const unidadTemperatura =
           unidades.find((u) => u.estaSeleccionada && u.tipo === 'temperatura')?.unidad ?? ''
         resp =
@@ -82,7 +82,17 @@ export function ItemInfo({ data }: Props): JSX.Element {
                   )?.toString() ?? '',
                 unidad: '°' + unidad
               }
-            : { valor: '-', unidad: '' }
+            : { valor: '-- --', unidad: '' }
+        break
+      }
+      case 'Presión Atm.': {
+        resp =
+          datosMeteorologicos?.presionAtmosferica !== undefined
+            ? {
+                valor: datosMeteorologicos?.presionAtmosferica?.toString() ?? '',
+                unidad: 'hPa'
+              }
+            : { valor: '-- --', unidad: '' }
         break
       }
     }
@@ -106,12 +116,15 @@ export function ItemInfo({ data }: Props): JSX.Element {
         src={`data:image/svg+xml;utf8,${encodeURIComponent(data.icon)}`}
       />
       <div className="w-full">
-        <h3 className="text-dark dark:text-light text-[32px] font-roboto font-bold">{data.title}</h3>
-        <span className="text-success font-roboto text-[13px]">{data.info}</span>
+        <h3 className="text-dark dark:text-light text-[32px] font-roboto font-bold">
+          {data.title}
+        </h3>
       </div>
       <div className="flex items-baseline gap-2">
-        <h1 className="text-dark dark:text-light text-[48px] font-bold">{getData().valor}</h1>
-        <p className="text-dark dark:text-light text-[34px] font-light">{getData().unidad}</p>
+        <h1 className="text-dark dark:text-light text-[40px] font-bold text-nowrap">
+          {getData().valor}
+        </h1>
+        <p className="text-dark dark:text-light text-[30px] font-light">{getData().unidad}</p>
       </div>
     </div>
   )

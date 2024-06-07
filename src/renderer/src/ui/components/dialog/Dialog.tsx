@@ -22,7 +22,7 @@ export interface DialogProps {
   }
 }
 
-export function Dialog({ close, acept, title, message, type, buttons }: DialogProps) {
+export function Dialog({ close, acept, title, message, type, buttons }: DialogProps): JSX.Element {
   const getColor = (): string => {
     let color = '#D9D9D9'
     switch (type) {

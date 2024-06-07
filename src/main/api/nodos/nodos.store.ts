@@ -88,7 +88,7 @@ export interface Nodo {
 export const NodosStore = () => {
   let urlDataJson = path.join(APP_DATA_PATH(), 'nodos.json')
   const urlDataJsonDefault = path.join(__dirname, '../../resources/data/nodos.json')
-  if (!existsSync(urlDataJson)) urlDataJson = urlDataJsonDefault
+  urlDataJson = urlDataJsonDefault
   return {
     all: async (): Promise<Nodo[]> =>
       JSON.parse(await readFileSync(urlDataJson).toString()) as Nodo[],

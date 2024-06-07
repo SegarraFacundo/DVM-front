@@ -12,23 +12,37 @@ export interface Unidad {
 export const UnidadesStore = () => {
   let urlDataJson = path.join(APP_DATA_PATH(), 'unidades.json')
   const urlDataJsonDefault = path.join(__dirname, '../../resources/data/unidades.json')
-  if (!existsSync(urlDataJson))
-    urlDataJson = urlDataJsonDefault
+  urlDataJson = urlDataJsonDefault
   return {
-    all: async () => JSON.parse(await readFileSync(urlDataJson).toString()) as Unidad[],
-    cambiarUnidadVelocidad: async (id: 1 | 2) => {
-      const data = (JSON.parse(await readFileSync(urlDataJson).toString()) as Unidad[]).map((u) => {
-        if (u.tipo === 'velocidad') u.estaSeleccionada = u.id === id
-        return u
-      })
-      await writeFileSync(urlDataJson, JSON.stringify(data))
+    all: async (): Promise<Unidad[]> =>
+      JSON.parse(await readFileSync(urlDataJson).toString()) as Unidad[],
+    cambiarUnidadVelocidad: async (id: 1 | 2): Promise<boolean> => {
+      try {
+        const data = (JSON.parse(await readFileSync(urlDataJson).toString()) as Unidad[]).map(
+          (u) => {
+            if (u.tipo === 'velocidad') u.estaSeleccionada = u.id === id
+            return u
+          }
+        )
+        await writeFileSync(urlDataJson, JSON.stringify(data))
+        return true
+      } catch (e) {
+        return false
+      }
     },
-    cambiarUnidadTemperatura: async (id: 1 | 2) =>{
-      const data = (JSON.parse(await readFileSync(urlDataJson).toString()) as Unidad[]).map((u) => {
-        if (u.tipo === 'temperatura') u.estaSeleccionada = u.id === id
-        return u
-      })
-      await writeFileSync(urlDataJson, JSON.stringify(data))
+    cambiarUnidadTemperatura: async (id: 1 | 2): Promise<boolean> => {
+      try {
+        const data = (JSON.parse(await readFileSync(urlDataJson).toString()) as Unidad[]).map(
+          (u) => {
+            if (u.tipo === 'temperatura') u.estaSeleccionada = u.id === id
+            return u
+          }
+        )
+        await writeFileSync(urlDataJson, JSON.stringify(data))
+        return true
+      } catch (e) {
+        return false
+      }
     }
   }
 }

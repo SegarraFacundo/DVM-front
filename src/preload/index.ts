@@ -35,8 +35,8 @@ export type Api = GetApiType<
     setBrillo: (porcentaje: number) => Promise<void>
     getBrilloActual: () => Promise<number>,
     getUnidadesAsync: () => Promise<Unidad[]>,
-    cambiarUnidadVelocidad: (id: 1 | 2) => Promise<void>,
-    cambiarUnidadTemperatura: (id: 1 | 2) => Promise<void>,
+    cambiarUnidadVelocidad: (id: 1 | 2) => Promise<boolean>,
+    cambiarUnidadTemperatura: (id: 1 | 2) => Promise<boolean>,
     getConfiguracionesAvanzadasAsync: () => Promise<ConfiguracionesAvanzadas>,
     editConfiguracionesAvanzadasAsync: (value: ConfiguracionesAvanzadas) => Promise<ConfiguracionesAvanzadas>
   },

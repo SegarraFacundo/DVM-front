@@ -55,7 +55,7 @@ function Home() {
     <article className="w-full flex flex-col content-center justify-around h-[100%] px-20">
       <section className="flex flex-row content-center items-center justify-between">
         <FormInitial props={{ openedModal: false }} />
-        <section className="bg-light dark:bg-dark w-[480px] h-[528px] flex flex-col justify-evenly shadow-2xl dark:shadow-slate-700">
+        <section className="bg-light dark:bg-dark w-[606px] h-[528px] flex flex-col justify-evenly shadow-2xl dark:shadow-slate-700">
           {items}
         </section>
       </section>
@@ -73,7 +73,7 @@ function Home() {
           modalContentProps={{
             title: 'Importante',
             message:
-              'Las condiciones meteorológicas actuales no son <br /> las adecuadas para continuar con el trabajo. <br /><br /> Al aceptar se iniciará el testeo de los aspersores.',
+              'Las condiciones meteorológicas actuales no son las adecuadas para continuar con el trabajo. <br /><br /> Al aceptar se iniciará el testeo de los aspersores.',
             type: 'warning'
           }}
           closed={modalClosed}

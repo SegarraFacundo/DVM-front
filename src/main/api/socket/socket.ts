@@ -37,7 +37,9 @@ import { ConfiguracionesAvanzadasStore } from '../configuraciones/configuracione
 //     velViento : 34,
 //     dirViento : 180,
 //     temperatura : 25,
-//     puntoDeRocio : 25
+//     puntoDeRocio : 25,
+//     presionAtmosferica : 1233,
+//     version : 1.2
 // }
 
 // Protocolo de estado general del nodo:
@@ -80,6 +82,8 @@ export interface DatosMeteorologicos {
   dirViento: number | null
   temperatura: number | null
   puntoDeRocio: number | null
+  presionAtmosferica: number | null
+  version: number | null
 }
 
 interface ServerToClientEvents {
@@ -513,7 +517,9 @@ try {
           velViento: getRandomArbitrary(0, 100, 0),
           dirViento: getRandomArbitrary(0, 360, 0),
           temperatura: getRandomArbitrary(0, 100, 0),
-          puntoDeRocio: getRandomArbitrary(0, 100, 0)
+          puntoDeRocio: getRandomArbitrary(0, 100, 0),
+          presionAtmosferica: getRandomArbitrary(1000, 9999, 0),
+          version: getRandomArbitrary(0, 1, 0)
         }
         socket.emit('getDatosMeteorologicos', datos)
       }, 5000)
@@ -529,7 +535,7 @@ try {
 
             const configuracion = await configuracionesAvanzadasStore.get()
             console.info(
-              `,${datos.temperatura},${datos.humedad},${datos.velViento},${datos.dirViento},${datos.puntoDeRocio},${configuracion.gota.seleccionada}`
+              `,${datos.temperatura},${datos.humedad},${datos.velViento},${datos.dirViento},${datos.puntoDeRocio},${datos.presionAtmosferica},${configuracion.gota.seleccionada}`
             )
             socket.emit('getDatosMeteorologicos', datos)
           }

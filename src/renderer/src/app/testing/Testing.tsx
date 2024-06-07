@@ -28,7 +28,7 @@ export function Testing(): JSX.Element {
     setPercentageLoading(0)
 
     for (let index = 1; index < 101; index++) {
-      setTimeout(() => setPercentageLoading(index), index * 30)
+      setTimeout(() => setPercentageLoading(index), index * 45)
     }
 
     socket.on('getStateNodo', (nodos) => {
@@ -49,7 +49,7 @@ export function Testing(): JSX.Element {
       setPercentageLoading(0)
 
       for (let index = 1; index < 101; index++) {
-        setTimeout(() => setPercentageLoading(index), index * 30)
+        setTimeout(() => setPercentageLoading(index), index * 45)
       }
     }
   }

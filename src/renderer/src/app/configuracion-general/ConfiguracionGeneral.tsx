@@ -2,6 +2,9 @@ import { useTitle } from '@renderer/lib/hooks/UseTitle'
 import { Button } from '@renderer/ui/components/Button'
 import { useEffect, useState } from 'react'
 import { DataUnidad } from '../home/interfaces/data-unidad.interface'
+import { Modal } from '@renderer/ui/components/modal/Modal'
+import { Dialog, DialogType } from '@renderer/ui/components/dialog/Dialog'
+import { useModal } from '@renderer/ui/components/modal/hooks/UseModal'
 
 export default function ConfiguracionGeneral(): JSX.Element {
   const { setTitle } = useTitle()
@@ -10,13 +13,14 @@ export default function ConfiguracionGeneral(): JSX.Element {
   const [mostrarDropDownVelocidad, setMostrarDropDownVelocidad] = useState<boolean>(false)
   const [mostrarDropDownTemperatura, setMostrarDropDownTemperatura] = useState<boolean>(false)
   const [unidades, setUnidades] = useState<DataUnidad[]>([])
+  const { getStateModal, addModal, toggleOpenedState } = useModal()
 
   const fetchBrilloActual = async (): Promise<void> => {
     const brilloActual = await window.api.invoke.getBrilloActual()
-    setPercentageLoading(brilloActual)
+    setPercentageLoading(brilloActual > 100 ? 100 : brilloActual < 0 ? 0 : brilloActual)
   }
 
-  const fetchUnidades = async () => {
+  const fetchUnidades = async (): Promise<void> => {
     const result = await window.api.invoke.getUnidadesAsync()
     setUnidades(result)
   }
@@ -25,15 +29,17 @@ export default function ConfiguracionGeneral(): JSX.Element {
     setTitle('Configuración General')
     fetchBrilloActual()
     fetchUnidades()
+    addModal('guardar-configuracion')
+    addModal('guardar-configuracion-error')
   }, [])
   const handleClickTop = (): void => {
-    const porcentaje = percentageLoading === 100 ? 100 : percentageLoading + 10
-    setPercentageLoading(porcentaje)
+    const porcentaje = percentageLoading >= 100 ? 100 : percentageLoading + 10
+    setPercentageLoading(porcentaje > 100 ? 100 : porcentaje < 0 ? 0 : porcentaje)
     window.api.invoke.setBrillo(porcentaje)
   }
   const handleClickDown = (): void => {
-    const porcentaje = percentageLoading === 0 ? 0 : percentageLoading - 10
-    setPercentageLoading(porcentaje)
+    const porcentaje = percentageLoading <= 0 ? 0 : percentageLoading - 10
+    setPercentageLoading(porcentaje > 100 ? 100 : porcentaje < 0 ? 0 : porcentaje)
     window.api.invoke.setBrillo(porcentaje + 10)
   }
 
@@ -48,25 +54,41 @@ export default function ConfiguracionGeneral(): JSX.Element {
     }
   }
 
-  const setTemperatura = (input: 1 | 2): void => {
-    window.api.invoke.cambiarUnidadTemperatura(input)
+  const setTemperatura = async (input: 1 | 2): Promise<void> => {
+    const resp = await window.api.invoke.cambiarUnidadTemperatura(input)
+    if (resp) {
+      toggleOpenedState('guardar-configuracion')
+    } else {
+      toggleOpenedState('guardar-configuracion-error')
+    }
 
     setMostrarDropDownVelocidad(false)
     setMostrarDropDownTemperatura(false)
     fetchUnidades()
   }
 
-  const setVelocidad = (input: 1 | 2): void => {
-    window.api.invoke.cambiarUnidadVelocidad(input)
+  const setVelocidad = async (input: 1 | 2): Promise<void> => {
+    const resp = await window.api.invoke.cambiarUnidadVelocidad(input)
+    if (resp) {
+      toggleOpenedState('guardar-configuracion')
+    } else {
+      toggleOpenedState('guardar-configuracion-error')
+    }
 
     setMostrarDropDownVelocidad(false)
     setMostrarDropDownTemperatura(false)
     fetchUnidades()
+  }
+
+  const modalClosed = (idModal: string, acept: boolean): void => {
+    if (acept) {
+      if (!getStateModal(idModal)) toggleOpenedState(idModal)
+    }
   }
 
   return (
     <article className="w-full flex flex-col content-center h-[100%] px-20 gap-8">
-      <h1 className="text-success mt-12 text-[20px]">Retroiluminación</h1>
+      <h1 className="text-success mt-12 text-[20px]">Iluminación</h1>
       <section className="flex gap-2 content-center items-center justify-between">
         <Button onClick={handleClickDown} type="success" size="sm" maxWith={false}>
           <small className="text-dark dark:text-light text-[28px]">{'<'}</small>
@@ -88,7 +110,7 @@ export default function ConfiguracionGeneral(): JSX.Element {
           <small className="text-dark dark:text-light text-[28px]">{'>'}</small>
         </Button>
       </section>
-      <h1 className="text-success mt-12 text-[20px]">Unidad de medida</h1>
+      <h1 className="text-success mt-12 text-[20px]">Unidades de medida</h1>
       <div className="flex w-full gap-10">
         <div className="flex">
           <label className="text-dark dark:text-light text-[20px] pr-4 pt-3">Velocidad</label>
@@ -173,6 +195,76 @@ export default function ConfiguracionGeneral(): JSX.Element {
           Guardar
         </Button>
       </div> */}
+      <Modal<{
+        title: string
+        message: string
+        type: 'success' | 'warning' | 'error' | 'default'
+        buttons?: {
+          cancelar?: {
+            noShow: boolean
+            text: string
+            type: DialogType
+          }
+          aceptar?: {
+            noShow: boolean
+            text: string
+            type: DialogType
+          }
+        }
+      }>
+        idModal="guardar-configuracion"
+        ModalContent={Dialog}
+        modalContentProps={{
+          title: 'Exito',
+          message: 'Se guardo sactifactoriamente la configuración',
+          type: 'success',
+          buttons: {
+            cancelar: {
+              noShow: true,
+              text: '',
+              type: 'error'
+            }
+          }
+        }}
+        closed={modalClosed}
+        crossClose
+        outsideClose
+      />
+      <Modal<{
+        title: string
+        message: string
+        type: 'success' | 'warning' | 'error' | 'default'
+        buttons?: {
+          cancelar?: {
+            noShow: boolean
+            text: string
+            type: DialogType
+          }
+          aceptar?: {
+            noShow: boolean
+            text: string
+            type: DialogType
+          }
+        }
+      }>
+        idModal="guardar-configuracion-error"
+        ModalContent={Dialog}
+        modalContentProps={{
+          title: 'Error',
+          message: 'No se pudo guardar la configuración',
+          type: 'error',
+          buttons: {
+            cancelar: {
+              noShow: true,
+              text: '',
+              type: 'error'
+            }
+          }
+        }}
+        closed={modalClosed}
+        crossClose
+        outsideClose
+      />
     </article>
   )
 }

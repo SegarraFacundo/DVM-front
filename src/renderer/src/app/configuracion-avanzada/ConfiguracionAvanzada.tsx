@@ -80,6 +80,7 @@ export default function ConfiguracionAvanzada(): JSX.Element {
   }, [])
 
   const editConfiguracionesAvanzadas = async (): void => {
+
     const configuracionesAvanzadasEditData =
       await window.api.invoke.editConfiguracionesAvanzadasAsync(configuracionesAvanzadasData)
     setConfiguracionesAvanzadasData(configuracionesAvanzadasEditData)
@@ -332,7 +333,7 @@ function Ajustes({ valueInicial, sendConfiguracionesAvanzadasData }: AjustesProp
   }, [nodos])
 
   const onChangeConfiguracionesAvanzada = (
-    event: ChangeEvent,
+    value: string | ChangeEvent,
     type:
       | 'ancho'
       | 'gota.fina'
@@ -347,13 +348,12 @@ function Ajustes({ valueInicial, sendConfiguracionesAvanzadasData }: AjustesProp
       | 'electroValvula'
   ): void => {
     if (type === 'ancho' || type === 'variacionRPM')
-      configuracionesAvanzadasData[type] = parseFloat(event.target.value)
+      configuracionesAvanzadasData[type] = parseFloat(value)
     else if (type === 'sensorRPM' || type === 'electroValvula')
-      configuracionesAvanzadasData[type] = event.target.checked
-    else
-      configuracionesAvanzadasData[type.split('.')[0]][type.split('.')[1]] = parseFloat(
-        event.target.value
-      )
+      configuracionesAvanzadasData[type] = value.target.checked
+    else {
+      configuracionesAvanzadasData[type.split('.')[0]][type.split('.')[1]] = parseFloat(value)
+    }
 
     setConfiguracionesAvanzadasData(configuracionesAvanzadasData)
     sendConfiguracionesAvanzadasData({
