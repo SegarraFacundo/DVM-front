@@ -17,6 +17,7 @@ interface Props {
   children: ReactNode
   onClick?: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void
   maxWith?: boolean
+  className?: string
 }
 
 export function Button({
@@ -25,13 +26,14 @@ export function Button({
   disabled = false,
   children,
   onClick,
-  maxWith = true
+  maxWith = true,
+  className = ''
 }: Props): JSX.Element {
   return (
     <button
       onClick={onClick}
       disabled={disabled}
-      className={clsx('text-[17px] font-roboto rounded-md whitespace-nowrap', {
+      className={clsx(`text-[17px] font-roboto rounded-md whitespace-nowrap ${className}`, {
         'w-full': maxWith,
         'px-[15px] py-[7px]': size === 'sm',
         'px-[25px] py-[14px]': size === 'md',

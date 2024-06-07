@@ -137,7 +137,12 @@ export function Trabajo(): JSX.Element {
       <section className="grid grid-cols-4 gap-4 w-full">
         <div className="w-full grid grid-cols-3 gap-2">
           <div className="col-span-3">
-            <Button onClick={() => openModal('tipo-gota')} size="lg" type="success">
+            <Button
+              className="animate-pulse"
+              onClick={() => openModal('tipo-gota')}
+              size="lg"
+              type="success"
+            >
               {tipoGotaseleccionada || 'TIPO DE GOTA'}
             </Button>
             <Modal<undefined>

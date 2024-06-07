@@ -347,9 +347,7 @@ try {
     socket.on('stopJob', () => {
       runningJob = false
       nodosStore.stopAllNodos().then(() => {
-        nodosStore
-          .all()
-          .then((nodos) => nodos.forEach((n, i) => setTimeout(() => startJob(n), i * 1000)))
+        nodosStore.all().then((nodos) => startJob(nodos))
       })
     })
 
