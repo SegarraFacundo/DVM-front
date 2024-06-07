@@ -756,7 +756,7 @@ function Ajustes({ valueInicial, sendConfiguracionesAvanzadasData }: AjustesProp
             ModalContent={Dialog}
             modalContentProps={{
               title: 'Exito',
-              message: 'Se guardo sactifactoriamente la configuración',
+              message: 'Se guardo satisfactoriamente la configuración',
               type: 'success',
               buttons: {
                 cancelar: {

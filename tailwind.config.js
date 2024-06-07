@@ -37,6 +37,15 @@ module.exports = {
         error: '#DC3545',
         dark: '#1C2E3D',
         light: '#EBE9E9'
+      },
+      animation: {
+        orbit: 'orbit 3s linear infinite'
+      },
+      keyframes: {
+        orbit: {
+          '0%, 100%': { transform: 'rotate(0deg)' },
+          '50%': { transform: 'rotate(360deg)' }
+        }
       }
     }
   },
