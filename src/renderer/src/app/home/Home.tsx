@@ -16,7 +16,7 @@ function Home() {
   const navigate = useNavigate()
   const { setTitle } = useTitle()
   const [data, setData] = useState<ItemInfoData[]>()
-  const { getStateModal, addModal, toggleOpenedState } = useModal()
+  //const { getStateModal, addModal, toggleOpenedState } = useModal()
   const { operario } = useOperario()
   const { isValid } = useFormInitial()
 
@@ -28,7 +28,7 @@ function Home() {
   }
 
   useEffect(() => {
-    addModal('init-testing')
+    //addModal('init-testing')
     setTitle('Inicio Aplicación')
     fetchData()
   }, [])
@@ -38,9 +38,11 @@ function Home() {
   })
 
   const handleClick = () => {
-    if (getStateModal('init-testing')) return
+    //if (getStateModal('init-testing')) return
     if (isValid) {
-      toggleOpenedState('init-testing')
+      //toggleOpenedState('init-testing')
+      log.info(`Operario ${operario.name} inicio testing`)
+      navigate('/testing')
     }
   }
 

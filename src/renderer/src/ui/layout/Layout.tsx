@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useState } from 'react'
+import { ReactNode, useEffect, useRef, useState } from 'react'
 import { Header } from './Header'
 import { Aside } from './Aside'
 import clsx from 'clsx'
@@ -32,6 +32,7 @@ export function Layout({ children }: Props): JSX.Element {
   const { getStateModal, addModal, toggleOpenedState } = useModal()
   const [mostrarMasCartelDeNoDatosMeteorologicos, setMostrarMasCartelDeNoDatosMeteorologicos] =
     useState<boolean>(true)
+  const timerId = useRef(null)
 
   useEffect(() => {
     addModal('sin-datos-meteorologicos')
@@ -40,13 +41,20 @@ export function Layout({ children }: Props): JSX.Element {
   }, [])
 
   useEffect(() => {
-    if (
-      mostrarMasCartelDeNoDatosMeteorologicos &&
-      (datosMeteorologicos?.temperatura === undefined ||
-        datosMeteorologicos?.temperatura === null) &&
-      !getStateModal('sin-datos-meteorologicos')
-    )
-      toggleOpenedState('sin-datos-meteorologicos')
+    timerId.current = setTimeout(() => {
+      if (
+        mostrarMasCartelDeNoDatosMeteorologicos &&
+        (datosMeteorologicos?.temperatura === undefined ||
+          datosMeteorologicos?.temperatura === null) &&
+        !getStateModal('sin-datos-meteorologicos')
+      )
+        toggleOpenedState('sin-datos-meteorologicos')
+    }, 5000)
+
+    return () => {
+      //Clearing a timeout
+      clearTimeout(timerId.current)
+    }
   }, [datosMeteorologicos])
 
   useEffect(() => {

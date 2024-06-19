@@ -53,26 +53,23 @@ export function PanelLateralIzquierdo() {
       >
         <div className="border-[1px] border-dark dark:border-light w-[197px] h-[122px] rounded-lg p-3 flex flex-col">
           <p className="text-success text-[16px] font-bold">Superficie</p>
-          <div className="text-dark dark:text-light font-bold flex justify-center align-baseline">
-            <h1 className="text-[48px]">
-              00<span className="text-[20px]">Has</span>
-            </h1>
+          <div className="text-dark dark:text-light font-bold items-baseline flex justify-end">
+            <h1 className="text-[46px] text-right">00</h1>
+            <span className="text-[20px] ml-4 w-12 inline-block">Has</span>
           </div>
         </div>
         <div className="border-[1px] border-dark dark:border-light w-[197px] h-[122px] rounded-lg p-3 flex flex-col">
-          <p className="text-success text-[16px] font-bold">Volúmen x área</p>
-          <div className="text-dark dark:text-light font-bold flex justify-center align-baseline">
-            <h1 className="text-[48px]">
-              00<span className="text-[20px]">Has</span>
-            </h1>
+          <p className="text-success text-[16px] font-bold">Volúmen x Superficie</p>
+          <div className="text-dark dark:text-light font-bold items-baseline flex justify-end">
+            <h1 className="text-[46px] text-right">00</h1>
+            <span className="text-[20px] ml-4 w-12 inline-block">L/ha</span>
           </div>
         </div>
         <div className="border-[1px] border-dark dark:border-light w-[197px] h-[122px] rounded-lg p-3 flex flex-col">
           <p className="text-success text-[16px] font-bold">Velocidad</p>
-          <div className="text-dark dark:text-light font-bold flex justify-center align-baseline">
-            <h1 className="text-[48px]">
-              00<span className="text-[20px]">Has</span>
-            </h1>
+          <div className="text-dark dark:text-light font-bold items-baseline flex justify-end">
+            <h1 className="text-[46px] text-right">00</h1>
+            <span className="text-[20px] ml-4 w-12 inline-block">Km/h</span>
           </div>
         </div>
       </div>

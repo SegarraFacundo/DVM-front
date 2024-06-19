@@ -50,8 +50,27 @@ export function PanelLateralDerecha() {
     toggleOpenedState('panel-lateral-derecha')
   }
 
+  const getPuntoCardinal = (valor: number): string => {
+    if (valor > 337.5 || valor <= 22.5) return 'N'
+    else if (valor > 22.5 && valor <= 67.5) return 'NE'
+    else if (valor > 67.5 && valor <= 112.5) return 'E'
+    else if (valor > 112.5 && valor <= 157.5) return 'SE'
+    else if (valor > 157.5 && valor <= 202.5) return 'S'
+    else if (valor > 202.5 && valor <= 247.5) return 'SO'
+    else if (valor > 247.5 && valor <= 292.5) return 'O'
+    else if (valor > 292.5 && valor <= 337.5) return 'NO'
+    return ''
+  }
+
   const getData = (
-    tipo: 'Humedad' | 'Viento' | 'Temperatura' | 'Punto de Rocío' | 'Presión Atm.'
+    tipo:
+      | 'Humedad'
+      | 'Velocidad del viento'
+      | 'Temperatura'
+      | 'Punto de Rocío'
+      | 'Presión Atm.'
+      | 'Dirección del viento'
+      | ''
   ): {
     valor: string
     unidad: string
@@ -69,7 +88,7 @@ export function PanelLateralDerecha() {
             ? { valor: datosMeteorologicos?.humedad?.toString() ?? '', unidad: '%' }
             : { valor: '-- --', unidad: '' }
         break
-      case 'Viento': {
+      case 'Velocidad del viento': {
         const unidadVelocidad =
           unidades.find((u) => u.estaSeleccionada && u.tipo === 'velocidad')?.unidad ?? ''
         resp =
@@ -119,6 +138,20 @@ export function PanelLateralDerecha() {
             : { valor: '-- --', unidad: '' }
         break
       }
+      case 'Dirección del viento': {
+        resp =
+          datosMeteorologicos?.dirViento !== undefined
+            ? {
+                valor: datosMeteorologicos.dirViento?.toString() ?? '',
+                unidad:
+                  datosMeteorologicos.dirViento != undefined &&
+                  datosMeteorologicos.dirViento != null
+                    ? `${getPuntoCardinal(datosMeteorologicos.dirViento)}`
+                    : ''
+              }
+            : { valor: '-- --', unidad: '' }
+        break
+      }
       case 'Presión Atm.': {
         resp =
           datosMeteorologicos?.presionAtmosferica !== undefined
@@ -144,7 +177,7 @@ export function PanelLateralDerecha() {
         className={clsx(
           'fixed z-40 right-0 top-[50%] w-[32px] h-[256px] translate-y-[-50%] bg-success rounded-l-lg flex items-center justify-center transition-transform',
           {
-            '-translate-x-[412px]': getStateToggle('panel-lateral-derecha')
+            '-translate-x-[512px]': getStateToggle('panel-lateral-derecha')
           }
         )}
       >
@@ -179,58 +212,57 @@ export function PanelLateralDerecha() {
       <div
         ref={divContenidoRef}
         className={clsx(
-          'w-[412px] h-[489px] fixed z-40 right-0 top-[50%] translate-y-[-50%] bg-light dark:bg-dark rounded-l-lg flex  justify-center flex-col gap-4 p-8 transition-transform',
+          'w-[512px] h-[489px] fixed z-40 right-0 top-[50%] translate-y-[-50%] bg-light dark:bg-dark rounded-l-lg flex  justify-center flex-col gap-4 p-8 transition-transform',
           {
-            'translate-x-[412px]': !getStateToggle('panel-lateral-derecha')
+            'translate-x-[512px]': !getStateToggle('panel-lateral-derecha')
           }
         )}
       >
         <div className="border-[1px] border-dark dark:border-light w-full h-[122px] rounded-lg p-3 flex flex-col">
           <p className="text-success text-[16px] font-bold">Temperatura</p>
-          <div className="text-dark dark:text-light font-bold flex justify-center align-baseline gap-8 items-end">
-            <h1 className="text-[48px] text-nowrap">
-              {getData('Temperatura').valor}
-              <span className="text-[20px]">°{getData('Temperatura').unidad}</span>
-            </h1>
+
+          <div className="text-dark dark:text-light font-bold items-baseline flex justify-center w-full">
+            <h1 className="text-[46px] text-right">{getData('Temperatura').valor}</h1>
+            <span className="text-[20px] ml-4 w-[60px] inline-block">
+              °{getData('Temperatura').unidad}
+            </span>
           </div>
         </div>
         <div className="flex gap-4">
           <div className="border-[1px] border-dark dark:border-light w-full h-[122px] rounded-lg p-3 flex flex-col">
-            <p className="text-success text-[16px] font-bold">Punto de Rocío</p>
-            <div className="text-dark dark:text-light font-bold flex justify-center align-baseline">
-              <h1 className="text-[48px] text-nowrap">
-                {getData('Punto de Rocío').valor}
-                <span className="text-[20px]">°{getData('Punto de Rocío').unidad}</span>
-              </h1>
+            <p className="text-success text-[16px] font-bold">Vel. del viento</p>
+            <div className="text-dark dark:text-light font-bold items-baseline flex justify-end w-full">
+              <h1 className="text-[46px] text-right">{getData('Velocidad del viento').valor}</h1>
+              <span className="text-[20px] ml-4 w-[60px] inline-block">
+                {getData('Velocidad del viento').unidad}
+              </span>
             </div>
           </div>
           <div className="border-[1px] border-dark dark:border-light w-full h-[122px] rounded-lg p-3 flex flex-col">
-            <p className="text-success text-[16px] font-bold">Viento</p>
-            <div className="text-dark dark:text-light font-bold flex justify-center align-baseline">
-              <h1 className="text-[48px] text-nowrap">
-                {getData('Viento').valor}
-                <span className="text-[20px]">{getData('Viento').unidad}</span>
-              </h1>
+            <p className="text-success text-[16px] font-bold">Dir. del viento</p>
+            <div className="text-dark dark:text-light font-bold items-baseline flex justify-end w-full">
+              <h1 className="text-[46px] text-right">{getData('Dirección del viento').unidad}</h1>
+              <span className="text-[20px] ml-4 w-[60px] inline-block">
+                {/* {getData('Dirección del viento').unidad} */}
+              </span>
             </div>
           </div>
         </div>
         <div className="flex gap-4">
           <div className="border-[1px] border-dark dark:border-light w-full h-[122px] rounded-lg p-3 flex flex-col">
             <p className="text-success text-[16px] font-bold">Humedad</p>
-            <div className="text-dark dark:text-light font-bold flex justify-center align-baseline">
-              <h1 className="text-[48px] text-nowrap">
-                {getData('Humedad').valor}
-                <span className="text-[20px]">%</span>
-              </h1>
+            <div className="text-dark dark:text-light font-bold items-baseline flex justify-end w-full">
+              <h1 className="text-[46px] text-right">{getData('Humedad').valor}</h1>
+              <span className="text-[20px] ml-4 w-[60px] inline-block">%</span>
             </div>
           </div>
           <div className="border-[1px] border-dark dark:border-light w-full h-[122px] rounded-lg p-3 flex flex-col">
             <p className="text-success text-[16px] font-bold">Presión Atm.</p>
-            <div className="text-dark dark:text-light font-bold flex justify-center align-baseline">
-              <h1 className="text-[48px] text-nowrap">
-                {getData('Presión Atm.').valor}
-                <span className="text-[20px]">{getData('Presión Atm.').unidad}</span>
-              </h1>
+            <div className="text-dark dark:text-light font-bold items-baseline flex justify-end w-full">
+              <h1 className="text-[46px] text-right">{getData('Presión Atm.').valor}</h1>
+              <span className="text-[20px] ml-4 w-[60px] inline-block">
+                {getData('Presión Atm.').unidad}
+              </span>
             </div>
           </div>
         </div>

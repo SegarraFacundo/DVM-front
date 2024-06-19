@@ -8,6 +8,7 @@ export function TipoGota ({ close, acept }: ModalProps<undefined>) {
   const handleClickTipoGotaSeleccionada = (value: TipoGotaType) => {
     setTipoGota(value)
   }
+
   return (
     <div className='flex flex-col gap-10 p-8'>
       <div className='grid grid-cols-2 gap-8'>

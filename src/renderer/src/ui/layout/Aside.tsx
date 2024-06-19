@@ -6,6 +6,13 @@ import { useEffect, useState } from 'react'
 import { Modal } from '../components/modal/Modal'
 import { Dialog, DialogType } from '../components/dialog/Dialog'
 import { useModal } from '../components/modal/hooks/UseModal'
+import {
+  ClientToServerEvents,
+  ServerToClientEvents
+} from '@renderer/lib/socket/interfaces/socket-client.interface'
+import { Socket, io } from 'socket.io-client'
+
+const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io('http://127.0.0.1:3000')
 
 export function Aside(): JSX.Element {
   const { getStateToggle } = useToggle()
@@ -21,6 +28,7 @@ export function Aside(): JSX.Element {
   useEffect(() => {
     fetchData()
     addModal('apagar')
+    addModal('apagando')
   }, [])
 
   const openModal = (idModal: string): void => {
@@ -40,7 +48,28 @@ export function Aside(): JSX.Element {
     if (acept) {
       if (!getStateModal(idModal)) toggleOpenedState(idModal)
       if (idModal === 'apagar') {
-        window.api.invoke.apagarDispositivo()
+        openModal('apagando')
+        socket.emit('stopJob')
+
+        socket.on('getStateNodo', (nodos) => {
+          if (nodos) {
+            const resp = nodos.every(
+              (n) => n.deshabilitado || n.aspersores.every((a) => a.rpm === 0)
+            )
+            if (resp) {
+              if (getStateModal(idModal)) toggleOpenedState('apagando')
+              window.api.invoke.apagarDispositivo()
+            }
+          } else {
+            if (getStateModal(idModal)) toggleOpenedState('apagando')
+            window.api.invoke.apagarDispositivo()
+          }
+        })
+
+        setTimeout(() => {
+          if (getStateModal(idModal)) toggleOpenedState('apagando')
+          window.api.invoke.apagarDispositivo()
+        }, 5000)
       }
     }
   }
@@ -100,6 +129,46 @@ export function Aside(): JSX.Element {
               text: 'Confirmar',
               noShow: false,
               type: 'success'
+            }
+          }
+        }}
+        closed={modalClosed}
+        crossClose
+        outsideClose
+      />
+      <Modal<{
+        title: string
+        message: string
+        type: 'success' | 'warning' | 'error' | 'default'
+        buttons?: {
+          cancelar?: {
+            noShow: boolean
+            text: string
+            type: DialogType
+          }
+          aceptar?: {
+            noShow: boolean
+            text: string
+            type: DialogType
+          }
+        }
+      }>
+        idModal="apagando"
+        ModalContent={Dialog}
+        modalContentProps={{
+          title: 'Apagando...',
+          message: 'El equipo se apagara en unos segundos, espere!',
+          type: 'warning',
+          buttons: {
+            aceptar: {
+              text: 'Confirmar',
+              noShow: true,
+              type: 'success'
+            },
+            cancelar: {
+              text: '',
+              noShow: true,
+              type: 'error'
             }
           }
         }}

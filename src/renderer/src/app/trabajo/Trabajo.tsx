@@ -19,6 +19,7 @@ import { PanelLateralIzquierdo } from './components/PanelLateralIzquierdo'
 import { ConfiguracionesAvanzadasData } from '../configuracion-avanzada/interfaces/configuraciones-avanzadas-data'
 import PreparacionBomba from '@renderer/ui/components/preparacion-bomba/PreparacionBomba'
 import log from 'electron-log/renderer'
+import clsx from 'clsx'
 
 const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io('http://127.0.0.1:3000')
 
@@ -26,7 +27,7 @@ export function Trabajo(): JSX.Element {
   const { setTitle } = useTitle()
   const navigate = useNavigate()
   const { getStateModal, addModal, toggleOpenedState } = useModal()
-  const { tipoGotaseleccionada } = useTipoGota()
+  const { setTipoGota, tipoGotaseleccionada } = useTipoGota()
   const [nodos, setNodos] = useState<JSX.Element[]>([])
   const [runningJob, setRunningJob] = useState<boolean>(false)
   const { state } = useLocation()
@@ -78,6 +79,10 @@ export function Trabajo(): JSX.Element {
             socket.emit('startJob', rpmDeseado)
           )
         }
+      }
+    } else {
+      if (idModal === 'tipo-gota') {
+        setTipoGota(undefined)
       }
     }
   }
@@ -138,7 +143,9 @@ export function Trabajo(): JSX.Element {
         <div className="w-full grid grid-cols-3 gap-2">
           <div className="col-span-3">
             <Button
-              className="animate-pulse"
+              className={clsx('', {
+                'animate-pulse': !runningJob && !tipoGotaseleccionada
+              })}
               onClick={() => openModal('tipo-gota')}
               size="lg"
               type="success"
@@ -266,23 +273,18 @@ export function Trabajo(): JSX.Element {
             <circle cx="165.238" cy="93.5664" r="2.4338" fill="#1C2E3D" />
             <circle cx="174.971" cy="93.5664" r="2.4338" fill="#1C2E3D" />
           </svg>
-          <div className="absolute top-[90px] left-[184px]" id="contenedor-tractor">
-            <div
-              className="absolute left-0 top-0"
-              style={{
-                transform: `rotate(270deg)`
-              }}
-            >
+          <div className="absolute top-[110px] left-[188px]" id="contenedor-tractor">
+            <div className="absolute left-0 top-0">
               <svg
-                width="30"
-                height="37"
-                viewBox="0 0 70 37"
+                width="29"
+                height="31"
+                viewBox="0 0 29 31"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
               >
                 <path
-                  d="M67.3372 12.6778L56.0769 1.5889C55.8064 1.32308 55.4846 1.11209 55.13 0.968111C54.7754 0.824129 54.3951 0.75 54.011 0.75C53.6269 0.75 53.2466 0.824129 52.8921 0.968111C52.5375 1.11209 52.2157 1.32308 51.9452 1.5889C51.4033 2.12027 51.0991 2.83907 51.0991 3.58831C51.0991 4.33756 51.4033 5.05636 51.9452 5.58773L62.3035 15.7691H2.97604C2.20436 15.7691 1.46428 16.0679 0.918619 16.5998C0.372956 17.1317 0.0664063 17.853 0.0664062 18.6052C0.0664063 19.3574 0.372956 20.0787 0.918619 20.6106C1.46428 21.1424 2.20436 21.4412 2.97604 21.4412H62.4781L51.9452 31.6794C51.6725 31.943 51.456 32.2567 51.3083 32.6023C51.1606 32.9479 51.0845 33.3186 51.0845 33.693C51.0845 34.0674 51.1606 34.438 51.3083 34.7836C51.456 35.1292 51.6725 35.4429 51.9452 35.7066C52.2157 35.9724 52.5375 36.1834 52.8921 36.3274C53.2466 36.4713 53.6269 36.5455 54.011 36.5455C54.3951 36.5455 54.7754 36.4713 55.13 36.3274C55.4846 36.1834 55.8064 35.9724 56.0769 35.7066L67.3372 24.7027C68.9718 23.1074 69.89 20.9449 69.89 18.6903C69.89 16.4356 68.9718 14.2731 67.3372 12.6778Z"
-                  fill="#1C2E3D"
+                  d="M2.00009 28.7271C2.64218 29.4014 3.48916 29.8456 4.414 29.9931C5.33885 30.1406 6.29172 29.9834 7.1297 29.5452L14.61 26.2658L21.9855 29.3458C22.8212 29.7761 23.7774 29.9248 24.7138 29.7699C25.6502 29.615 26.5173 29.1648 27.1879 28.4852L27.2102 28.463C27.9082 27.7648 28.3599 26.8594 28.4949 25.8876C28.6299 24.9158 28.4408 23.9321 27.9569 23.0895L14.8207 0.470566L1.32417 23.3989C0.833948 24.2478 0.634496 25.2298 0.756686 26.193C0.878876 27.1562 1.31589 28.0469 2.00009 28.7271ZM14.7452 9.31107L24.0575 25.3549L14.6357 21.4068L5.39504 25.4573L5.17926 25.5855L14.7452 9.31107Z"
+                  fill="#32CF9C"
                 />
               </svg>
             </div>

@@ -18,6 +18,19 @@ const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io('http://12
 export function ItemInfo({ data }: Props): JSX.Element {
   const [datosMeteorologicos, setDatosMeteorologicos] = useState<DatosMeteorologicos>()
   const [unidades, setUnidades] = useState<DataUnidad[]>([])
+
+  const getPuntoCardinal = (valor: number): string => {
+    if (valor > 337.5 || valor <= 22.5) return 'N'
+    else if (valor > 22.5 && valor <= 67.5) return 'NE'
+    else if (valor > 67.5 && valor <= 112.5) return 'E'
+    else if (valor > 112.5 && valor <= 157.5) return 'SE'
+    else if (valor > 157.5 && valor <= 202.5) return 'S'
+    else if (valor > 202.5 && valor <= 247.5) return 'SO'
+    else if (valor > 247.5 && valor <= 292.5) return 'O'
+    else if (valor > 292.5 && valor <= 337.5) return 'NO'
+    return ''
+  }
+
   const getData = (): {
     valor: string
     unidad: string
@@ -35,7 +48,7 @@ export function ItemInfo({ data }: Props): JSX.Element {
             ? { valor: datosMeteorologicos?.humedad?.toString() ?? '', unidad: data.unidad }
             : { valor: '-- --', unidad: '' }
         break
-      case 'Viento': {
+      case 'Velocidad del viento': {
         const unidadVelocidad =
           unidades.find((u) => u.estaSeleccionada && u.tipo === 'velocidad')?.unidad ?? ''
         resp =
@@ -85,6 +98,20 @@ export function ItemInfo({ data }: Props): JSX.Element {
             : { valor: '-- --', unidad: '' }
         break
       }
+      case 'Dirección del viento': {
+        resp =
+          datosMeteorologicos?.dirViento !== undefined
+            ? {
+                valor:
+                  datosMeteorologicos.dirViento != undefined &&
+                  datosMeteorologicos.dirViento != null
+                    ? `${getPuntoCardinal(datosMeteorologicos.dirViento)}`
+                    : '',
+                unidad: ''
+              }
+            : { valor: '-- --', unidad: '' }
+        break
+      }
       case 'Presión Atm.': {
         resp =
           datosMeteorologicos?.presionAtmosferica !== undefined
@@ -124,7 +151,7 @@ export function ItemInfo({ data }: Props): JSX.Element {
         <h1 className="text-dark dark:text-light text-[40px] font-bold text-nowrap">
           {getData().valor}
         </h1>
-        <p className="text-dark dark:text-light text-[30px] font-light">{getData().unidad}</p>
+        <p className="text-dark dark:text-light text-[30px] w-20 font-light">{getData().unidad}</p>
       </div>
     </div>
   )
