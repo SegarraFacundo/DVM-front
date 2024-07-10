@@ -20,6 +20,8 @@ import { ConfiguracionesAvanzadasData } from '../configuracion-avanzada/interfac
 import PreparacionBomba from '@renderer/ui/components/preparacion-bomba/PreparacionBomba'
 import log from 'electron-log/renderer'
 import clsx from 'clsx'
+import { useMenu } from '@renderer/lib/hooks/UseMenu'
+import { useBomba } from '@renderer/lib/hooks/UseBomba'
 
 const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io('http://127.0.0.1:3000')
 
@@ -31,10 +33,11 @@ export function Trabajo(): JSX.Element {
   const [nodos, setNodos] = useState<JSX.Element[]>([])
   const [runningJob, setRunningJob] = useState<boolean>(false)
   const { state } = useLocation()
-  const [encendidoApagado, setEncendidoApagado] = useState<'encender' | 'apagar'>('encender')
-  const [direccionViento, setDireccionViento] = useState<number>(0)
+  const { setEncendidoApagado } = useBomba()
+  const [setDireccionViento] = useState<number>(0)
   const [configuracionesAvanzadasData, setConfiguracionesAvanzadasData] =
     useState<ConfiguracionesAvanzadasData>()
+  const { setHabilitar, habilitar } = useMenu()
 
   const fetchConfiguracionesAvanzadas = async () => {
     const configuracionesAvanzadasData = await window.api.invoke.getConfiguracionesAvanzadasAsync()
@@ -64,14 +67,16 @@ export function Trabajo(): JSX.Element {
     if (acept) {
       if (idModal === 'init-job') {
         if (tipoGotaseleccionada) {
-          setEncendidoApagado('encender')
+          setHabilitar(false)
+          setEncendidoApagado(runningJob ? 'apagar' : 'encender')
           toggleOpenedState('preparacion-bomba')
         }
       }
       if (idModal === 'end-job') {
         log.info('Trabajo finalizado')
+        setHabilitar(true)
         setEncendidoApagado('apagar')
-        finalizarTrabajoClick()
+        toggleOpenedState('preparacion-bomba')
       }
       if (idModal === 'preparacion-bomba') {
         iniciarOPausarTrabajoClick()
@@ -79,6 +84,7 @@ export function Trabajo(): JSX.Element {
       if (idModal === 'tipo-gota') {
         log.info(`Cambio tipo de gota: ${tipoGotaseleccionada}`)
         if (tipoGotaseleccionada && runningJob) {
+          setHabilitar(false)
           getRPMDeseado(tipoGotaseleccionada).then((rpmDeseado) =>
             socket.emit('startJob', rpmDeseado)
           )
@@ -94,6 +100,7 @@ export function Trabajo(): JSX.Element {
 
   const finalizarTrabajoClick = () => {
     socket.emit('stopJob')
+    setHabilitar(true)
     navigate('/reportes')
   }
 
@@ -137,6 +144,7 @@ export function Trabajo(): JSX.Element {
           )
         }
       })
+      if (habilitar) finalizarTrabajoClick()
     }
     setRunningJob(!runningJob)
   }
@@ -429,13 +437,8 @@ export function Trabajo(): JSX.Element {
             crossClose
             outsideClose
           />
-          <Modal<{
-            encendidoApagado: 'encender' | 'apagar'
-          }>
+          <Modal<undefined>
             idModal="preparacion-bomba"
-            modalContentProps={{
-              encendidoApagado
-            }}
             ModalContent={PreparacionBomba}
             closed={modalClosed}
             crossClose

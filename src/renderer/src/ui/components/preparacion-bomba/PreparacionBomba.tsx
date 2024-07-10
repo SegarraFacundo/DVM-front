@@ -1,14 +1,12 @@
 import { useEffect, useState } from 'react'
 import { Button } from '../Button'
 import { ModalProps } from '../modal/Modal'
+import { useBomba } from '@renderer/lib/hooks/UseBomba'
 
-interface Props extends ModalProps<undefined> {
-  encendidoApagado: 'encender' | 'apagar'
-}
 
-export default function PreparacionBomba({ acept, close, encendidoApagado }: Props): JSX.Element {
+export default function PreparacionBomba({ acept, close }: ModalProps<undefined>): JSX.Element {
   const [percentageLoading, setPercentageLoading] = useState<number>(0)
-
+  const { encendidoApagado } = useBomba()
   useEffect(() => {
     setPercentageLoading(0)
 
