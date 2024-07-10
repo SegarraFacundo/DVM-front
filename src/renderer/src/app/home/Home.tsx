@@ -4,7 +4,6 @@ import { ItemInfo } from './components/ItemInfo'
 import { ItemInfoData } from './interfaces/item-info.interface'
 import { Modal } from '../../ui/components/modal/Modal'
 import { FormInitial } from './components/form-initial/FormInitial'
-import { useModal } from '../../ui/components/modal/hooks/UseModal'
 import { Dialog } from '../../ui/components/dialog/Dialog'
 import { useNavigate } from 'react-router-dom'
 import { useFormInitial } from './components/form-initial/hooks/UseFormInitial'
@@ -12,7 +11,7 @@ import { Button } from '@renderer/ui/components/Button'
 import log from 'electron-log/renderer'
 import { useOperario } from '@renderer/lib/hooks/UseOperario'
 
-function Home() {
+function Home(): JSX.Element {
   const navigate = useNavigate()
   const { setTitle } = useTitle()
   const [data, setData] = useState<ItemInfoData[]>()
@@ -22,7 +21,7 @@ function Home() {
 
   useEffect(() => {}, [])
 
-  const fetchData = async () => {
+  const fetchData = async (): Promise<void> => {
     const result = await window.api.invoke.getItemsInfoAsync()
     setData(result)
   }
@@ -37,7 +36,7 @@ function Home() {
     return <ItemInfo key={i} data={item} />
   })
 
-  const handleClick = () => {
+  const handleClick = (): void => {
     //if (getStateModal('init-testing')) return
     if (isValid) {
       //toggleOpenedState('init-testing')

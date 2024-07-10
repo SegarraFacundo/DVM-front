@@ -7,10 +7,11 @@ import { useModal } from '../modal/hooks/UseModal'
 
 interface Props {
   data: NodoData
+  posicion: number
   animacion?: boolean
 }
 
-export function Nodo({ data, animacion = false }: Props): JSX.Element {
+export function Nodo({ data, posicion, animacion = false }: Props): JSX.Element {
   const { getStateModal, addModal, toggleOpenedState } = useModal()
   const [nodoData, setNodoData] = useState<NodoData>(data)
 
@@ -18,7 +19,14 @@ export function Nodo({ data, animacion = false }: Props): JSX.Element {
     if (nodoData.deshabilitado) {
       aspersorData.deshabilitado = true
     }
-    return <Aspersor key={i} data={aspersorData} animacion={animacion} />
+    return (
+      <Aspersor
+        key={i}
+        posicion={posicion * 4 + aspersorData.id}
+        data={aspersorData}
+        animacion={animacion && aspersorData.rpm != 0}
+      />
+    )
   })
 
   useEffect(() => {
@@ -27,7 +35,14 @@ export function Nodo({ data, animacion = false }: Props): JSX.Element {
       if (nodoData.deshabilitado) {
         aspersorData.deshabilitado = true
       }
-      return <Aspersor key={i} data={aspersorData} animacion={animacion} />
+      return (
+        <Aspersor
+          key={i}
+          posicion={posicion * 4 + aspersorData.id}
+          data={aspersorData}
+          animacion={animacion}
+        />
+      )
     })
   }, [data, animacion])
 
@@ -52,7 +67,9 @@ export function Nodo({ data, animacion = false }: Props): JSX.Element {
       window.api.invoke.cambiarHabilitacionNodo(nodoData.id)
       return
     }
-    value.aspersores.forEach((a) => window.api.invoke.cambiarHabilitacionAspersor(data.id, a.id, a.deshabilitado))
+    value.aspersores.forEach((a) =>
+      window.api.invoke.cambiarHabilitacionAspersor(data.id, a.id, a.deshabilitado)
+    )
     setNodoData(value)
   }
 
@@ -94,10 +111,11 @@ export function Nodo({ data, animacion = false }: Props): JSX.Element {
 
 interface PropsAspersor {
   data: AspersorData
+  posicion: number
   animacion?: boolean
 }
 
-function Aspersor({ data, animacion = false }: PropsAspersor): JSX.Element {
+function Aspersor({ data, posicion, animacion = false }: PropsAspersor): JSX.Element {
   const [color, setColor] = useState<string>('')
   const [speed, setSpeed] = useState<string>('animate-[spin_8s_linear_infinite]')
 
@@ -128,7 +146,7 @@ function Aspersor({ data, animacion = false }: PropsAspersor): JSX.Element {
       case 9:
         setColor('#FFC107')
         if (animacion) setSpeed('animate-[spin_40s_linear_infinite]')
-          else setSpeed('animate-[spin_0s_linear_infinite]')
+        else setSpeed('animate-[spin_0s_linear_infinite]')
         break
       case -1: // Deshabilitado
         setColor('#696767')
@@ -161,7 +179,7 @@ function Aspersor({ data, animacion = false }: PropsAspersor): JSX.Element {
           />
         </svg>
       </div>
-      <p className="text-[24px]">{data.id}</p>
+      <p className="text-[24px]">{posicion}</p>
     </div>
   )
 }

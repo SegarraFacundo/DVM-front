@@ -2,7 +2,11 @@ import { useEffect, useState } from 'react'
 import { Button } from '../Button'
 import { ModalProps } from '../modal/Modal'
 
-export default function PreparacionBomba({ acept, close }: ModalProps<undefined>): JSX.Element {
+interface Props extends ModalProps<undefined> {
+  encendidoApagado: 'encender' | 'apagar'
+}
+
+export default function PreparacionBomba({ acept, close, encendidoApagado }: Props): JSX.Element {
   const [percentageLoading, setPercentageLoading] = useState<number>(0)
 
   useEffect(() => {
@@ -43,7 +47,7 @@ export default function PreparacionBomba({ acept, close }: ModalProps<undefined>
       <div className="flex flex-col gap-10">
         <p className="text-2xl not-italic font-normal text-dark dark:text-light">
           {percentageLoading === 100
-            ? 'Ahora puede encender la bomba.'
+            ? `Ahora puede ${encendidoApagado} la bomba.`
             : 'Por favor, aguarde mientras se realiza el proceso de limpieza.'}
         </p>
         {percentageLoading !== 100 && (
@@ -57,7 +61,9 @@ export default function PreparacionBomba({ acept, close }: ModalProps<undefined>
           </div>
 
           <div className="w-full flex justify-end">
-            <p className="text-[20px] text-dark dark:text-light font-medium">{percentageLoading}%</p>
+            <p className="text-[20px] text-dark dark:text-light font-medium">
+              {percentageLoading}%
+            </p>
           </div>
         </section>
       </div>

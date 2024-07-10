@@ -68,7 +68,6 @@ export function PanelLateralDerecha() {
       | 'Velocidad del viento'
       | 'Temperatura'
       | 'Punto de Rocío'
-      | 'Presión Atm.'
       | 'Dirección del viento'
       | ''
   ): {
@@ -148,16 +147,6 @@ export function PanelLateralDerecha() {
                   datosMeteorologicos.dirViento != null
                     ? `${getPuntoCardinal(datosMeteorologicos.dirViento)}`
                     : ''
-              }
-            : { valor: '-- --', unidad: '' }
-        break
-      }
-      case 'Presión Atm.': {
-        resp =
-          datosMeteorologicos?.presionAtmosferica !== undefined
-            ? {
-                valor: datosMeteorologicos?.presionAtmosferica?.toString() ?? '',
-                unidad: 'hPa'
               }
             : { valor: '-- --', unidad: '' }
         break
@@ -256,15 +245,7 @@ export function PanelLateralDerecha() {
               <span className="text-[20px] ml-4 w-[60px] inline-block">%</span>
             </div>
           </div>
-          <div className="border-[1px] border-dark dark:border-light w-full h-[122px] rounded-lg p-3 flex flex-col">
-            <p className="text-success text-[16px] font-bold">Presión Atm.</p>
-            <div className="text-dark dark:text-light font-bold items-baseline flex justify-end w-full">
-              <h1 className="text-[46px] text-right">{getData('Presión Atm.').valor}</h1>
-              <span className="text-[20px] ml-4 w-[60px] inline-block">
-                {getData('Presión Atm.').unidad}
-              </span>
-            </div>
-          </div>
+          <div className=" w-full h-[122px] rounded-lg p-3 flex flex-col"></div>
         </div>
       </div>
     </>

@@ -22,7 +22,7 @@ const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io('http://12
 
 export function App(): JSX.Element {
   const { setCargando } = useCarga()
-  const [presentar, setPresentar] = useState<boolean>(true)
+  const [presentar, setPresentar] = useState<boolean>(false)
   useEffect(() => {
     setCargando(true)
     setTimeout(() => {

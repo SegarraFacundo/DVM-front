@@ -35,7 +35,7 @@ export function Testing(): JSX.Element {
       if (nodos) {
         setNodos(
           nodos.map((nodoData, i) => {
-            return <Nodo key={i} data={nodoData} />
+            return <Nodo key={i} posicion={i} data={nodoData} />
           })
         )
       }

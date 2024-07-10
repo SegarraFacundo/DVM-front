@@ -112,16 +112,6 @@ export function ItemInfo({ data }: Props): JSX.Element {
             : { valor: '-- --', unidad: '' }
         break
       }
-      case 'Presión Atm.': {
-        resp =
-          datosMeteorologicos?.presionAtmosferica !== undefined
-            ? {
-                valor: datosMeteorologicos?.presionAtmosferica?.toString() ?? '',
-                unidad: 'hPa'
-              }
-            : { valor: '-- --', unidad: '' }
-        break
-      }
     }
     return resp
   }

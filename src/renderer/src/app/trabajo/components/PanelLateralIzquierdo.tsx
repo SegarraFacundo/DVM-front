@@ -45,7 +45,7 @@ export function PanelLateralIzquierdo() {
       <div
         ref={divContenidoRef}
         className={clsx(
-          'w-[294px] h-[489px] fixed z-40 left-0 top-[50%] translate-y-[-50%] bg-light dark:bg-dark rounded-r-lg flex items-center justify-center flex-col gap-4 transition-transform',
+          'w-[294px] h-[589px] fixed z-40 left-0 top-[50%] translate-y-[-50%] bg-light dark:bg-dark rounded-r-lg flex items-center justify-center flex-col gap-4 transition-transform',
           {
             '-translate-x-[294px]': !getStateToggle('panel-lateral-izquierdo')
           }
@@ -63,6 +63,13 @@ export function PanelLateralIzquierdo() {
           <div className="text-dark dark:text-light font-bold items-baseline flex justify-end">
             <h1 className="text-[46px] text-right">00</h1>
             <span className="text-[20px] ml-4 w-12 inline-block">L/ha</span>
+          </div>
+        </div>
+        <div className="border-[1px] border-dark dark:border-light w-[197px] h-[122px] rounded-lg p-3 flex flex-col">
+          <p className="text-success text-[16px] font-bold">Volúmen / Minuto</p>
+          <div className="text-dark dark:text-light font-bold items-baseline flex justify-end">
+            <h1 className="text-[46px] text-right">00</h1>
+            <span className="text-[20px] ml-4 w-12 inline-block">L/min.</span>
           </div>
         </div>
         <div className="border-[1px] border-dark dark:border-light w-[197px] h-[122px] rounded-lg p-3 flex flex-col">

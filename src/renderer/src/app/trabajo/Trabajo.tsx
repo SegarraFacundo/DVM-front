@@ -31,6 +31,7 @@ export function Trabajo(): JSX.Element {
   const [nodos, setNodos] = useState<JSX.Element[]>([])
   const [runningJob, setRunningJob] = useState<boolean>(false)
   const { state } = useLocation()
+  const [encendidoApagado, setEncendidoApagado] = useState<'encender' | 'apagar'>('encender')
   const [direccionViento, setDireccionViento] = useState<number>(0)
   const [configuracionesAvanzadasData, setConfiguracionesAvanzadasData] =
     useState<ConfiguracionesAvanzadasData>()
@@ -44,7 +45,7 @@ export function Trabajo(): JSX.Element {
     if (state && state.length > 0)
       setNodos(
         state.map((nodoData, i) => {
-          return <Nodo key={i} data={nodoData} animacion={false} />
+          return <Nodo key={i} posicion={i} data={nodoData} animacion={false} />
         })
       )
   }, [state])
@@ -61,12 +62,15 @@ export function Trabajo(): JSX.Element {
 
   const modalClosed = (idModal: string, acept: boolean) => {
     if (acept) {
-      if (!getStateModal(idModal)) toggleOpenedState(idModal)
       if (idModal === 'init-job') {
-        if (tipoGotaseleccionada) toggleOpenedState('preparacion-bomba')
+        if (tipoGotaseleccionada) {
+          setEncendidoApagado('encender')
+          toggleOpenedState('preparacion-bomba')
+        }
       }
       if (idModal === 'end-job') {
         log.info('Trabajo finalizado')
+        setEncendidoApagado('apagar')
         finalizarTrabajoClick()
       }
       if (idModal === 'preparacion-bomba') {
@@ -80,6 +84,7 @@ export function Trabajo(): JSX.Element {
           )
         }
       }
+      if (!getStateModal(idModal)) toggleOpenedState(idModal)
     } else {
       if (idModal === 'tipo-gota') {
         setTipoGota(undefined)
@@ -117,7 +122,7 @@ export function Trabajo(): JSX.Element {
       socket.emit('stopJob')
       setNodos(
         nodos.map((nodo, i) => {
-          return <Nodo key={i} data={nodo.props['data']} animacion={false} />
+          return <Nodo key={i} posicion={i} data={nodo.props['data']} animacion={false} />
         })
       )
     } else {
@@ -127,7 +132,7 @@ export function Trabajo(): JSX.Element {
         if (nodos) {
           setNodos(
             nodos.map((nodoData, i) => {
-              return <Nodo key={i} data={nodoData} animacion={true} />
+              return <Nodo key={i} posicion={i} data={nodoData} animacion={true} />
             })
           )
         }
@@ -424,8 +429,13 @@ export function Trabajo(): JSX.Element {
             crossClose
             outsideClose
           />
-          <Modal<undefined>
+          <Modal<{
+            encendidoApagado: 'encender' | 'apagar'
+          }>
             idModal="preparacion-bomba"
+            modalContentProps={{
+              encendidoApagado
+            }}
             ModalContent={PreparacionBomba}
             closed={modalClosed}
             crossClose
