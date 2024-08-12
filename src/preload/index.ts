@@ -39,7 +39,7 @@ export type Api = GetApiType<
     cambiarUnidadTemperatura: (id: 1 | 2) => Promise<boolean>,
     getConfiguracionesAvanzadasAsync: () => Promise<ConfiguracionesAvanzadas>,
     editConfiguracionesAvanzadasAsync: (value: ConfiguracionesAvanzadas) => Promise<ConfiguracionesAvanzadas>
-    updateVersion: () => Promise<void>
+    updateVersion: () => Promise<boolean>
     getVersionApp: () => Promise<string>
   },
   {}
@@ -111,8 +111,8 @@ const api: Api = {
     cambiarUnidadTemperatura: async (id: 1 | 2) => ipcRenderer.invoke('cambiarUnidadTemperatura', id),
     getConfiguracionesAvanzadasAsync: async () => ipcRenderer.invoke('getConfiguracionesAvanzadasAsync'),
     editConfiguracionesAvanzadasAsync: async (value: ConfiguracionesAvanzadas) => ipcRenderer.invoke('editConfiguracionesAvanzadasAsync', value),
-    updateVersion: async () => {
-      await ipcRenderer.invoke('updateVersion')
+    updateVersion: async (): Promise<boolean> => {
+      return await ipcRenderer.invoke('updateVersion')
     },
     getVersionApp: async (): Promise<string> => {
       return await ipcRenderer.invoke('getVersionApp')

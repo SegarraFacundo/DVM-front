@@ -10,6 +10,7 @@ import {
   ClientToServerEvents,
   ServerToClientEvents
 } from '@renderer/lib/socket/interfaces/socket-client.interface'
+import { useCarga } from '@renderer/ui/layout/hooks/useCarga'
 
 const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io('http://127.0.0.1:3000')
 
@@ -18,6 +19,7 @@ export default function ConfiguracionGeneral(): JSX.Element {
   const [percentageLoading, setPercentageLoading] = useState<number>(0)
   const [versionFront, setVersionFront] = useState<string>('')
   const [versionBack, setVersionBack] = useState<string>('')
+  const { setCargando } = useCarga()
 
   const [mostrarDropDownVelocidad, setMostrarDropDownVelocidad] = useState<boolean>(false)
   const [mostrarDropDownTemperatura, setMostrarDropDownTemperatura] = useState<boolean>(false)
@@ -93,7 +95,13 @@ export default function ConfiguracionGeneral(): JSX.Element {
     if (acept) {
       if (!getStateModal(idModal)) toggleOpenedState(idModal)
       if (idModal === 'update-version') {
-        window.api.invoke.updateVersion()
+        setCargando(true)
+        window.api.invoke.updateVersion().then((res, rej) => {
+          setCargando(false)
+          if (!res || rej) {
+            alert('Error al actualizar')
+          }
+        })
       }
     }
   }
