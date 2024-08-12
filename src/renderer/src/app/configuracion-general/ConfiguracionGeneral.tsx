@@ -2,14 +2,27 @@ import { useTitle } from '@renderer/lib/hooks/UseTitle'
 import { Button } from '@renderer/ui/components/Button'
 import { useEffect, useState } from 'react'
 import { DataUnidad } from '../home/interfaces/data-unidad.interface'
+import { Modal } from '@renderer/ui/components/modal/Modal'
+import { Dialog, DialogType } from '@renderer/ui/components/dialog/Dialog'
+import { useModal } from '@renderer/ui/components/modal/hooks/UseModal'
+import { io, Socket } from 'socket.io-client'
+import {
+  ClientToServerEvents,
+  ServerToClientEvents
+} from '@renderer/lib/socket/interfaces/socket-client.interface'
+
+const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io('http://127.0.0.1:3000')
 
 export default function ConfiguracionGeneral(): JSX.Element {
   const { setTitle } = useTitle()
   const [percentageLoading, setPercentageLoading] = useState<number>(0)
+  const [versionFront, setVersionFront] = useState<string>('')
+  const [versionBack, setVersionBack] = useState<string>('')
 
   const [mostrarDropDownVelocidad, setMostrarDropDownVelocidad] = useState<boolean>(false)
   const [mostrarDropDownTemperatura, setMostrarDropDownTemperatura] = useState<boolean>(false)
   const [unidades, setUnidades] = useState<DataUnidad[]>([])
+  const { getStateModal, addModal, toggleOpenedState } = useModal()
 
   const fetchBrilloActual = async (): Promise<void> => {
     const brilloActual = await window.api.invoke.getBrilloActual()
@@ -21,15 +34,29 @@ export default function ConfiguracionGeneral(): JSX.Element {
     setUnidades(result)
   }
 
+  const getVersiones = async (): Promise<void> => {
+    socket.emit('version')
+    setVersionFront(await window.api.invoke.getVersionApp())
+    socket.on('rtaVersion', (data: string) => {
+      setVersionBack(data)
+    })
+  }
+
   useEffect(() => {
     setTitle('Configuración General')
     fetchBrilloActual()
     fetchUnidades()
+    getVersiones()
+    addModal('update-version')
   }, [])
   const handleClickTop = (): void => {
     const porcentaje = percentageLoading >= 100 ? 100 : percentageLoading + 10
     setPercentageLoading(porcentaje > 100 ? 100 : porcentaje < 0 ? 0 : porcentaje)
     window.api.invoke.setBrillo(porcentaje)
+  }
+  const handleUpdateVersion = (): void => {
+    if (getStateModal('update-version')) return
+    toggleOpenedState('update-version')
   }
   const handleClickDown = (): void => {
     const porcentaje = percentageLoading <= 0 ? 0 : percentageLoading - 10
@@ -62,8 +89,17 @@ export default function ConfiguracionGeneral(): JSX.Element {
     fetchUnidades()
   }
 
+  const modalClosed = (idModal: string, acept: boolean): void => {
+    if (acept) {
+      if (!getStateModal(idModal)) toggleOpenedState(idModal)
+      if (idModal === 'update-version') {
+        window.api.invoke.updateVersion()
+      }
+    }
+  }
+
   return (
-    <article className="w-full flex flex-col content-center h-[100%] px-20 gap-8">
+    <article className="w-full flex flex-col content-center justify-around h-[600px] px-20 gap-8">
       <h1 className="text-success mt-12 text-[20px]">Iluminación</h1>
       <section className="flex gap-2 content-center items-center justify-between">
         <Button onClick={handleClickDown} type="success" size="sm" maxWith={false}>
@@ -166,11 +202,47 @@ export default function ConfiguracionGeneral(): JSX.Element {
           </div>
         </div>
       </div>
-      {/* <div className="flex w-full h-full items-end justify-end mb-10">
-        <Button type="success" size="lg" maxWith={false}>
-          Guardar
-        </Button>
-      </div> */}
+      <div className="flex w-full items-center justify-between gap-10 border-2 border-success rounded-lg p-4">
+        <div>
+          <h1 className="text-success font-bold text-[20px]">Versión</h1>
+          <p className="text-white text-[20px]">
+            Front: {versionFront}&emsp;Back: {versionBack}
+          </p>
+        </div>
+        <div>
+          <Button type="success" size="lg" maxWith={false} onClick={handleUpdateVersion}>
+            Actualizar versión
+          </Button>
+        </div>
+      </div>
+      <Modal<{
+        title: string
+        message: string
+        type: 'success' | 'warning' | 'error' | 'default'
+        buttons?: {
+          cancelar?: {
+            noShow: boolean
+            text: string
+            type: DialogType
+          }
+          aceptar?: {
+            noShow: boolean
+            text: string
+            type: DialogType
+          }
+        }
+      }>
+        idModal="update-version"
+        ModalContent={Dialog}
+        modalContentProps={{
+          title: 'Actualización de versión',
+          message: '¿Desea actualizar la aplicación a la última versión?',
+          type: 'warning'
+        }}
+        closed={modalClosed}
+        crossClose
+        outsideClose
+      />
     </article>
   )
 }

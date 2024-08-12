@@ -73,6 +73,7 @@ interface ClientToServerEvents {
     electrovalvula: boolean
   }) => void
   scan: () => void
+  version: () => void
   renombrar: (idNodo: number, nuevoIdNodo: number) => void
 }
 
@@ -113,6 +114,7 @@ interface ServerToClientEvents {
   getDatosMeteorologicos: (data: DatosMeteorologicos) => void
   conectado: () => void
   rtaScan: (data: number[]) => void
+  rtaVersion: (data: string) => void
   desconectado: () => void
   error: (err: any) => void
 }
@@ -185,6 +187,14 @@ try {
   const scan = (): boolean => {
     const send = {
       command: 'scan'
+    }
+
+    return client.write(Buffer.from(JSON.stringify(send)))
+  }
+
+  const version = (): boolean => {
+    const send = {
+      command: 'version'
     }
 
     return client.write(Buffer.from(JSON.stringify(send)))
@@ -328,6 +338,10 @@ try {
 
     socket.on('scan', () => {
       scan()
+    })
+
+    socket.on('version', () => {
+      version()
     })
 
     socket.on('renombrar', (idNodo: number, nuevoIdNodo: number) => {
@@ -618,6 +632,10 @@ try {
           if (infoDataJson && infoDataJson.command === 'rtaScan' && infoDataJson['nodos']) {
             const datos: number[] = infoDataJson.nodos
             socket.emit('rtaScan', datos)
+          }
+          if (infoDataJson && infoDataJson.command === 'version') {
+            const datos: string = infoDataJson
+            socket.emit('rtaVersion', datos)
           }
         }
       })

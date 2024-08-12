@@ -19,6 +19,7 @@ import {
   ConfiguracionesAvanzadas,
   ConfiguracionesAvanzadasStore
 } from './api/configuraciones/configuraciones-avanzadas.store'
+import { execFile } from 'child_process'
 
 log.initialize()
 ConfiguracionLogger()
@@ -274,3 +275,19 @@ ipcMain.handle(
     return configuracionesAvanzadasEdit
   }
 )
+
+ipcMain.handle('updateVersion', () => {
+  const batchFilePath = '/root/update.sh latest latest'
+
+  execFile(batchFilePath, (error, stdout) => {
+    if (error) {
+      console.error(`Error executing batch file: ${error}`)
+      return
+    }
+    console.log(`Batch file output: ${stdout}`)
+  })
+})
+
+ipcMain.handle('getVersionApp', (): string => {
+  return app.getVersion()
+})

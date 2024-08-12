@@ -14,6 +14,7 @@ export interface ClientToServerEvents {
     electrovalvula: boolean
   }) => void
   scan: () => void
+  version: () => void
   renombrar: (idNodo: number, nuevoIdNodo: number) => void
 }
 
@@ -22,6 +23,7 @@ export interface ServerToClientEvents {
   getDatosMeteorologicos: (data: DatosMeteorologicos) => void
   conectado: () => void
   rtaScan: (data: number[]) => void
+  rtaVersion: (data: string) => void
   desconectado: () => void
   error: (err: any) => void
 }
