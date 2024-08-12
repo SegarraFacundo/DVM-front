@@ -277,9 +277,9 @@ ipcMain.handle(
 )
 
 ipcMain.handle('updateVersion', () => {
-  const batchFilePath = '/root/update.sh latest latest'
+  const batchFilePath = '/root/update.sh'
 
-  execFile(batchFilePath, (error, stdout) => {
+  execFile(batchFilePath, ['latest', 'latest'], (error, stdout) => {
     if (error) {
       console.error(`Error executing batch file: ${error}`)
       return
