@@ -57,7 +57,7 @@ import { ConfiguracionesAvanzadasStore } from '../configuraciones/configuracione
 //     rpm1 : 3.1,
 //     rpm2 : 3.2,
 //     rpm3 : 3.3,//     rpm4 : 6.2,
-//     voltaje : 12.8
+//     voltaje : 12.8
 // }
 
 interface ClientToServerEvents {
@@ -114,7 +114,7 @@ interface ServerToClientEvents {
   getDatosMeteorologicos: (data: DatosMeteorologicos) => void
   conectado: () => void
   rtaScan: (data: number[]) => void
-  rtaVersion: (data: string) => void
+  rtaVersion: (data: { version: string; board_version: string }) => void
   desconectado: () => void
   error: (err: any) => void
 }
@@ -634,7 +634,10 @@ try {
             socket.emit('rtaScan', datos)
           }
           if (infoDataJson && infoDataJson.command === 'version') {
-            const datos: string = infoDataJson
+            const datos: {
+              version: string
+              board_version: string
+            } = infoDataJson
             socket.emit('rtaVersion', datos)
           }
         }

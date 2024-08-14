@@ -23,7 +23,7 @@ export interface ServerToClientEvents {
   getDatosMeteorologicos: (data: DatosMeteorologicos) => void
   conectado: () => void
   rtaScan: (data: number[]) => void
-  rtaVersion: (data: string) => void
+  rtaVersion: (data: { version: string; board_version: string }) => void
   desconectado: () => void
   error: (err: any) => void
 }

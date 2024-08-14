@@ -18,7 +18,13 @@ export default function ConfiguracionGeneral(): JSX.Element {
   const { setTitle } = useTitle()
   const [percentageLoading, setPercentageLoading] = useState<number>(0)
   const [versionFront, setVersionFront] = useState<string>('')
-  const [versionBack, setVersionBack] = useState<string>('')
+  const [versionBack, setVersionBack] = useState<{
+    version: string
+    board_version: string
+  }>({
+    version: '',
+    board_version: ''
+  })
   const { setCargando } = useCarga()
 
   const [mostrarDropDownVelocidad, setMostrarDropDownVelocidad] = useState<boolean>(false)
@@ -39,7 +45,7 @@ export default function ConfiguracionGeneral(): JSX.Element {
   const getVersiones = async (): Promise<void> => {
     socket.emit('version')
     setVersionFront(await window.api.invoke.getVersionApp())
-    socket.on('rtaVersion', (data: string) => {
+    socket.on('rtaVersion', (data: { version: string; board_version: string }) => {
       setVersionBack(data)
     })
   }
@@ -214,7 +220,8 @@ export default function ConfiguracionGeneral(): JSX.Element {
         <div>
           <h1 className="text-success font-bold text-[20px]">Versión</h1>
           <p className="text-white text-[20px]">
-            Front: {versionFront}&emsp;Back: {versionBack}
+            App: v{versionFront}&emsp;Api: {versionBack.version}&emsp;Placa:{' '}
+            {versionBack.board_version}
           </p>
         </div>
         <div>
