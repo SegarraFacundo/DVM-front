@@ -1,4 +1,6 @@
-import { readFileSync, writeFileSync } from 'fs'
+import { existsSync, readFileSync, writeFileSync } from 'fs'
+import path from 'path'
+import { APP_DATA_PATH } from '../../utils/urls'
 
 export interface Unidad {
   id: 1 | 2
@@ -8,8 +10,9 @@ export interface Unidad {
 }
 
 export const UnidadesStore = () => {
-  const urlDataJson = '/root/dvm-app-front/unidades.json'
-
+  let urlDataJson = path.join(APP_DATA_PATH(), 'unidades.json')
+  const urlDataJsonDefault = path.join(__dirname, '../../resources/data/unidades.json')
+  if (!existsSync(urlDataJson)) urlDataJson = urlDataJsonDefault
   return {
     all: async (): Promise<Unidad[]> =>
       JSON.parse(await readFileSync(urlDataJson).toString()) as Unidad[],
