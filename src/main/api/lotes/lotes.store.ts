@@ -9,7 +9,7 @@ export interface Lote {
 
 export const LotesStore = () => {
   let urlDataJson = path.join(APP_DATA_PATH(), 'lotes.json')
-  const urlDataJsonDefault = path.join(__dirname, '../../../resources/data/lotes.json')
+  const urlDataJsonDefault = path.join(process.cwd(), 'resources/data/lotes.json')
   if (!existsSync(urlDataJson)) urlDataJson = urlDataJsonDefault
   return {
     all: async () => JSON.parse(await readFileSync(urlDataJson).toString()) as Lote[],

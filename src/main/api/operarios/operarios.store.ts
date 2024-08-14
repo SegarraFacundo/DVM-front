@@ -10,7 +10,7 @@ export interface Operario {
 
 export const OperariosStore = () => {
   let urlDataJson = path.join(APP_DATA_PATH(), 'operarios.json')
-  const urlDataJsonDefault = path.join(__dirname, '../../../resources/data/operarios.json')
+  const urlDataJsonDefault = path.join(process.cwd(), 'resources/data/operarios.json')
   if (!existsSync(urlDataJson)) urlDataJson = urlDataJsonDefault
   return {
     all: async () => JSON.parse(await readFileSync(urlDataJson).toString()) as Operario[],

@@ -13,7 +13,7 @@ export interface TipoAplicacion {
 
 export const TiposAplicacionesStore = () => {
   let urlDataJson = path.join(APP_DATA_PATH(), 'tipos-aplicaciones.json')
-  const urlDataJsonDefault = path.join(__dirname, '../../../resources/data/tipos-aplicaciones.json')
+  const urlDataJsonDefault = path.join(process.cwd(), 'resources/data/tipos-aplicaciones.json')
   if (!existsSync(urlDataJson)) urlDataJson = urlDataJsonDefault
   return {
     all: async () => JSON.parse(await readFileSync(urlDataJson).toString()) as TipoAplicacion[],
