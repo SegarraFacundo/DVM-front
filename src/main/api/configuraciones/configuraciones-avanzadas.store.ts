@@ -26,9 +26,6 @@ export interface ConfiguracionesAvanzadas {
 
 export const ConfiguracionesAvanzadasStore = () => {
   let urlDataJson = path.join(APP_DATA_PATH(), 'configuraciones-avanzadas.json')
-  console.log("APP_DATA_PATH()", APP_DATA_PATH())
-  console.log("__dirname", __dirname)
-  console.log("process.cwd()", process.cwd())
   const urlDataJsonDefault = path.join(
     process.cwd(),
     'resources/data/configuraciones-avanzadas.json'
