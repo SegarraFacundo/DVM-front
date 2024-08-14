@@ -114,7 +114,7 @@ interface ServerToClientEvents {
   getDatosMeteorologicos: (data: DatosMeteorologicos) => void
   conectado: () => void
   rtaScan: (data: number[]) => void
-  rtaVersion: (data: { version: string; board_version: string }) => void
+  rtaVersion: (data: { version: string; boardVersion: string }) => void
   desconectado: () => void
   error: (err: any) => void
 }
@@ -633,10 +633,10 @@ try {
             const datos: number[] = infoDataJson.nodos
             socket.emit('rtaScan', datos)
           }
-          if (infoDataJson && infoDataJson.command === 'version') {
+          if (infoDataJson && infoDataJson.command === 'rtaVersion') {
             const datos: {
               version: string
-              board_version: string
+              boardVersion: string
             } = infoDataJson
             socket.emit('rtaVersion', datos)
           }

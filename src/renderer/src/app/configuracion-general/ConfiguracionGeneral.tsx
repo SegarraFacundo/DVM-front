@@ -20,10 +20,10 @@ export default function ConfiguracionGeneral(): JSX.Element {
   const [versionFront, setVersionFront] = useState<string>('')
   const [versionBack, setVersionBack] = useState<{
     version: string
-    board_version: string
+    boardVersion: string
   }>({
     version: '',
-    board_version: ''
+    boardVersion: ''
   })
   const { setCargando } = useCarga()
 
@@ -45,7 +45,7 @@ export default function ConfiguracionGeneral(): JSX.Element {
   const getVersiones = async (): Promise<void> => {
     socket.emit('version')
     setVersionFront(await window.api.invoke.getVersionApp())
-    socket.on('rtaVersion', (data: { version: string; board_version: string }) => {
+    socket.on('rtaVersion', (data: { version: string; boardVersion: string }) => {
       setVersionBack(data)
     })
   }
@@ -221,7 +221,7 @@ export default function ConfiguracionGeneral(): JSX.Element {
           <h1 className="text-success font-bold text-[20px]">Versión</h1>
           <p className="text-white text-[20px]">
             App: v{versionFront}&emsp;Api: {versionBack.version}&emsp;Placa:{' '}
-            {versionBack.board_version}
+            {versionBack.boardVersion}
           </p>
         </div>
         <div>
