@@ -11,7 +11,7 @@ export interface Unidad {
 
 export const UnidadesStore = () => {
   let urlDataJson = path.join(APP_DATA_PATH(), 'unidades.json')
-  const urlDataJsonDefault = path.join(__dirname, '../../resources/data/unidades.json')
+  const urlDataJsonDefault = path.join(__dirname, '../../../resources/data/unidades.json')
   if (!existsSync(urlDataJson)) urlDataJson = urlDataJsonDefault
   return {
     all: async (): Promise<Unidad[]> =>
