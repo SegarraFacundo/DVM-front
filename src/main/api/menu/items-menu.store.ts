@@ -1,6 +1,4 @@
-import { existsSync, readFileSync } from 'fs'
-import path from 'path'
-import { APP_DATA_PATH } from '../../utils/urls'
+import { readFileSync } from 'fs'
 
 export interface ItemMenu {
   icon: string
@@ -9,9 +7,8 @@ export interface ItemMenu {
 }
 
 export const ItemsMenuStore = () => {
-  let urlDataJson = path.join(APP_DATA_PATH(), 'items-menu.json')
-  const urlDataJsonDefault = path.join(process.cwd(), 'resources/data/items-menu.json')
-  if (!existsSync(urlDataJson)) urlDataJson = urlDataJsonDefault
+  const urlDataJson = '/root/dvm-app-front/items-menu.json'
+  
   return {
     all: async () => JSON.parse(await readFileSync(urlDataJson).toString()) as ItemMenu[]
   }

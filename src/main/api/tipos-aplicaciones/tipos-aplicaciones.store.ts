@@ -1,6 +1,4 @@
-import { existsSync, readFileSync, writeFileSync } from 'fs'
-import path from 'path'
-import { APP_DATA_PATH } from '../../utils/urls'
+import { readFileSync, writeFileSync } from 'fs'
 
 interface Props {
   urlDataJson: string
@@ -12,9 +10,8 @@ export interface TipoAplicacion {
 }
 
 export const TiposAplicacionesStore = () => {
-  let urlDataJson = path.join(APP_DATA_PATH(), 'tipos-aplicaciones.json')
-  const urlDataJsonDefault = path.join(process.cwd(), 'resources/data/tipos-aplicaciones.json')
-  if (!existsSync(urlDataJson)) urlDataJson = urlDataJsonDefault
+  const urlDataJson = '/root/dvm-app-front/tipos-aplicaciones.json'
+
   return {
     all: async () => JSON.parse(await readFileSync(urlDataJson).toString()) as TipoAplicacion[],
     get: async (id: number) =>

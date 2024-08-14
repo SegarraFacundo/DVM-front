@@ -1,6 +1,4 @@
-import { existsSync, readFileSync, writeFileSync } from 'fs'
-import path from 'path'
-import { APP_DATA_PATH } from '../../utils/urls'
+import { readFileSync, writeFileSync } from 'fs'
 
 export interface Lote {
   id: number
@@ -8,9 +6,7 @@ export interface Lote {
 }
 
 export const LotesStore = () => {
-  let urlDataJson = path.join(APP_DATA_PATH(), 'lotes.json')
-  const urlDataJsonDefault = path.join(process.cwd(), 'resources/data/lotes.json')
-  if (!existsSync(urlDataJson)) urlDataJson = urlDataJsonDefault
+  const urlDataJson = '/root/dvm-app-front/lotes.json'
   return {
     all: async () => JSON.parse(await readFileSync(urlDataJson).toString()) as Lote[],
     get: async (id: number) =>

@@ -1,6 +1,4 @@
-import { existsSync, readFileSync, writeFileSync } from 'fs'
-import path from 'path'
-import { APP_DATA_PATH } from '../../utils/urls'
+import { readFileSync, writeFileSync } from 'fs'
 
 export interface Operario {
   id: number
@@ -9,9 +7,8 @@ export interface Operario {
 }
 
 export const OperariosStore = () => {
-  let urlDataJson = path.join(APP_DATA_PATH(), 'operarios.json')
-  const urlDataJsonDefault = path.join(process.cwd(), 'resources/data/operarios.json')
-  if (!existsSync(urlDataJson)) urlDataJson = urlDataJsonDefault
+  const urlDataJson = '/root/dvm-app-front/operarios.json'
+
   return {
     all: async () => JSON.parse(await readFileSync(urlDataJson).toString()) as Operario[],
     get: async (id: number) =>

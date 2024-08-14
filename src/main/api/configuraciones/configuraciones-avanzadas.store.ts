@@ -1,7 +1,4 @@
-import { existsSync, readFileSync, writeFileSync } from 'fs'
-import path from 'path'
-import { APP_DATA_PATH } from '../../utils/urls'
-import { app } from 'electron'
+import { readFileSync, writeFileSync } from 'fs'
 
 export type TipoGotaType = 'FINA' | 'MEDIA' | 'GRUESA' | 'CUSTOM'
 
