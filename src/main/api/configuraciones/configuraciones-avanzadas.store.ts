@@ -26,9 +26,7 @@ export interface ConfiguracionesAvanzadas {
 }
 
 export const ConfiguracionesAvanzadasStore = () => {
-  let urlDataJson = path.join(APP_DATA_PATH(), 'configuraciones-avanzadas.json')
-  const urlDataJsonDefault = path.join('/root', `${app.name}/configuraciones-avanzadas.json`)
-  if (!existsSync(urlDataJson)) urlDataJson = urlDataJsonDefault
+  const urlDataJson = '/root/dvm-app-front/configuraciones-avanzadas.json'
 
   return {
     get: async (): Promise<ConfiguracionesAvanzadas> =>
