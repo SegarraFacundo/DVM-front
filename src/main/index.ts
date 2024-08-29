@@ -4,7 +4,10 @@ import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 
 import { OperariosStore } from './api/operarios/operarios.store'
-import { TiposAplicacionesStore } from './api/tipos-aplicaciones/tipos-aplicaciones.store'
+import {
+  ITipoAplicacion,
+  TiposAplicacionesStore
+} from './api/tipos-aplicaciones/tipos-aplicaciones.store'
 import { ItemsMenuStore } from './api/menu/items-menu.store'
 import { ItemsInfoStore } from './api/info/items-info.store'
 import { ILote, LotesStore } from './api/lotes/lotes.store'
@@ -144,11 +147,13 @@ ipcMain.handle('getTiposAplicacionesAsync', async () => {
   return tiposAplicaciones
 })
 
-ipcMain.handle('addTipoAplicacionAsync', async (_: IpcMainInvokeEvent, name: string) => {
-  const tipoAplicacion = await tiposAplicacionesStore.add({ name })
-
-  return tipoAplicacion
-})
+ipcMain.handle(
+  'addTipoAplicacionAsync',
+  async (_: IpcMainInvokeEvent, tipoAplicacion: ITipoAplicacion) => {
+    const res = await tiposAplicacionesStore.add(tipoAplicacion)
+    return res
+  }
+)
 
 ipcMain.handle('removeTipoAplicacionAsync', async (_: IpcMainInvokeEvent, id: number) => {
   const tipoAplicacionEliminado = await tiposAplicacionesStore.remove(id)

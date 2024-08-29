@@ -19,6 +19,8 @@ interface Lote {
 interface TipoAplicacion {
   id?: number
   name: string
+  tipoCultivo: string
+  recetaAgronomica: string
 }
 
 interface UseFormInitial {
@@ -52,7 +54,9 @@ export const useFormInitial = create<UseFormInitial>((set) => ({
   },
   tipoAplicacion: {
     id: -1,
-    name: ''
+    name: '',
+    tipoCultivo: '',
+    recetaAgronomica: ''
   },
   setFormInitial: (newState: {
     isValid: boolean

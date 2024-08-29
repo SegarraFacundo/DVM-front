@@ -1,13 +1,13 @@
 import { electronAPI } from '@electron-toolkit/preload'
 import { contextBridge, createIpcRenderer, GetApiType } from 'electron-typescript-ipc'
 import { Operario } from '../main/api/operarios/operarios.store'
-import { TipoAplicacion } from '../main/api/tipos-aplicaciones/tipos-aplicaciones.store'
 import { ItemMenu } from '../main/api/menu/items-menu.store'
 import { ItemInfoData } from '../main/api/info/items-info.store'
 import { ILote } from '../main/api/lotes/lotes.store'
 import { Nodo, UbicacionAspersorType } from '../main/api/nodos/nodos.store'
 import { Unidad } from '../main/api/unidades/unidades.store'
 import { ConfiguracionesAvanzadas } from '../main/api/configuraciones/configuraciones-avanzadas.store'
+import { ITipoAplicacion } from '../main/api/tipos-aplicaciones/tipos-aplicaciones.store'
 
 const ipcRenderer = createIpcRenderer<Api>()
 
@@ -19,26 +19,38 @@ export type Api = GetApiType<
     getLotesAsync: () => Promise<ILote[] | undefined>
     addLoteAsync: (lote: ILote) => Promise<ILote | undefined>
     removeLoteAsync: (id: number) => Promise<ILote | undefined>
-    getTiposAplicacionesAsync: () => Promise<TipoAplicacion[]>
-    addTipoAplicacionAsync: (name: string) => Promise<TipoAplicacion | undefined>
-    removeTipoAplicacionAsync: (id: number) => Promise<TipoAplicacion>
+    getTiposAplicacionesAsync: () => Promise<ITipoAplicacion[]>
+    addTipoAplicacionAsync: (
+      tipoAplicacion: ITipoAplicacion
+    ) => Promise<ITipoAplicacion | undefined>
+    removeTipoAplicacionAsync: (id: number) => Promise<ITipoAplicacion>
     getItemsMenuAsync: () => Promise<ItemMenu[]>
     getItemsInfoAsync: () => Promise<ItemInfoData[]>
     getNodosAsync: () => Promise<Nodo[]>
     cambiarIdsNodosAsync: (nodos: Nodo[]) => Promise<Nodo[]>
     cambiarHabilitacionNodo: (idNodo: number) => Promise<Nodo[]>
-    cambiarHabilitacionAspersor: (idNodo: number, idAspersor: number, deshabilitado: boolean) => Promise<Nodo[]>
-    cambiarUbicacionAspersor: (idNodo: number, idAspersor: number, ubicacion: UbicacionAspersorType) => Promise<Nodo[]>
+    cambiarHabilitacionAspersor: (
+      idNodo: number,
+      idAspersor: number,
+      deshabilitado: boolean
+    ) => Promise<Nodo[]>
+    cambiarUbicacionAspersor: (
+      idNodo: number,
+      idAspersor: number,
+      ubicacion: UbicacionAspersorType
+    ) => Promise<Nodo[]>
     isThemeModeDark: () => Promise<boolean>
     changeModeTheme: () => Promise<void>
     apagarDispositivo: () => Promise<void>
     setBrillo: (porcentaje: number) => Promise<void>
-    getBrilloActual: () => Promise<number>,
-    getUnidadesAsync: () => Promise<Unidad[]>,
-    cambiarUnidadVelocidad: (id: 1 | 2) => Promise<boolean>,
-    cambiarUnidadTemperatura: (id: 1 | 2) => Promise<boolean>,
-    getConfiguracionesAvanzadasAsync: () => Promise<ConfiguracionesAvanzadas>,
-    editConfiguracionesAvanzadasAsync: (value: ConfiguracionesAvanzadas) => Promise<ConfiguracionesAvanzadas>
+    getBrilloActual: () => Promise<number>
+    getUnidadesAsync: () => Promise<Unidad[]>
+    cambiarUnidadVelocidad: (id: 1 | 2) => Promise<boolean>
+    cambiarUnidadTemperatura: (id: 1 | 2) => Promise<boolean>
+    getConfiguracionesAvanzadasAsync: () => Promise<ConfiguracionesAvanzadas>
+    editConfiguracionesAvanzadasAsync: (
+      value: ConfiguracionesAvanzadas
+    ) => Promise<ConfiguracionesAvanzadas>
     updateVersion: () => Promise<boolean>
     getVersionApp: () => Promise<string>
   },
@@ -68,8 +80,8 @@ const api: Api = {
     getTiposAplicacionesAsync: async () => {
       return await ipcRenderer.invoke('getTiposAplicacionesAsync')
     },
-    addTipoAplicacionAsync: async (name: string) => {
-      return await ipcRenderer.invoke('addTipoAplicacionAsync', name)
+    addTipoAplicacionAsync: async (tipoAplicacion: ITipoAplicacion) => {
+      return await ipcRenderer.invoke('addTipoAplicacionAsync', tipoAplicacion)
     },
     removeTipoAplicacionAsync: async (id: number) => {
       return await ipcRenderer.invoke('removeTipoAplicacionAsync', id)
@@ -89,10 +101,23 @@ const api: Api = {
     cambiarHabilitacionNodo: async (idNodo: number) => {
       return await ipcRenderer.invoke('cambiarHabilitacionNodo', idNodo)
     },
-    cambiarHabilitacionAspersor: async (idNodo: number, idAspersor: number, deshabilitado: boolean) => {
-      return await ipcRenderer.invoke('cambiarHabilitacionAspersor', idNodo, idAspersor, deshabilitado)
+    cambiarHabilitacionAspersor: async (
+      idNodo: number,
+      idAspersor: number,
+      deshabilitado: boolean
+    ) => {
+      return await ipcRenderer.invoke(
+        'cambiarHabilitacionAspersor',
+        idNodo,
+        idAspersor,
+        deshabilitado
+      )
     },
-    cambiarUbicacionAspersor: async (idNodo: number, idAspersor: number, ubicacion: UbicacionAspersorType) => {
+    cambiarUbicacionAspersor: async (
+      idNodo: number,
+      idAspersor: number,
+      ubicacion: UbicacionAspersorType
+    ) => {
       return await ipcRenderer.invoke('cambiarUbicacionAspersor', idNodo, idAspersor, ubicacion)
     },
     isThemeModeDark: async () => {
@@ -108,9 +133,12 @@ const api: Api = {
     getBrilloActual: async () => ipcRenderer.invoke('getBrilloActual'),
     getUnidadesAsync: async () => ipcRenderer.invoke('getUnidadesAsync'),
     cambiarUnidadVelocidad: async (id: 1 | 2) => ipcRenderer.invoke('cambiarUnidadVelocidad', id),
-    cambiarUnidadTemperatura: async (id: 1 | 2) => ipcRenderer.invoke('cambiarUnidadTemperatura', id),
-    getConfiguracionesAvanzadasAsync: async () => ipcRenderer.invoke('getConfiguracionesAvanzadasAsync'),
-    editConfiguracionesAvanzadasAsync: async (value: ConfiguracionesAvanzadas) => ipcRenderer.invoke('editConfiguracionesAvanzadasAsync', value),
+    cambiarUnidadTemperatura: async (id: 1 | 2) =>
+      ipcRenderer.invoke('cambiarUnidadTemperatura', id),
+    getConfiguracionesAvanzadasAsync: async () =>
+      ipcRenderer.invoke('getConfiguracionesAvanzadasAsync'),
+    editConfiguracionesAvanzadasAsync: async (value: ConfiguracionesAvanzadas) =>
+      ipcRenderer.invoke('editConfiguracionesAvanzadasAsync', value),
     updateVersion: async (): Promise<boolean> => {
       return await ipcRenderer.invoke('updateVersion')
     },

@@ -1,14 +1,14 @@
-import { DataSelect } from '@renderer/app/home/interfaces/data-select.interface'
 import { useEffect, useRef, useState } from 'react'
 import { FieldErrors, RegisterOptions, UseFormRegister } from 'react-hook-form'
 import clsx from 'clsx'
 import { useModal } from '../modal/hooks/UseModal'
 import { useFormInitial } from '@renderer/app/home/components/form-initial/hooks/UseFormInitial'
 import { Modal } from '../modal/Modal'
-import Agregar from '@renderer/app/home/components/agregar/Agregar'
+import AgregarOperario from '@renderer/app/home/components/agregar/AgregarOperario'
 import log from 'electron-log/renderer'
 import { useOperario } from '@renderer/lib/hooks/UseOperario'
 import AgregarLote from '@renderer/app/home/components/agregar/AgregarLote'
+import AgregarAplicacion from '@renderer/app/home/components/agregar/AgregarAplicacion'
 
 interface Props {
   label: string
@@ -49,7 +49,7 @@ const InputDropdown = ({ label, name, data, errors, withAdd = false }: Props): J
           break
         }
         case 'tipoAplicacion':
-          nuevoEstado.tipoAplicacion = { id: selected?.id, name: selected?.name }
+          nuevoEstado.tipoAplicacion = { ...selected }
           log.info(`Tipo de aplicación seleccionado ${selected?.name ?? ''}`)
           break
         case 'lote':
@@ -194,14 +194,24 @@ function OpcionNuevo({ added, name }: PropsOpcionNuevo): JSX.Element {
           closed={modalClosed}
         />
       )}
-      {name != 'lote' && (
+      {name == 'tipoAplicacion' && (
         <Modal<{
           added
-          name
         }>
-          idModal={'agregar' + name}
-          ModalContent={Agregar}
-          modalContentProps={{ added, name }}
+          idModal={'agregartipoAplicacion'}
+          ModalContent={AgregarAplicacion}
+          modalContentProps={{ added }}
+          crossClose
+          closed={modalClosed}
+        />
+      )}
+      {name == 'operario' && (
+        <Modal<{
+          added
+        }>
+          idModal={'agregaroperario'}
+          ModalContent={AgregarOperario}
+          modalContentProps={{ added }}
           crossClose
           closed={modalClosed}
         />

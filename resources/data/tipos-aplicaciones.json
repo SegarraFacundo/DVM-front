@@ -1,1 +1,8 @@
-[{"name":"NO CALIFICA","id":1}]
+[
+  {
+    "name": "NO CALIFICA",
+    "tipoCultivo": "NO CALIFICA",
+    "recetaArgonomica": "NO CALIFICA",
+    "id": 5
+  }
+]

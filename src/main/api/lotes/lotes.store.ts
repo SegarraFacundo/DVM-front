@@ -13,7 +13,12 @@ export interface ILote {
   }
 }
 
-export const LotesStore = () => {
+export const LotesStore = (): {
+  all: () => Promise<ILote[] | undefined>
+  get: (id: number) => Promise<ILote | undefined>
+  add: (value: ILote) => Promise<ILote | undefined>
+  remove: (id: number) => Promise<ILote | undefined>
+} => {
   let urlDataJson = path.join(APP_DATA_PATH(), 'lotes.json')
   const urlDataJsonDefault = path.join(__dirname, '../../resources/data/lotes.json')
   if (!existsSync(urlDataJson)) urlDataJson = urlDataJsonDefault
@@ -29,7 +34,7 @@ export const LotesStore = () => {
       const ultimoLote = data.reduce((accumulator, current) =>
         accumulator.id && current.id && accumulator.id > current.id ? accumulator : current
       )
-      const nuevoLote = { ...value, id: ultimoLote.id ?? 1 }
+      const nuevoLote = { ...value, id: ultimoLote.id ? ultimoLote.id + 1 : 1 }
 
       data.push(nuevoLote)
       await writeFileSync(urlDataJson, JSON.stringify(data))

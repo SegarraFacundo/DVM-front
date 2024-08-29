@@ -22,6 +22,7 @@ import log from 'electron-log/renderer'
 import clsx from 'clsx'
 import { useMenu } from '@renderer/lib/hooks/UseMenu'
 import { useBomba } from '@renderer/lib/hooks/UseBomba'
+import { DataUnidad } from '../home/interfaces/data-unidad.interface'
 
 const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io('http://127.0.0.1:3000')
 
@@ -35,13 +36,42 @@ export function Trabajo(): JSX.Element {
   const { state } = useLocation()
   const { setEncendidoApagado } = useBomba()
   const [direccionViento, setDireccionViento] = useState<number>(0)
+  const [velocidadViento, setVelocidadViento] = useState<number>(0)
   const [configuracionesAvanzadasData, setConfiguracionesAvanzadasData] =
     useState<ConfiguracionesAvanzadasData>()
   const { setHabilitar, habilitar } = useMenu()
-
+  const [unidades, setUnidades] = useState<DataUnidad[]>([])
   const fetchConfiguracionesAvanzadas = async () => {
     const configuracionesAvanzadasData = await window.api.invoke.getConfiguracionesAvanzadasAsync()
     setConfiguracionesAvanzadasData(configuracionesAvanzadasData)
+  }
+
+  const fetchUnidades = async () => {
+    const result = await window.api.invoke.getUnidadesAsync()
+    setUnidades(result)
+  }
+
+  const getUnidadVelocidadViento = (): {
+    valor: string
+    unidad: string
+  } => {
+    let resp = {
+      valor: '',
+      unidad: ''
+    }
+
+    const unidadVelocidad =
+      unidades.find((u) => u.estaSeleccionada && u.tipo === 'velocidad')?.unidad ?? ''
+    resp =
+      velocidadViento !== undefined && velocidadViento != null
+        ? {
+            valor:
+              (velocidadViento * 3.6 * (unidadVelocidad === 'mi/h' ? 0.621371 : 1))?.toFixed(0) ??
+              '', // Constante para pasar de m/s a Km/h
+            unidad: unidades.find((u) => u.estaSeleccionada && u.tipo === 'velocidad')?.unidad ?? ''
+          }
+        : { valor: '-- --', unidad: '' }
+    return resp
   }
 
   useEffect(() => {
@@ -59,8 +89,12 @@ export function Trabajo(): JSX.Element {
     addModal('preparacion-bomba')
     addModal('end-job')
     setTitle('Trabajo')
-    socket.on('getDatosMeteorologicos', (res) => setDireccionViento(res.dirViento ?? 0))
+    socket.on('getDatosMeteorologicos', (res) => {
+      setDireccionViento(res.dirViento ?? 0)
+      setVelocidadViento(res.velViento ?? 0)
+    })
     fetchConfiguracionesAvanzadas()
+    fetchUnidades()
   }, [])
 
   const modalClosed = (idModal: string, acept: boolean) => {
@@ -223,24 +257,28 @@ export function Trabajo(): JSX.Element {
             backgroundImage: `url(${ImageMap})`
           }}
         >
-          <div className="top-[110px] left-[188px]" id="contenedor-tractor">
-            <div className="left-0 top-0">
-              <svg
-                style={{
-                  transform: `rotate(${direccionViento}deg)`
-                }}
-                width="29"
-                height="31"
-                viewBox="0 0 29 31"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M2.00009 28.7271C2.64218 29.4014 3.48916 29.8456 4.414 29.9931C5.33885 30.1406 6.29172 29.9834 7.1297 29.5452L14.61 26.2658L21.9855 29.3458C22.8212 29.7761 23.7774 29.9248 24.7138 29.7699C25.6502 29.615 26.5173 29.1648 27.1879 28.4852L27.2102 28.463C27.9082 27.7648 28.3599 26.8594 28.4949 25.8876C28.6299 24.9158 28.4408 23.9321 27.9569 23.0895L14.8207 0.470566L1.32417 23.3989C0.833948 24.2478 0.634496 25.2298 0.756686 26.193C0.878876 27.1562 1.31589 28.0469 2.00009 28.7271ZM14.7452 9.31107L24.0575 25.3549L14.6357 21.4068L5.39504 25.4573L5.17926 25.5855L14.7452 9.31107Z"
-                  fill="#32CF9C"
-                />
-              </svg>
-            </div>
+          <div className="p-1 absolute top-1 left-1 rounded-lg shadow-lg bg-white">
+            <span className="text-xs mb-0">Viento</span>
+            <p className="font-bold text-sm mt-0">
+              {getUnidadVelocidadViento().valor} {getUnidadVelocidadViento().unidad}
+            </p>
+          </div>
+          <div className="" id="contenedor-tractor">
+            <svg
+              style={{
+                transform: `rotate(${direccionViento}deg)`
+              }}
+              width="29"
+              height="31"
+              viewBox="0 0 29 31"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M2.00009 28.7271C2.64218 29.4014 3.48916 29.8456 4.414 29.9931C5.33885 30.1406 6.29172 29.9834 7.1297 29.5452L14.61 26.2658L21.9855 29.3458C22.8212 29.7761 23.7774 29.9248 24.7138 29.7699C25.6502 29.615 26.5173 29.1648 27.1879 28.4852L27.2102 28.463C27.9082 27.7648 28.3599 26.8594 28.4949 25.8876C28.6299 24.9158 28.4408 23.9321 27.9569 23.0895L14.8207 0.470566L1.32417 23.3989C0.833948 24.2478 0.634496 25.2298 0.756686 26.193C0.878876 27.1562 1.31589 28.0469 2.00009 28.7271ZM14.7452 9.31107L24.0575 25.3549L14.6357 21.4068L5.39504 25.4573L5.17926 25.5855L14.7452 9.31107Z"
+                fill="#32CF9C"
+              />
+            </svg>
           </div>
           <div className="flex flex-col">
             <svg

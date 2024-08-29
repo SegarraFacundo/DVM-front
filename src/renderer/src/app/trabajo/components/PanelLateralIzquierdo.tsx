@@ -1,6 +1,15 @@
 import clsx from 'clsx'
 import { useToggle } from '../../../ui/hooks/useToggle'
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import { DatosMeteorologicos } from '@renderer/app/home/interfaces/datos-meteorologicos.interface'
+import { DataUnidad } from '@renderer/app/home/interfaces/data-unidad.interface'
+import { io, Socket } from 'socket.io-client'
+import {
+  ClientToServerEvents,
+  ServerToClientEvents
+} from '@renderer/lib/socket/interfaces/socket-client.interface'
+
+const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io('http://127.0.0.1:3000')
 
 const style = {
   position: 'fixed',
@@ -12,9 +21,19 @@ export function PanelLateralIzquierdo() {
   const { getStateToggle, addToggle, toggleOpenedState } = useToggle()
   const divContenidoRef = useRef<HTMLDivElement>(null)
   const divPestaniaRef = useRef<HTMLDivElement>(null)
+  const [datosMeteorologicos, setDatosMeteorologicos] = useState<DatosMeteorologicos>()
+  const [unidades, setUnidades] = useState<DataUnidad[]>([])
+
+  const fetchUnidades = async () => {
+    const result = await window.api.invoke.getUnidadesAsync()
+    setUnidades(result)
+  }
 
   useEffect(() => {
     addToggle('panel-lateral-izquierdo')
+
+    socket.on('getDatosMeteorologicos', (res) => setDatosMeteorologicos(res))
+    fetchUnidades()
 
     const closeClick = (e: Event) => {
       if (
@@ -35,6 +54,47 @@ export function PanelLateralIzquierdo() {
 
   const handleClickPanel = () => {
     toggleOpenedState('panel-lateral-izquierdo')
+  }
+
+  const getData = (
+    tipo:
+      | 'Humedad'
+      | 'Velocidad del viento'
+      | 'Temperatura'
+      | 'Punto de Rocío'
+      | 'Dirección del viento'
+      | 'Velocidad del tractor'
+      | ''
+  ): {
+    valor: string
+    unidad: string
+  } => {
+    let resp = {
+      valor: '',
+      unidad: ''
+    }
+    switch (tipo) {
+      case 'Velocidad del tractor': {
+        const unidadVelocidad =
+          unidades.find((u) => u.estaSeleccionada && u.tipo === 'velocidad')?.unidad ?? ''
+        resp =
+          datosMeteorologicos?.gpsInfo?.velocicidad !== undefined &&
+          datosMeteorologicos?.gpsInfo?.velocicidad != null
+            ? {
+                valor:
+                  (
+                    datosMeteorologicos.gpsInfo?.velocicidad *
+                    3.6 *
+                    (unidadVelocidad === 'mi/h' ? 0.621371 : 1)
+                  )?.toFixed(0) ?? '', // Constante para pasar de m/s a Km/h
+                unidad:
+                  unidades.find((u) => u.estaSeleccionada && u.tipo === 'velocidad')?.unidad ?? ''
+              }
+            : { valor: '-- --', unidad: '' }
+        break
+      }
+    }
+    return resp
   }
 
   return (
@@ -75,8 +135,10 @@ export function PanelLateralIzquierdo() {
         <div className="border-[1px] border-dark dark:border-light w-[197px] h-[122px] rounded-lg p-3 flex flex-col">
           <p className="text-success text-[16px] font-bold">Velocidad</p>
           <div className="text-dark dark:text-light font-bold items-baseline flex justify-end">
-            <h1 className="text-[46px] text-right">00</h1>
-            <span className="text-[20px] ml-4 w-12 inline-block">Km/h</span>
+            <h1 className="text-[46px] text-right">{getData('Velocidad del tractor').valor}</h1>
+            <span className="text-[20px] ml-4 w-12 inline-block">
+              {getData('Velocidad del tractor').unidad}
+            </span>
           </div>
         </div>
       </div>

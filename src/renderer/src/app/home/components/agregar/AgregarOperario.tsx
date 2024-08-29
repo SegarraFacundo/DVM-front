@@ -7,31 +7,17 @@ import { DataSelect } from '../../interfaces/data-select.interface'
 
 interface Props extends ModalProps<undefined> {
   added: (data: DataSelect) => void
-  name: 'operario' | 'tipoAplicacion'
 }
-export default function Agregar({ added, name, close }: Props): JSX.Element {
+export default function AgregarOperario({ added, close }: Props): JSX.Element {
   const { toggleOpenedState } = useModal()
   const [value, setValue] = useState<string>()
 
   const submit = async ($event): Promise<void> => {
     $event.preventDefault()
-    let nuevo: DataSelect
-    switch (name) {
-      case 'operario':
-        nuevo = await window.api.invoke.addOperarioAsync(value)
-        break
-      case 'tipoAplicacion':
-        nuevo = await window.api.invoke.addTipoAplicacionAsync(value)
-        break
-      default:
-        nuevo = {
-          id: -1,
-          name: ''
-        }
-    }
+    const nuevo: DataSelect = await window.api.invoke.addOperarioAsync(value)
 
     if (nuevo) {
-      toggleOpenedState('agregar' + name)
+      toggleOpenedState('agregaroperario')
       added(nuevo)
     }
   }
@@ -43,7 +29,7 @@ export default function Agregar({ added, name, close }: Props): JSX.Element {
     >
       <div className="flex items-center">
         <h3 className=" text-3xl not-italic font-bold text-dark dark:text-light">
-          Agregar {name !== 'tipoAplicacion' ? name : 'tipo de aplicación'}
+          Agregar operario
         </h3>
       </div>
       <InputText label="Identificador" required={true} onChange={setValue} />
