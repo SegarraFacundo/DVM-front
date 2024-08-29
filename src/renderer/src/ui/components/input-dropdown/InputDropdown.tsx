@@ -8,11 +8,12 @@ import { Modal } from '../modal/Modal'
 import Agregar from '@renderer/app/home/components/agregar/Agregar'
 import log from 'electron-log/renderer'
 import { useOperario } from '@renderer/lib/hooks/UseOperario'
+import AgregarLote from '@renderer/app/home/components/agregar/AgregarLote'
 
 interface Props {
   label: string
   name: 'operario' | 'lote' | 'tipoAplicacion'
-  data: DataSelect[]
+  data: any[]
   options?: RegisterOptions
   register: UseFormRegister<Record<string, number>>
   errors?: FieldErrors
@@ -21,10 +22,10 @@ interface Props {
 
 const InputDropdown = ({ label, name, data, errors, withAdd = false }: Props): JSX.Element => {
   const [inputValue, setInputValue] = useState('')
-  const [selected, setSelected] = useState<DataSelect>()
+  const [selected, setSelected] = useState<any>()
   const [open, setOpen] = useState(false)
   const [items, setItems] = useState<JSX.Element[]>([])
-  const [dataSelect, setDataSelect] = useState<DataSelect[]>([])
+  const [dataSelect, setDataSelect] = useState<any[]>([])
   const { setOperario } = useOperario()
 
   const { setFormInitial, isValid, operario, lote, tipoAplicacion } = useFormInitial()
@@ -52,7 +53,7 @@ const InputDropdown = ({ label, name, data, errors, withAdd = false }: Props): J
           log.info(`Tipo de aplicación seleccionado ${selected?.name ?? ''}`)
           break
         case 'lote':
-          nuevoEstado.lote = { id: selected?.id, name: selected?.name }
+          nuevoEstado.lote = { ...selected }
           log.info(`Lote seleccionado ${selected?.name ?? ''}`)
           break
       }
@@ -154,7 +155,7 @@ const InputDropdown = ({ label, name, data, errors, withAdd = false }: Props): J
 }
 
 interface PropsOpcionNuevo {
-  added: (data: DataSelect) => void
+  added: (data: any) => void
   name: 'operario' | 'lote' | 'tipoAplicacion'
 }
 
@@ -182,16 +183,29 @@ function OpcionNuevo({ added, name }: PropsOpcionNuevo): JSX.Element {
           +
         </button>
       </div>
-      <Modal<{
-        added
-        name
-      }>
-        idModal={'agregar' + name}
-        ModalContent={Agregar}
-        modalContentProps={{ added, name }}
-        crossClose
-        closed={modalClosed}
-      />
+      {name == 'lote' && (
+        <Modal<{
+          added
+        }>
+          idModal={'agregarlote'}
+          ModalContent={AgregarLote}
+          modalContentProps={{ added }}
+          crossClose
+          closed={modalClosed}
+        />
+      )}
+      {name != 'lote' && (
+        <Modal<{
+          added
+          name
+        }>
+          idModal={'agregar' + name}
+          ModalContent={Agregar}
+          modalContentProps={{ added, name }}
+          crossClose
+          closed={modalClosed}
+        />
+      )}
     </li>
   )
 }

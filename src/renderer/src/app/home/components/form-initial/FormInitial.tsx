@@ -19,7 +19,7 @@ export function FormInitial({ close, acept, props }: Props): JSX.Element {
   })
 
   const [operarios, setOperarios] = useState<DataSelect[]>([])
-  const [lotes, setLotes] = useState<DataSelect[]>([])
+  const [lotes, setLotes] = useState<any[]>([])
   const [tiposAplicaciones, setTiposAplicaciones] = useState<DataSelect[]>([])
 
   const fetchOperarios = async (): Promise<void> => {
@@ -55,7 +55,7 @@ export function FormInitial({ close, acept, props }: Props): JSX.Element {
       },
       lote: {
         id: dataForm.lote,
-        name: lotes.find((i) => i.id === dataForm.lote)?.name ?? ''
+        ...lotes.find((i) => i.id === dataForm.lote)
       },
       tipoAplicacion: {
         id: dataForm.tipoAplicacion,
@@ -71,11 +71,6 @@ export function FormInitial({ close, acept, props }: Props): JSX.Element {
       })}
       onChange={handleChange}
     >
-      {props?.openedModal && (
-        <div className="flex items-center">
-          <h3 className=" text-3xl not-italic font-bold text-dark dark:text-light">Agregar Operario</h3>
-        </div>
-      )}
       <div className="flex flex-col gap-4">
         <InputDropdown
           label="Identificación Operario"

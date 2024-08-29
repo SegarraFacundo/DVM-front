@@ -4,7 +4,7 @@ import { Operario } from '../main/api/operarios/operarios.store'
 import { TipoAplicacion } from '../main/api/tipos-aplicaciones/tipos-aplicaciones.store'
 import { ItemMenu } from '../main/api/menu/items-menu.store'
 import { ItemInfoData } from '../main/api/info/items-info.store'
-import { Lote } from '../main/api/lotes/lotes.store'
+import { ILote } from '../main/api/lotes/lotes.store'
 import { Nodo, UbicacionAspersorType } from '../main/api/nodos/nodos.store'
 import { Unidad } from '../main/api/unidades/unidades.store'
 import { ConfiguracionesAvanzadas } from '../main/api/configuraciones/configuraciones-avanzadas.store'
@@ -16,12 +16,12 @@ export type Api = GetApiType<
     getOperariosAsync: () => Promise<Operario[]>
     addOperarioAsync: (name: string) => Promise<Operario>
     removeOperarioAsync: (id: number) => Promise<Operario>
-    getLotesAsync: () => Promise<Lote[]>
-    addLoteAsync: (name: string) => Promise<Lote>
-    removeLoteAsync: (id: number) => Promise<Lote>
+    getLotesAsync: () => Promise<ILote[] | undefined>
+    addLoteAsync: (lote: ILote) => Promise<ILote | undefined>
+    removeLoteAsync: (id: number) => Promise<ILote | undefined>
     getTiposAplicacionesAsync: () => Promise<TipoAplicacion[]>
-    addTipoAplicacionAsync: (name: string) => Promise<Lote>
-    removeTipoAplicacionAsync: (id: number) => Promise<Operario>
+    addTipoAplicacionAsync: (name: string) => Promise<TipoAplicacion | undefined>
+    removeTipoAplicacionAsync: (id: number) => Promise<TipoAplicacion>
     getItemsMenuAsync: () => Promise<ItemMenu[]>
     getItemsInfoAsync: () => Promise<ItemInfoData[]>
     getNodosAsync: () => Promise<Nodo[]>
@@ -59,8 +59,8 @@ const api: Api = {
     getLotesAsync: async () => {
       return await ipcRenderer.invoke('getLotesAsync')
     },
-    addLoteAsync: async (name: string) => {
-      return await ipcRenderer.invoke('addLoteAsync', name)
+    addLoteAsync: async (lote: ILote) => {
+      return await ipcRenderer.invoke('addLoteAsync', lote)
     },
     removeLoteAsync: async (id: number) => {
       return await ipcRenderer.invoke('removeLoteAsync', id)

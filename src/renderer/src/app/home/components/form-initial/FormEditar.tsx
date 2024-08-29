@@ -7,6 +7,17 @@ import { Button } from '../../../../ui/components/Button'
 import InputDropdown from '@renderer/ui/components/input-dropdown/InputDropdown'
 
 interface Props extends ModalProps<undefined> {}
+interface ILote {
+  id?: number
+  name: string
+  superficie: string
+  ubicacion: string
+  geoposicionamiento: {
+    lat: number
+    long: number
+  }
+}
+
 export function FormEditar({ close, acept }: Props): JSX.Element {
   const {
     register,
@@ -18,7 +29,7 @@ export function FormEditar({ close, acept }: Props): JSX.Element {
   })
 
   const [operarios, setOperarios] = useState<DataSelect[]>([])
-  const [lotes, setLotes] = useState<DataSelect[]>([])
+  const [lotes, setLotes] = useState<ILote[]>([])
   const [tiposAplicaciones, setTiposAplicaciones] = useState<DataSelect[]>([])
 
   const fetchOperarios = async (): Promise<void> => {
@@ -53,8 +64,13 @@ export function FormEditar({ close, acept }: Props): JSX.Element {
         name: operarios.find((i) => i.id === dataForm.operario)?.name ?? ''
       },
       lote: {
-        id: dataForm.lote,
-        name: lotes.find((i) => i.id === dataForm.lote)?.name ?? ''
+        ...(lotes.find((i) => i.id === dataForm.lote) ?? {
+          name: '',
+          ubicacion: '',
+          superficie: '',
+          geoposicionamiento: { lat: 0, long: 0 }
+        }),
+        id: dataForm.lote
       },
       tipoAplicacion: {
         id: dataForm.tipoAplicacion,

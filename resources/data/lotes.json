@@ -1,1 +1,9 @@
-[{"name":"NO CALIFICA","id":1}]
+[
+  {
+    "name": "NO APLICA",
+    "superficie": "NO APLICA",
+    "ubicacion": "NO APLICA",
+    "geoposicionamiento": { "lat": 0, "long": 0 },
+    "id": 1
+  }
+]

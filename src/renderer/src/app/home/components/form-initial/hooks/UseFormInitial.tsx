@@ -1,17 +1,23 @@
 import { create } from 'zustand'
 
 interface Operario {
-  id: number
+  id?: number
   name: string
 }
 
 interface Lote {
-  id: number
+  id?: number
   name: string
+  superficie: string
+  ubicacion: string
+  geoposicionamiento: {
+    lat: number
+    long: number
+  }
 }
 
 interface TipoAplicacion {
-  id: number
+  id?: number
   name: string
 }
 
@@ -21,9 +27,9 @@ interface UseFormInitial {
   lote: Lote
   tipoAplicacion: TipoAplicacion
   setFormInitial: (newState: {
-    isValid: boolean,
-    operario: Operario,
-    lote: Lote,
+    isValid: boolean
+    operario: Operario
+    lote: Lote
     tipoAplicacion: TipoAplicacion
   }) => void
 }
@@ -36,16 +42,22 @@ export const useFormInitial = create<UseFormInitial>((set) => ({
   },
   lote: {
     id: -1,
-    name: ''
+    name: '',
+    ubicacion: '',
+    superficie: '',
+    geoposicionamiento: {
+      lat: 0,
+      long: 0
+    }
   },
   tipoAplicacion: {
     id: -1,
     name: ''
   },
   setFormInitial: (newState: {
-    isValid: boolean,
-    operario: Operario,
-    lote: Lote,
+    isValid: boolean
+    operario: Operario
+    lote: Lote
     tipoAplicacion: TipoAplicacion
   }) =>
     set({

@@ -8,6 +8,7 @@ interface Props {
   onChange: (value: string) => void
   unidad: string
   valueInitial: number
+  width?: string
 }
 
 export function InputNumber({
@@ -15,6 +16,7 @@ export function InputNumber({
   required,
   valueInitial,
   onChange,
+  width = '[150px]',
   unidad
 }: Props): JSX.Element {
   const [showKeyboard, setShowKeyboard] = useState<boolean>(false)
@@ -68,20 +70,20 @@ export function InputNumber({
   }
 
   const layout = {
-    default: ['1 2 3', '4 5 6', '7 8 9', '{bksp} 0 {enter}']
+    default: ['1 2 3', '4 5 6', '7 8 9', '{bksp} . 0 {enter}']
   }
 
   return (
     <>
       <div className="flex flex-col">
-        <label className="font-roboto text-dark dark:text-light text-[20px]">{label}</label>
+        <label className="font-roboto text-dark dark:text-light text-[20px] mb-2">{label}</label>
         <div className="flex gap-4 items-center">
           <input
             onClick={onFocusInput}
             ref={inputRef}
             value={value}
             className={clsx(
-              'h-[60px] w-[150px] text-2xl rounded-[5px] bg-white dark:bg-dark border border-solid border-dark dark:border-light pl-[18px] text-dark dark:text-light p-4',
+              `h-[60px] w-${width} text-2xl rounded-[5px] bg-white dark:bg-dark border border-solid border-dark dark:border-light pl-[18px] text-dark dark:text-light p-4`,
               {
                 'border-error': required && inputRef && inputRef.current && !inputRef.current.value,
                 'focus:border-error':

@@ -553,7 +553,25 @@ try {
           temperatura: getRandomArbitrary(0, 100, 0),
           puntoDeRocio: getRandomArbitrary(0, 100, 0),
           presionAtmosferica: getRandomArbitrary(1000, 9999, 0),
-          version: getRandomArbitrary(0, 1, 0)
+          version: getRandomArbitrary(0, 1, 0),
+          gpsInfo: {
+            nroSatelites: getRandomArbitrary(0, 20, 0),
+            velocicidad: getRandomArbitrary(0, 100, 0),
+            latitud: getRandomArbitrary(0, 1, 12),
+            longitud: getRandomArbitrary(0, 1, 12),
+            altura: getRandomArbitrary(0, 1, 0)
+          },
+          caudalInfo: {
+            boards: [
+              {
+                board_id: getRandomArbitrary(0, 1, 0),
+                caudalEngine0: getRandomArbitrary(0, 1, 0),
+                caudalEngine1: getRandomArbitrary(0, 1, 0),
+                caudalEngine2: getRandomArbitrary(0, 1, 0),
+                caudalEngine3: getRandomArbitrary(0, 1, 0)
+              }
+            ]
+          }
         }
         socket.emit('getDatosMeteorologicos', datos)
       }, 5000)

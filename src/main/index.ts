@@ -7,7 +7,7 @@ import { OperariosStore } from './api/operarios/operarios.store'
 import { TiposAplicacionesStore } from './api/tipos-aplicaciones/tipos-aplicaciones.store'
 import { ItemsMenuStore } from './api/menu/items-menu.store'
 import { ItemsInfoStore } from './api/info/items-info.store'
-import { LotesStore } from './api/lotes/lotes.store'
+import { ILote, LotesStore } from './api/lotes/lotes.store'
 import * as shutdown from 'electron-shutdown-command'
 import './api/socket/socket'
 import { Nodo, NodosStore, UbicacionAspersorType } from './api/nodos/nodos.store'
@@ -124,8 +124,8 @@ ipcMain.handle('getLotesAsync', async () => {
   return lotes
 })
 
-ipcMain.handle('addLoteAsync', async (_: IpcMainInvokeEvent, name: string) => {
-  const nuevoLote = await lotesStore.add({ name })
+ipcMain.handle('addLoteAsync', async (_: IpcMainInvokeEvent, lote: ILote) => {
+  const nuevoLote = await lotesStore.add(lote)
 
   return nuevoLote
 })

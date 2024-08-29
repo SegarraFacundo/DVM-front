@@ -2,9 +2,15 @@ import { existsSync, readFileSync, writeFileSync } from 'fs'
 import path from 'path'
 import { APP_DATA_PATH } from '../../utils/urls'
 
-export interface Lote {
-  id: number
+export interface ILote {
+  id?: number
   name: string
+  superficie: string
+  ubicacion: string
+  geoposicionamiento: {
+    lat: number
+    long: number
+  }
 }
 
 export const LotesStore = () => {
@@ -12,25 +18,26 @@ export const LotesStore = () => {
   const urlDataJsonDefault = path.join(__dirname, '../../resources/data/lotes.json')
   if (!existsSync(urlDataJson)) urlDataJson = urlDataJsonDefault
   return {
-    all: async () => JSON.parse(await readFileSync(urlDataJson).toString()) as Lote[],
-    get: async (id: number) =>
-      (await (JSON.parse(readFileSync(urlDataJson).toString()) as Lote[]).find((m) => {
+    all: async (): Promise<ILote[] | undefined> =>
+      JSON.parse(await readFileSync(urlDataJson).toString()) as ILote[],
+    get: async (id: number): Promise<ILote | undefined> =>
+      (await (JSON.parse(readFileSync(urlDataJson).toString()) as ILote[]).find((m) => {
         return m.id === id
-      })) ?? null,
-    add: async (value: { name: string }) => {
-      const data = JSON.parse(readFileSync(urlDataJson).toString()) as Lote[]
-      const id = data.reduce((accumulator, current) => {
-        return accumulator.id > current.id ? accumulator : current
-      }).id++
-      const nuevoLote = { name: value.name, id }
+      })) ?? undefined,
+    add: async (value: ILote): Promise<ILote | undefined> => {
+      const data = JSON.parse(readFileSync(urlDataJson).toString()) as ILote[]
+      const ultimoLote = data.reduce((accumulator, current) =>
+        accumulator.id && current.id && accumulator.id > current.id ? accumulator : current
+      )
+      const nuevoLote = { ...value, id: ultimoLote.id ?? 1 }
 
       data.push(nuevoLote)
       await writeFileSync(urlDataJson, JSON.stringify(data))
 
       return nuevoLote
     },
-    remove: async (id: number) => {
-      let data = JSON.parse(readFileSync(urlDataJson).toString()) as Lote[]
+    remove: async (id: number): Promise<ILote | undefined> => {
+      let data = JSON.parse(readFileSync(urlDataJson).toString()) as ILote[]
       const lote = data.find((d) => d.id === id)
       data = data.filter((value) => value.id !== id)
       await writeFileSync(urlDataJson, JSON.stringify(data))

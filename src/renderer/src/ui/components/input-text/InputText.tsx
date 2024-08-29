@@ -5,10 +5,18 @@ import Keyboard from 'react-simple-keyboard'
 interface Props {
   label: string
   required?: boolean
-  onChange: (value: string) => void
+  onChange: (input: string, e?: MouseEvent) => void
+  width?: string
+  unidad?
 }
 
-export function InputText({ label, required, onChange }: Props): JSX.Element {
+export function InputText({
+  label,
+  required,
+  onChange,
+  width = '[366px]',
+  unidad = ''
+}: Props): JSX.Element {
   const [showKeyboard, setShowKeyboard] = useState<boolean>(false)
 
   const inputRef = useRef<HTMLInputElement>(null)
@@ -59,22 +67,25 @@ export function InputText({ label, required, onChange }: Props): JSX.Element {
         <label className="font-roboto font-bold text-success text-[20px] tracking-[0] leading-[normal] whitespace-nowrap mb-[13px]">
           {label}
         </label>
-        <input
-          className={clsx(
-            'h-[64px] w-[366px] rounded-[5px] text-2xl bg-white dark:bg-dark border border-solid border-dark dark:border-light pl-[18px] text-dark dark:text-light p-4',
-            {
-              'border-error': required && inputRef && inputRef.current && !inputRef.current.value,
-              'focus:border-error':
-                required && inputRef && inputRef.current && !inputRef.current.value,
-              'focus-visible:border-error':
-                required && inputRef && inputRef.current && !inputRef.current.value
-            }
-          )}
-          type="text"
-          onClick={onFocusInput}
-          value={value}
-          ref={inputRef}
-        />
+        <div className="flex gap-4 items-center">
+          <input
+            className={clsx(
+              `h-[64px] w-${width} rounded-[5px] text-2xl bg-white dark:bg-dark border border-solid border-dark dark:border-light pl-[18px] text-dark dark:text-light p-4`,
+              {
+                'border-error': required && inputRef && inputRef.current && !inputRef.current.value,
+                'focus:border-error':
+                  required && inputRef && inputRef.current && !inputRef.current.value,
+                'focus-visible:border-error':
+                  required && inputRef && inputRef.current && !inputRef.current.value
+              }
+            )}
+            type="text"
+            onClick={onFocusInput}
+            defaultValue={value}
+            ref={inputRef}
+          />
+          <small className="font-roboto text-dark dark:text-light text-[20px]">{unidad}</small>
+        </div>
       </div>
       <div
         ref={divRef}

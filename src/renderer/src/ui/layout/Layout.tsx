@@ -28,7 +28,7 @@ export function Layout({ children }: Props): JSX.Element {
   const [opendToggle, setOpendToggle] = useState<boolean>()
   const { isValid } = useFormInitial()
   const navigate = useNavigate()
-  const [datosMeteorologicos, setDatosMeteorologicos] = useState<DatosMeteorologicos>()
+  const [datosMeteorologicos, setDatosMeteorologicos] = useState<DatosMeteorologicos | null>(null)
   const { getStateModal, addModal, toggleOpenedState } = useModal()
   const [mostrarMasCartelDeNoDatosMeteorologicos, setMostrarMasCartelDeNoDatosMeteorologicos] =
     useState<boolean>(true)
@@ -49,7 +49,7 @@ export function Layout({ children }: Props): JSX.Element {
         !getStateModal('sin-datos-meteorologicos')
       )
         toggleOpenedState('sin-datos-meteorologicos')
-    }, 5000)
+    }, 7000)
 
     return () => {
       //Clearing a timeout

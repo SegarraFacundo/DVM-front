@@ -239,7 +239,7 @@ function Select({ idNodo, idAspersor, data, initValue }: PropsSelect): JSX.Eleme
           <li
             key={i}
             className={`p-2 text-sm border-b-[1px] border-b-success px-[30px] py-[20px] hover:bg-sky-300 hover:dark:bg-sky-600 hover:text-dark dark:text-light
-            ${value?.name?.toLowerCase() === selected?.name?.toLowerCase() && 'bg-sky-300 hover:dark:bg-sky-600 text-dark dark:text-light'}`}
+            ${value?.name.toLowerCase() === selected?.name?.toLowerCase() && 'bg-sky-300 hover:dark:bg-sky-600 text-dark dark:text-light'}`}
             onClick={() => onClickHandle(value)}
           >
             {value?.name}

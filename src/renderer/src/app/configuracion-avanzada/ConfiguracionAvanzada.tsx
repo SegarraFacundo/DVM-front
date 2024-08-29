@@ -80,7 +80,6 @@ export default function ConfiguracionAvanzada(): JSX.Element {
   }, [])
 
   const editConfiguracionesAvanzadas = async (): void => {
-
     const configuracionesAvanzadasEditData =
       await window.api.invoke.editConfiguracionesAvanzadasAsync(configuracionesAvanzadasData)
     setConfiguracionesAvanzadasData(configuracionesAvanzadasEditData)
@@ -512,7 +511,7 @@ function Ajustes({ valueInicial, sendConfiguracionesAvanzadasData }: AjustesProp
                   Sensor RPM
                 </label>
                 <input
-                  checked={configuracionesAvanzadasData.sensorRPM}
+                  defaultChecked={configuracionesAvanzadasData.sensorRPM}
                   onChange={($e) => onChangeConfiguracionesAvanzada($e, 'sensorRPM')}
                   className={clsx(
                     'h-[33px] w-[33px] text-2xl appearance-none rounded-[5px] checked:appearance-auto accent-success bg-transparent border border-solid border-dark dark:border-light',
@@ -530,7 +529,7 @@ function Ajustes({ valueInicial, sendConfiguracionesAvanzadasData }: AjustesProp
                   Electroválvula
                 </label>
                 <input
-                  checked={configuracionesAvanzadasData.electroValvula}
+                  defaultChecked={configuracionesAvanzadasData.electroValvula}
                   onChange={($e) => onChangeConfiguracionesAvanzada($e, 'electroValvula')}
                   className={clsx(
                     'h-[33px] w-[33px] text-2xl appearance-none rounded-[5px] checked:appearance-auto accent-success bg-transparent border border-solid border-dark dark:border-light',
@@ -855,10 +854,10 @@ function Select({ data, selectedInitial, containsValue, changeValue }: PropsSele
           <li
             key={value?.name}
             className={`p-2 text-sm border-b-[1px] border-b-success px-[30px] py-[20px] hover:bg-sky-300 hover:dark:bg-sky-600 hover:text-dark dark:text-light
-        ${value?.name?.toLowerCase() === selected?.name?.toLowerCase() && 'bg-sky-300 hover:dark:bg-sky-600 text-dark dark:text-light'}
-        ${value?.name?.toLowerCase().startsWith(inputValue) ? 'block' : 'hidden'}`}
+            ${value?.name.toLowerCase() === selected?.name?.toLowerCase() && 'bg-sky-300 hover:dark:bg-sky-600 text-dark dark:text-light'}
+            ${value?.name.toLowerCase().startsWith(inputValue) ? 'block' : 'hidden'}`}
             onClick={() => {
-              if (value?.name?.toLowerCase() !== selected?.name.toLowerCase()) {
+              if (value?.name.toLowerCase() !== selected?.name.toLowerCase()) {
                 setSelected(value)
                 setOpen(false)
                 setInputValue('')

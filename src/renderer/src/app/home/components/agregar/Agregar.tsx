@@ -4,11 +4,10 @@ import { ModalProps } from '../../../../ui/components/modal/Modal'
 import { useModal } from '../../../../ui/components/modal/hooks/UseModal'
 import { useState } from 'react'
 import { DataSelect } from '../../interfaces/data-select.interface'
-import { InputNumber } from '@renderer/ui/components/input-number/InputNumber'
 
 interface Props extends ModalProps<undefined> {
   added: (data: DataSelect) => void
-  name: 'operario' | 'lote' | 'tipoAplicacion'
+  name: 'operario' | 'tipoAplicacion'
 }
 export default function Agregar({ added, name, close }: Props): JSX.Element {
   const { toggleOpenedState } = useModal()
@@ -20,9 +19,6 @@ export default function Agregar({ added, name, close }: Props): JSX.Element {
     switch (name) {
       case 'operario':
         nuevo = await window.api.invoke.addOperarioAsync(value)
-        break
-      case 'lote':
-        nuevo = await window.api.invoke.addLoteAsync(value)
         break
       case 'tipoAplicacion':
         nuevo = await window.api.invoke.addTipoAplicacionAsync(value)

@@ -396,7 +396,7 @@ function ThemeToggle(): JSX.Element {
         type="checkbox"
         name="light-switch"
         className="light-switch sr-only cursor-pointer"
-        checked={!window.api.invoke.isThemeModeDark()}
+        defaultChecked={!window.api.invoke.isThemeModeDark()}
       />
       <label
         className="relative p-2 cursor-pointer w-[68px] h-[47px] bg-[#2B465D] rounded-lg flex justify-center items-center"
